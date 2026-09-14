@@ -59,6 +59,7 @@ dependencies {
 
     //splash (pre pantalla de carga)
     implementation(libs.androidx.navigation.compose.v280)
+    implementation(libs.androidx.core.splashscreen)
 
     // Firebase
     implementation(platform(libs.firebase.bom.v3400))
