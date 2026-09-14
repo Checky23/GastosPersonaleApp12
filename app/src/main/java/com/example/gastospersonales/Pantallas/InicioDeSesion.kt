@@ -240,7 +240,7 @@ fun InicioDeSesionScreen( navController: NavHostController) {
 
         OutlinedButton(
             onClick = {
-                navController.navigate(Screen.InicioScreen.ruta)
+
 
                 scope.launch {
                     iniciarSesionConGoogle(
@@ -248,14 +248,25 @@ fun InicioDeSesionScreen( navController: NavHostController) {
                         webClientId = webClientId,
 
                         onSuccess = {
+
                             Log.d("GoogleAuth", "Inicio de sesión exitoso")
+                            navController.navigate(Screen.InicioScreen.ruta){
+                                popUpTo(Screen.InicioDeSesionScreen.ruta){
+                                    inclusive = true
+                                }
+                            }
+
+
                         },
 
                         onError = { error ->
                             Log.e("GoogleAuth", error)
                         }
+
+
                     )
                 }
+
             },
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.outlinedButtonColors(
