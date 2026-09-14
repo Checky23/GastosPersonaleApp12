@@ -11,7 +11,7 @@ import com.example.gastospersonales.Pantallas.SplashScreenConstraint
 @Composable
 fun AppNavigation() {
 
-    // Control de la navegación entre pantallas
+    // Control de la navegación entre pantalla
     val navController = rememberNavController()
 
     NavHost(
