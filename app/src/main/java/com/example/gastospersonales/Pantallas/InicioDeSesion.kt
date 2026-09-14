@@ -26,14 +26,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.FireBase.iniciarSesionConGoogle
+import com.example.gastospersonales.Navegacion.Screen
 import com.example.gastospersonales.ui.theme.NegroTitulo
 import com.example.gastospersonales.ui.theme.SubTituloGris
 import com.example.gastospersonales.ui.theme.VerdeApp
 import kotlinx.coroutines.launch
 
 @Composable
-fun InicioDeSesionScreen() {
+fun InicioDeSesionScreen( navController: NavHostController) {
 
     // Estados temporales para los campos
     var correo = remember { mutableStateOf("") }
@@ -174,6 +177,7 @@ fun InicioDeSesionScreen() {
 
         Button(
             onClick = {
+
             },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(
@@ -236,6 +240,7 @@ fun InicioDeSesionScreen() {
 
         OutlinedButton(
             onClick = {
+                navController.navigate(Screen.InicioScreen.ruta)
 
                 scope.launch {
                     iniciarSesionConGoogle(
@@ -298,5 +303,6 @@ fun InicioDeSesionScreen() {
 @Preview
 @Composable
 fun VistaInicioDeSesion (){
-    InicioDeSesionScreen()
+    val navController = rememberNavController()
+    InicioDeSesionScreen(navController)
 }

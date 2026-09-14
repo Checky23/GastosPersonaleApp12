@@ -8,6 +8,7 @@ import com.example.gastospersonales.FireBase.VerificacionDeUsuario
 import com.example.gastospersonales.Pantallas.InicioDeSesionScreen
 import com.example.gastospersonales.Pantallas.InicioScreen
 import com.example.gastospersonales.Pantallas.RegistroScreen
+import com.example.gastospersonales.Pantallas.SplashScreenConstraint
 
 @Composable
 fun AppNavigation() {
@@ -60,5 +61,10 @@ fun AppNavigation() {
             }
         }
     }
+
+
+
+
+
 
 }
