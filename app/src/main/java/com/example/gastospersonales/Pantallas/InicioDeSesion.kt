@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.gastospersonales.FireBase.iniciarSesionConGoogle
+import com.example.gastospersonales.ui.theme.NegroTitulo
+import com.example.gastospersonales.ui.theme.SubTituloGris
+import com.example.gastospersonales.ui.theme.VerdeApp
 import kotlinx.coroutines.launch
 
 @Composable
@@ -43,7 +46,7 @@ fun InicioDeSesionScreen() {
             .padding(horizontal = 24.dp)
     ) {
 
-        // Referencias que utilizaremos para posicionar los elementos
+        // Referencias para el constraintlayout
         val (
             titulo,
             subtitulo,
@@ -58,43 +61,45 @@ fun InicioDeSesionScreen() {
             crearCuenta
         ) = createRefs()
 
-        // ---------------- TITULO ----------------
+        // ---------------- TXT Control De Gastos ----------------
 
         Text(
             text = "ControlDeGastos",
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF2E7D5B),
+            color = VerdeApp,
             modifier = Modifier.constrainAs(titulo) {
                 top.linkTo(parent.top, margin = 40.dp)
                 start.linkTo(parent.start)
             }
         )
 
-        // ---------------- SUBTITULO ----------------
+        // ---------------- TXT . Tu dinero en orden ----------------
 
         Text(
             text = "Tu dinero, en orden.",
             fontSize = 14.sp,
-            color = Color(0xFF6B7280),
+            color = SubTituloGris,
             modifier = Modifier.constrainAs(subtitulo) {
                 top.linkTo(titulo.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
             }
         )
 
-        // ---------------- CORREO ----------------
+        // ---------------- TEXT CORREO ELECTRONICO ----------------
 
         Text(
             text = "Correo electrónico",
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF17202A),
+            color = NegroTitulo,
             modifier = Modifier.constrainAs(correoLabel) {
                 top.linkTo(subtitulo.bottom, margin = 50.dp)
                 start.linkTo(parent.start)
             }
         )
+
+        // ---- TEXTFIELHOLDER  PETICION DE CORREO ---
 
         TextField(
             value = correo.value,
@@ -124,19 +129,20 @@ fun InicioDeSesionScreen() {
                 }
         )
 
-        // ---------------- CONTRASEÑA ----------------
+        // ---------------- TXT DESCRIPTIVO CONTRASEÑA  ----------------
 
         Text(
             text = "Contraseña",
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF17202A),
+            color = NegroTitulo,
             modifier = Modifier.constrainAs(contraseñaLabel) {
                 top.linkTo(correoField.bottom, margin = 30.dp)
                 start.linkTo(parent.start)
             }
         )
 
+        // ------- PETICION DE CONTRASEÑA
         TextField(
             value = contraseña.value,
             onValueChange = { contraseña.value = it },
@@ -168,7 +174,6 @@ fun InicioDeSesionScreen() {
 
         Button(
             onClick = {
-                // Aquí posteriormente conectaremos el login
             },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(
