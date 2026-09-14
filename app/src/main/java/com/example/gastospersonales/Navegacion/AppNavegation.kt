@@ -28,5 +28,6 @@ fun AppNavigation() {
         composable(Screen.RegistroScreen.ruta) {
             RegistroScreen()
         }
+        //veropendeja
     }
 }
