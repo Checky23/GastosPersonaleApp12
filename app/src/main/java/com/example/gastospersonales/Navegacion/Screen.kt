@@ -6,4 +6,6 @@ sealed class Screen(val ruta: String) {
 
     data object RegistroScreen : Screen("Registro")
 
+    data object InicioScreen : Screen("Inicio")
+
 }
