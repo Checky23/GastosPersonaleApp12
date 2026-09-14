@@ -57,6 +57,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    //splash (pre pantalla de carga)
+    implementation(libs.androidx.navigation.compose.v280)
+
     // Firebase
     implementation(platform(libs.firebase.bom.v3400))
     implementation(libs.firebase.auth)

@@ -17,21 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gastospersonales.Pantallas.InicioDeSesionScreen
 import com.example.gastospersonales.ui.theme.GastosPersonalesTheme
+import com.example.gastospersonales.Navegacion.AppNavigation
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
-
-
             GastosPersonalesTheme {
+                // Surface que actúa como el fondo base de la app
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    Box(contentAlignment = Alignment.Center) {
 
-                        InicioDeSesionScreen()
-                    }
+                    // Inicio de la app delegando el control a la navegación
+                    AppNavigation()
+
                 }
             }
         }
