@@ -8,4 +8,6 @@ sealed class Screen(val ruta: String) {
 
     data object InicioScreen : Screen("Inicio")
 
+    //hola como estas
+
 }
