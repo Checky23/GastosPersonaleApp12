@@ -4,45 +4,45 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.FireBase.VerificacionDeUsuario
-import com.example.gastospersonales.Pantallas.Inicio
 import com.example.gastospersonales.Pantallas.InicioDeSesionScreen
 import com.example.gastospersonales.Pantallas.RegistroScreen
-
+import com.example.gastospersonales.Pantallas.SplashScreenConstraint
 
 @Composable
 fun AppNavigation() {
 
-    // Controla la navegación entre pantallas
+    // Control de la navegación entre pantallas
     val navController = rememberNavController()
-    val usuarioLogeado = VerificacionDeUsuario()
 
-    if ( usuarioLogeado == true){
-        NavHost(
-            navController = navController,
-            startDestination = Screen.InicioScreen.ruta
-        ) {
+    NavHost(
+        navController = navController,
+        // arranca en el splash, no en el login
+        startDestination = "splash"
+    ) {
 
-            //  Inicio - Temporal
-            composable(Screen.InicioScreen.ruta) {
-                Inicio(navController)
-            }
-
-            // RegistroDeSesion
-            composable(Screen.RegistroScreen.ruta) {
-                RegistroScreen()
-            }
+        // RUTA DEL SPLASH SCREEN
+        composable("splash") {
+            SplashScreenConstraint(
+                onAppReady = { destino ->
+                    // Recibo login
+                    if (destino == "login") {
+                        navController.navigate(Screen.InicioDeSesionScreen.ruta) {
+                            // Destruyo el splash para que el botón de "Atrás" del celular no vuelva a él
+                            popUpTo("splash") { inclusive = true }
+                        }
+                    }
+                }
+            )
         }
-    } else{
-        NavHost(
-            navController = navController,
-            startDestination = Screen.InicioDeSesionScreen.ruta
-        ){
-            //  InicioDeSesion
-            composable(Screen.InicioDeSesionScreen.ruta){
-                InicioDeSesionScreen(navController)
-            }
+
+        // Pantalla 1
+        composable(route = Screen.InicioDeSesionScreen.ruta) {
+            InicioDeSesionScreen()
+        }
+
+        // Pantalla 2
+        composable(route = Screen.RegistroScreen.ruta) {
+            RegistroScreen()
         }
     }
-
 }
