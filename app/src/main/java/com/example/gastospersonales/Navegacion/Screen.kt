@@ -1,7 +1,7 @@
 package com.example.gastospersonales.Navegacion
 
 sealed class Screen(val ruta: String) {
-// vero
+    // vero
     data object InicioDeSesionScreen : Screen("InicioDeSesion")
 
     data object RegistroScreen : Screen("Registro")

@@ -587,6 +587,6 @@ fun RegistroScreen() {
 
 @Preview
 @Composable
-fun VistaRegistroScreen (){
+fun VistaRegistroScreen() {
     RegistroScreen()
 }

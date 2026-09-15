@@ -59,6 +59,7 @@ dependencies {
 
     //splash (pre pantalla de carga)
     implementation(libs.androidx.navigation.compose.v280)
+    implementation(libs.androidx.core.splashscreen)
 
     // Firebase
     implementation(platform(libs.firebase.bom.v3400))
@@ -68,6 +69,9 @@ dependencies {
     implementation(libs.androidx.credentials.v150)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid.v111)
+
+    //iCONOS
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.play.services.v1102)
