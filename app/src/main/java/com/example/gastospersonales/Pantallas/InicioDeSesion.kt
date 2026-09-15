@@ -36,7 +36,7 @@ import com.example.gastospersonales.ui.theme.VerdeApp
 import kotlinx.coroutines.launch
 
 @Composable
-fun InicioDeSesionScreen( navController: NavHostController) {
+fun InicioDeSesionScreen(navController: NavHostController) {
 
     // Estados temporales para los campos
     var correo = remember { mutableStateOf("") }
@@ -302,7 +302,7 @@ fun InicioDeSesionScreen( navController: NavHostController) {
 
 @Preview
 @Composable
-fun VistaInicioDeSesion (){
+fun VistaInicioDeSesion() {
     val navController = rememberNavController()
     InicioDeSesionScreen(navController)
 }

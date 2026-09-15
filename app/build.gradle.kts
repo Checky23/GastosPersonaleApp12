@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid.v111)
 
+    //iCONOS
+    implementation(libs.androidx.compose.material.icons.extended)
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.play.services.v1102)
 }

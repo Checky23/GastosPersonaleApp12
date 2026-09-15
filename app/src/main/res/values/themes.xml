@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.GastosPersonales" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.GastosPersonales.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/verde_splash</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.GastosPersonales</item>
+    </style>
+
 </resources>
+

@@ -12,7 +12,11 @@ val Pink40 = Color(0xFF7D5260)
 
 val VerdeApp = Color(0xFF2E7D5B)
 val TextHolder = Color(0xFF6B7280)
-
+val ColorBlanco = Color(0xFFF7F9FC)
 val BlancoLetrasContrasteDelVerde = Color(0xFF2E7D5B)
 val NegroTitulo = Color(0xFF17202A)
-val SubTituloGris  = Color (0xFF6B7280)
+
+ val RojoGasto = Color(0xFFD95C5C)
+
+val VerdeClaro = Color(0xFFDDF1E7)
+val SubTituloGris = Color(0xFF6B7280)
