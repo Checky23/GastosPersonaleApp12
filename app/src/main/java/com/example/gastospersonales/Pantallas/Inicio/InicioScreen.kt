@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.ui.theme.ColorBlanco
 import com.example.gastospersonales.ui.theme.NegroTitulo
@@ -43,7 +44,7 @@ import com.example.gastospersonales.ui.theme.VerdeApp
 // ------------------------------------------------------------
 
 @Composable
-fun InicioScreen() {
+fun InicioScreen(navController: NavHostController) {
 
 
     ConstraintLayout(
@@ -419,5 +420,5 @@ fun InicioScreen() {
 @Composable
 fun InicioPreviow() {
     val navController = rememberNavController()
-    InicioScreen()
+    InicioScreen(navController)
 }

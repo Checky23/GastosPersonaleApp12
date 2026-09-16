@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.FireBase.VerificacionDeUsuario
 import com.example.gastospersonales.Pantallas.InicioDeSesionScreen
-import com.example.gastospersonales.Pantallas.InicioScreen
+import com.example.gastospersonales.Pantallas.Inicio.InicioScreen
 import com.example.gastospersonales.Pantallas.RegistroScreen
 import com.example.gastospersonales.Pantallas.SplashScreenConstraint
 
@@ -32,26 +32,10 @@ fun AppNavigation() {
         composable(Screen.InicioScreen.ruta) {
             InicioScreen(navController)
         }
-
         composable(Screen.RegistroScreen.ruta) {
-            RegistroScreen()
+            RegistroScreen(navController)
         }
 
-        composable("splash") {
-            SplashScreenConstraint(
-                onAppReady = { destino ->
 
-                    if (destino == "login") {
-                        navController.navigate(
-                            Screen.InicioDeSesionScreen.ruta
-                        ) {
-                            popUpTo("splash") {
-                                inclusive = true
-                            }
-                        }
-                    }
-                }
-            )
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.gastospersonales.Pantallas
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,21 +19,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.gastospersonales.FireBase.CreacionDeCuenta
+import com.example.gastospersonales.Navegacion.Screen
 
 
 @Composable
-fun RegistroScreen() {
+fun RegistroScreen(navController: NavHostController) {
 
     var nombre = remember { mutableStateOf("") }
     var correo = remember { mutableStateOf("") }
-    var contraseña = remember { mutableStateOf("") }
-    var confirmarContraseña = remember { mutableStateOf("") }
+    var contrasena = remember { mutableStateOf("") }
+    var confirmarContrasena = remember { mutableStateOf("") }
     var aceptaTerminos = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
 
     ConstraintLayout(
         modifier = Modifier
@@ -275,9 +283,9 @@ fun RegistroScreen() {
         )
 
         TextField(
-            value = contraseña.value,
+            value = contrasena.value,
             onValueChange = {
-                contraseña.value = it
+                contrasena.value = it
             },
             placeholder = {
                 Text(
@@ -338,9 +346,9 @@ fun RegistroScreen() {
         )
 
         TextField(
-            value = confirmarContraseña.value,
+            value = confirmarContrasena.value,
             onValueChange = {
-                confirmarContraseña.value = it
+                confirmarContrasena.value = it
             },
             placeholder = {
                 Text(
@@ -423,7 +431,31 @@ fun RegistroScreen() {
 
         Button(
             onClick = {
-                // Crear cuenta
+
+                if (contrasena.value != confirmarContrasena.value) {
+                    Toast.makeText(
+                        context,
+                        "Las contraseñas no coinciden",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+
+
+                }else {
+
+                    // Crear cuenta
+                    CreacionDeCuenta(correo.value, contrasena.value, context)
+                    navController.navigate(Screen.InicioDeSesionScreen.ruta){
+                        popUpTo(Screen.InicioDeSesionScreen.ruta){
+                            inclusive = true
+                        }
+
+                    }
+
+
+
+                }
+
             },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
@@ -588,5 +620,6 @@ fun RegistroScreen() {
 @Preview
 @Composable
 fun VistaRegistroScreen() {
-    RegistroScreen()
+    val navController = rememberNavController()
+    RegistroScreen(navController)
 }

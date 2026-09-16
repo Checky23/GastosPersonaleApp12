@@ -42,6 +42,12 @@ fun InicioDeSesionScreen(navController: NavHostController) {
     var correo = remember { mutableStateOf("") }
     var contraseña = remember { mutableStateOf("") }
 
+    // LocalContext para obtener el contexto de la aplicación
+    val context = LocalContext.current
+
+    // CoroutineScope para lanzar corutinas es decir las funciones suspendidas
+    val scope = rememberCoroutineScope()
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -177,6 +183,18 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         Button(
             onClick = {
+                scope.launch{
+
+                    navController.navigate(Screen.InicioScreen.ruta){
+                        popUpTo(Screen.InicioDeSesionScreen.ruta){
+                            inclusive = true
+                        }
+
+                    }
+
+                }
+
+
 
             },
             shape = RoundedCornerShape(15.dp),
@@ -232,8 +250,7 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         // ---------------- GOOGLE ----------------
 
-        val context = LocalContext.current
-        val scope = rememberCoroutineScope()
+
 
         val webClientId =
             "1021709456536-alfu7gq32e4h3v5sq8696eidkakcam80.apps.googleusercontent.com"
@@ -293,7 +310,7 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         TextButton(
             onClick = {
-                // Aquí posteriormente navegaremos al registro
+                navController.navigate(Screen.RegistroScreen.ruta)
             },
             modifier = Modifier.constrainAs(crearCuenta) {
                 top.linkTo(continuarGoogle.bottom, margin = 40.dp)
