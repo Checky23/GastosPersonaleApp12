@@ -20,16 +20,18 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.gastospersonales.ui.theme.NegroTitulo
 import com.example.gastospersonales.ui.theme.SubTituloGris
 import com.example.gastospersonales.ui.theme.VerdeApp
+import kotlinx.coroutines.delay
 
 //parámetro para avisar que la app está lista
 @Composable
-fun SplashScreenConstraint(onAppReady: (String) -> Unit = {}) {
-
-    // Lógica instantánea de verificación, sin tiempos de espera
+fun SplashScreenConstraint(
+    usuarioLogeado: Boolean,
+    onAppReady: (String) -> Unit = {}
+) {
     LaunchedEffect(Unit) {
-        val usuarioYaInicioSesion = false // Simulasion que no hay sesión
+        delay(1500)
 
-        if (usuarioYaInicioSesion) {
+        if (usuarioLogeado) {
             onAppReady("inicio")
         } else {
             onAppReady("login")
@@ -104,5 +106,5 @@ fun SplashScreenConstraint(onAppReady: (String) -> Unit = {}) {
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenConstraintPreview() {
-    SplashScreenConstraint()
+    SplashScreenConstraint(usuarioLogeado = false)
 }
