@@ -29,6 +29,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -47,6 +48,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.ui)
 
     testImplementation(libs.junit)
     implementation(libs.androidx.constraintlayout.compose)
@@ -75,4 +77,6 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.play.services.v1102)
+    //Fecha y hora
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }

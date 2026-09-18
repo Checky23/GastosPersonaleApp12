@@ -10,19 +10,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.gastospersonales.ui.theme.SubTituloGris
 import com.example.gastospersonales.ui.theme.VerdeApp
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
-fun ResumenMensualCard (modifier: Modifier = Modifier){
+fun ResumenMensualCard(
+    modifier: Modifier = Modifier,
+    colorDeLetra: Color,
+    Cantidad: Int,
+    Texto: String
+) {
     Surface(
         modifier = modifier
             .width(163.dp)
-            .height(86.dp)
-           ,
+            .height(86.dp),
         shape = RoundedCornerShape(16.dp),
         color = Color.White
     ) {
@@ -32,7 +39,7 @@ fun ResumenMensualCard (modifier: Modifier = Modifier){
         ) {
 
             Text(
-                text = "Ingresos",
+                text = Texto,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
                 color = SubTituloGris,
@@ -41,12 +48,12 @@ fun ResumenMensualCard (modifier: Modifier = Modifier){
                     top.linkTo(parent.top, 20.dp)
                 }
             )
-
+            val dinero = NumberFormat.getNumberInstance(Locale.US).format(Cantidad)
             Text(
-                text = "C$ 8,500",
+                text = "C$ $dinero",
                 fontSize = 21.sp,
                 fontWeight = FontWeight.Bold,
-                color = VerdeApp,
+                color = colorDeLetra,
                 modifier = Modifier.constrainAs(createRef()) {
                     start.linkTo(parent.start, 18.dp)
                     top.linkTo(parent.top, 48.dp)
@@ -54,4 +61,10 @@ fun ResumenMensualCard (modifier: Modifier = Modifier){
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun ResumenMensualCardPreview() {
+    ResumenMensualCard(colorDeLetra = VerdeApp , Cantidad = 5000 , Texto = "Gastos")
 }

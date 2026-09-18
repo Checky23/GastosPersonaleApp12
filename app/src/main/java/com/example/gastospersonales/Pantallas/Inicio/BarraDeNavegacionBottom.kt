@@ -1,5 +1,7 @@
 package com.example.gastospersonales.Pantallas.Inicio
 
+import android.service.autofill.OnClickAction
+import android.view.View
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -17,12 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.ui.theme.VerdeApp
 
 @Composable
-fun BottomNavigationBar(
+fun BottomNavigationBar( onClickAction :() -> Unit ,
     modifier: Modifier = Modifier
+
 ) {
     Box(
         modifier = modifier
@@ -70,7 +75,9 @@ fun BottomNavigationBar(
 
         // Botón + centrado sobre la barra
         FloatingActionButton(
-            onClick = { },
+            onClick = {
+                onClickAction()
+            },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 25.dp),
@@ -83,4 +90,11 @@ fun BottomNavigationBar(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun BottonNavegationBarPreviwe ( ){
+    val Navegation = rememberNavController()
+    BottomNavigationBar(onClickAction = {})
 }
