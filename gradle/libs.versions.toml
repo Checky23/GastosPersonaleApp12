@@ -5,6 +5,7 @@ coreKtx = "1.10.1"
 coreSplashscreen = "1.2.0"
 credentials = "1.6.0"
 credentialsVersion = "1.5.0"
+desugar_jdk_libs = "2.1.5"
 firebaseBom = "34.19.0"
 firebaseBomVersion = "34.0.0"
 googleidVersion = "1.1.1"
@@ -22,6 +23,7 @@ firebaseAuthKtx = "24.2.0"
 firebaseAuthCommon = "9.8.0"
 navigationCompose = "2.10.1"
 navigationComposeVersion = "2.8.0"
+ui = "1.12.1"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -32,6 +34,7 @@ androidx-credentials = { module = "androidx.credentials:credentials", version.re
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsVersion" }
 androidx-credentials-v150 = { module = "androidx.credentials:credentials", version.ref = "credentialsVersion" }
 androidx-navigation-compose-v280 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -56,6 +59,7 @@ firebase-auth-common = { group = "com.google.firebase", name = "firebase-auth-co
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 kotlinx-coroutines-play-services-v1102 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServicesVersion" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
