@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // ============================================================
-// COLORES
+// COLORES //
 // ============================================================
 
 private val BackgroundColor = Color(0xFFF8FAF9)

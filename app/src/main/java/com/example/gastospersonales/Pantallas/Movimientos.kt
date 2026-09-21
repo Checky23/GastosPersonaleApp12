@@ -51,7 +51,7 @@ private val Red = Color(0xFFE53935)
 
 
 // ============================================================
-// PANTALLA DE MOVIMIENTOS
+// PANTALLA DE MOVIMIENTOS //
 // ============================================================
 
 @Composable
