@@ -48,7 +48,7 @@ private val TipHeader = Color(0xFFE5A93C)
 private val DividerColor = Color(0xFFEEF0F2)
 
 // ============================================================
-// PANTALLA DETALLE DEL MOVIMIENTO
+// PANTALLA DETALLE DEL MOVIMIENTO //
 // ============================================================
 
 @Composable
