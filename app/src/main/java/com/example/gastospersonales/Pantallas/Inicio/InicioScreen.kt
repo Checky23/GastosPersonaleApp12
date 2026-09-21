@@ -35,9 +35,9 @@ fun InicioScreen(navController: NavController) {
 
     val viewModel: MovimientoViewModel = viewModel()
 
-    viewModel.movimientos.add(RegistroDeMovimientos("Comida", 2500, true))
-    viewModel.movimientos.add(RegistroDeMovimientos("Comida", 2500, true))
-    viewModel.movimientos.add(RegistroDeMovimientos("Comida", 2500, true))
+    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
+    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
+    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
 
 
     ConstraintLayout(
@@ -134,7 +134,8 @@ fun InicioScreen(navController: NavController) {
                 MovimientosRecientesScreen(
                     Gasto = movimiento.Gasto,
                     CantidadDelMovimiento = movimiento.Monto,
-                    TipoDeMovimiento = movimiento.TipoDeMovimiento
+                    TipoDeMovimiento = movimiento.TipoDeMovimiento,
+                    Descripcion = movimiento.Descripcion
                 )
             }
 

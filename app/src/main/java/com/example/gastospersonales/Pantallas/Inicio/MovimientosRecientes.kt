@@ -9,6 +9,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,12 +28,15 @@ import java.time.format.DateTimeFormatter
 fun MovimientosRecientesScreen(
     Gasto: String,
     CantidadDelMovimiento: Int,
-    TipoDeMovimiento: Boolean
+    TipoDeMovimiento: Boolean,
+    Descripcion: String
 ) {
     val fechaHora = LocalDateTime.now()
     val formato = DateTimeFormatter.ofPattern("h:mm a")
     val hora = fechaHora.format(formato)
     val textoFecha = obtenerFechaMovimiento(fechaHora)
+
+   
 
     Card(
         modifier = Modifier
@@ -47,13 +51,14 @@ fun MovimientosRecientesScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            val (GastoR,TextoYHoraR, DescripcionR,MontoR,TipoDeMovimientoR) = createRefs()
 
             Text(
                 text = "🍔  $Gasto",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = NegroTitulo,
-                modifier = Modifier.constrainAs(createRef()) {
+                modifier = Modifier.constrainAs(GastoR) {
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                 }
@@ -63,7 +68,7 @@ fun MovimientosRecientesScreen(
                 text = "$textoFecha · $hora",
                 fontSize = 11.sp,
                 color = SubTituloGris,
-                modifier = Modifier.constrainAs(createRef()) {
+                modifier = Modifier.constrainAs(TextoYHoraR) {
                     start.linkTo(parent.start)
                     top.linkTo(parent.top, 20.dp)
                 }
@@ -74,7 +79,7 @@ fun MovimientosRecientesScreen(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = VerdeApp,
-                    modifier = Modifier.constrainAs(createRef()) {
+                    modifier = Modifier.constrainAs(TipoDeMovimientoR) {
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)
 
@@ -87,7 +92,7 @@ fun MovimientosRecientesScreen(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = RojoGasto,
-                    modifier = Modifier.constrainAs(createRef()) {
+                    modifier = Modifier.constrainAs(MontoR) {
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)
 
@@ -95,6 +100,17 @@ fun MovimientosRecientesScreen(
                     }
                 )
             }
+            Text(
+                text = Descripcion,
+                fontSize = 11.sp,
+                color = SubTituloGris,
+                modifier = Modifier.constrainAs(DescripcionR) {
+                    start.linkTo(TextoYHoraR.end, margin = 10.dp)
+                    top.linkTo(parent.top,margin=20.dp)
+                    bottom.linkTo(parent.bottom)
+
+                }
+            )
 
         }
     }
@@ -103,7 +119,7 @@ fun MovimientosRecientesScreen(
 @Preview
 @Composable
 fun MovimientosRecientesPreview() {
-    MovimientosRecientesScreen("Comida", 2500, false)
+    MovimientosRecientesScreen("Comida", 2500, false,"pollo asado")
 }
 
 fun obtenerFechaMovimiento(fecha: LocalDateTime): String {
