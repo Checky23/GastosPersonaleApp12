@@ -141,47 +141,6 @@ fun InicioScreen(navController: NavController) {
 
         }
 
-        Button(
-            onClick = {
-                // Aquí posteriormente podemos navegar
-                // hacia la pantalla para registrar un movimiento.
-            },
-            modifier = Modifier
-                .width(342.dp)
-                .height(58.dp)
-                .constrainAs(createRef()) {
-                    start.linkTo(parent.start, 24.dp)
-                    end.linkTo(parent.end, 24.dp)
-                    top.linkTo(parent.top, 680.dp)
-                },
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text(
-                text = "+   Registrar movimiento",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-
-        // ----------------------------------------------------
-        // BARRA DE NAVEGACIÓN INFERIOR
-        // ----------------------------------------------------
-
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .constrainAs(createRef()) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                },
-            color = Color.Transparent
-        ) {
-            // La barra inferior se puede implementar
-            // posteriormente con NavigationBar.
-        }
-
         //Barra De Navegacion
         BottomNavigationBar(
             modifier = Modifier.constrainAs(createRef()) {

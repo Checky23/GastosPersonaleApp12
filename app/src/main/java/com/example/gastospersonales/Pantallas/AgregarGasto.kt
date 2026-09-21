@@ -2,7 +2,15 @@ package com.example.gastospersonales.Pantallas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,23 +23,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.example.gastospersonales.ui.theme.Fondo
+import com.example.gastospersonales.ui.theme.GrisBorde
+import com.example.gastospersonales.ui.theme.NegroTitulo
+import com.example.gastospersonales.ui.theme.SubTituloGris
+import com.example.gastospersonales.ui.theme.VerdeApp
+import com.example.gastospersonales.ui.theme.VerdeClaro
 
 @Composable
 fun AgregarGastosScreen(navController: NavHostController) {
-    // Paleta de colores extraída de la imagen
-    val darkGreen = Color(0xFF347D5A)
-    val lightGreenBg = Color(0xFFE4F0E6)
-    val lightGrayBorder = Color(0xFFEAEDED)
-    val bgColor = Color(0xFFF8F9FA)
-    val textColor = Color(0xFF1B2A3B) // Color oscuro para los textos principales
-    val labelColor = Color(0xFF5B6A7A) // Color gris para los labels pequeños
 
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(bgColor)
+            .background(Fondo)
             .padding(24.dp)
     ) {
         // Creación de las referencias
@@ -44,9 +50,20 @@ fun AgregarGastosScreen(navController: NavHostController) {
                 start.linkTo(parent.start)
             }
         ) {
-            Text(text = "<   Agregar gasto", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
+            Text(
+                text = "Agregar gasto",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = NegroTitulo
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Registra una compra en pocos segundos.", fontSize = 14.sp, color = labelColor)
+
+            Text(
+                text = "Registra una compra en pocos segundos.",
+                fontSize = 14.sp,
+                color = SubTituloGris
+            )
         }
 
         // --- MONTO ---
@@ -54,7 +71,7 @@ fun AgregarGastosScreen(navController: NavHostController) {
             text = "Monto",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = textColor,
+            color = NegroTitulo,
             modifier = Modifier.constrainAs(amountLabel) {
                 top.linkTo(headerGroup.bottom, margin = 24.dp)
                 start.linkTo(parent.start)
@@ -68,7 +85,7 @@ fun AgregarGastosScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .height(64.dp)
                 .background(Color.White, shape = RoundedCornerShape(12.dp))
-                .border(2.dp, darkGreen, shape = RoundedCornerShape(12.dp))
+                .border(2.dp, VerdeApp, shape = RoundedCornerShape(12.dp))
                 .padding(horizontal = 16.dp)
                 .constrainAs(topBox) {
                     top.linkTo(amountLabel.bottom, margin = 8.dp)
@@ -76,7 +93,12 @@ fun AgregarGastosScreen(navController: NavHostController) {
                     end.linkTo(parent.end)
                 }
         ) {
-            Text(text = "C$ 0.00", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
+            Text(
+                text = "C$ 0.00",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = NegroTitulo
+            )
         }
 
         // --- CATEGORÍA ---
@@ -84,7 +106,7 @@ fun AgregarGastosScreen(navController: NavHostController) {
             text = "Categoría",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = textColor,
+            color = NegroTitulo,
             modifier = Modifier.constrainAs(categoryLabel) {
                 top.linkTo(topBox.bottom, margin = 24.dp)
                 start.linkTo(parent.start)
@@ -106,17 +128,46 @@ fun AgregarGastosScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                GridItem("🍔\nComida", isSelected = true, darkGreen, lightGreenBg, lightGrayBorder, Modifier.weight(1f))
-                GridItem("🚂\nTransporte", isSelected = false, darkGreen, lightGreenBg, lightGrayBorder, Modifier.weight(1f))
-                GridItem("🏠\nHogar", isSelected = false, darkGreen, lightGreenBg, lightGrayBorder, Modifier.weight(1f))
+                GridItem(
+                    "🍔\nComida",
+                    isSelected = true,
+                    Modifier.weight(1f)
+                )
+
+                GridItem(
+                    "🚂\nTransporte",
+                    isSelected = false,
+                    Modifier.weight(1f)
+                )
+
+                GridItem(
+                    "🏠\nHogar",
+                    isSelected = false,
+                    Modifier.weight(1f)
+                )
             }
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                GridItem("💡\nServicios", isSelected = false, darkGreen, lightGreenBg, lightGrayBorder, Modifier.weight(1f))
-                GridItem("🎮\nOcio", isSelected = false, darkGreen, lightGreenBg, lightGrayBorder, Modifier.weight(1f))
-                GridItem("🎛️\nOtros", isSelected = false, darkGreen, lightGreenBg, lightGrayBorder, Modifier.weight(1f))
+                GridItem(
+                    "💡\nServicios",
+                    isSelected = false,
+                    Modifier.weight(1f)
+                )
+
+                GridItem(
+                    "🎮\nOcio",
+                    isSelected = false,
+                    Modifier.weight(1f)
+                )
+
+                GridItem(
+                    "🎛️\nOtros",
+                    isSelected = false,
+                    Modifier.weight(1f)
+                )
             }
         }
 
@@ -125,7 +176,7 @@ fun AgregarGastosScreen(navController: NavHostController) {
             text = "Fecha",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = textColor,
+            color = NegroTitulo,
             modifier = Modifier.constrainAs(dateLabel) {
                 top.linkTo(gridBox.bottom, margin = 24.dp)
                 start.linkTo(parent.start)
@@ -144,7 +195,10 @@ fun AgregarGastosScreen(navController: NavHostController) {
                     top.linkTo(dateLabel.bottom, margin = 8.dp)
                 }
         ) {
-            Text(text = "26 ago 2026", color = textColor)
+            Text(
+                text = "26 ago 2026",
+                color = NegroTitulo
+            )
         }
 
         // --- DESCRIPCIÓN ---
@@ -152,7 +206,7 @@ fun AgregarGastosScreen(navController: NavHostController) {
             text = "Descripción (opcional)",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = textColor,
+            color = NegroTitulo,
             modifier = Modifier.constrainAs(descLabel) {
                 top.linkTo(input1.bottom, margin = 24.dp)
                 start.linkTo(parent.start)
@@ -171,7 +225,10 @@ fun AgregarGastosScreen(navController: NavHostController) {
                     top.linkTo(descLabel.bottom, margin = 8.dp)
                 }
         ) {
-            Text(text = "¿Qué compraste?", color = labelColor)
+            Text(
+                text = "¿Qué compraste?",
+                color = SubTituloGris
+            )
         }
 
         // 5. Botón principal
@@ -179,13 +236,18 @@ fun AgregarGastosScreen(navController: NavHostController) {
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp) // Ajustado a un tamaño más estándar para botones
-                .background(darkGreen, shape = RoundedCornerShape(12.dp))
+                .height(56.dp)
+                .background(VerdeApp, shape = RoundedCornerShape(12.dp))
                 .constrainAs(bottomButton) {
                     top.linkTo(input2.bottom, margin = 32.dp)
                 }
         ) {
-            Text(text = "Guardar gasto", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(
+                text = "Guardar gasto",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
         }
 
         // --- CANCELAR ---
@@ -193,7 +255,7 @@ fun AgregarGastosScreen(navController: NavHostController) {
             text = "Cancelar",
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = labelColor,
+            color = SubTituloGris,
             modifier = Modifier.constrainAs(cancelText) {
                 top.linkTo(bottomButton.bottom, margin = 16.dp)
                 start.linkTo(parent.start)
@@ -203,27 +265,29 @@ fun AgregarGastosScreen(navController: NavHostController) {
     }
 }
 
-// Composable reutilizable para los elementos de la cuadrícula
 @Composable
 fun GridItem(
-
     text: String,
     isSelected: Boolean,
-    darkGreen: Color,
-    lightGreenBg: Color,
-    lightGrayBorder: Color,
     modifier: Modifier = Modifier
 ) {
-    val currentBgColor = if (isSelected) lightGreenBg else Color.White
-    val currentBorderColor = if (isSelected) darkGreen else lightGrayBorder
-    val currentTextColor = if (isSelected) darkGreen else Color(0xFF1B2A3B)
+    val currentBgColor = if (isSelected) VerdeClaro else Color.White
+    val currentBorderColor = if (isSelected) VerdeApp else GrisBorde
+    val currentTextColor = if (isSelected) VerdeApp else NegroTitulo
 
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .height(80.dp) // Aumenté un poco la altura para acomodar el emoji y el texto
-            .background(currentBgColor, shape = RoundedCornerShape(12.dp))
-            .border(1.dp, currentBorderColor, shape = RoundedCornerShape(12.dp))
+            .height(80.dp)
+            .background(
+                currentBgColor,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .border(
+                1.dp,
+                currentBorderColor,
+                shape = RoundedCornerShape(12.dp)
+            )
     ) {
         Text(
             text = text,
@@ -238,7 +302,6 @@ fun GridItem(
 @Composable
 @Preview(showBackground = true)
 fun PreviewAgregarGasto() {
-  //  AgregarGastosScreen()
-      val navControler = rememberNavController()
+    val navControler = rememberNavController()
     AgregarGastosScreen(navControler)
 }

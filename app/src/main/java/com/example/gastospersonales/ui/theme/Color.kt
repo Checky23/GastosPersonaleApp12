@@ -2,6 +2,7 @@ package com.example.gastospersonales.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
@@ -16,7 +17,10 @@ val ColorBlanco = Color(0xFFF7F9FC)
 val BlancoLetrasContrasteDelVerde = Color(0xFF2E7D5B)
 val NegroTitulo = Color(0xFF17202A)
 
- val RojoGasto = Color(0xFFD95C5C)
+val RojoGasto = Color(0xFFD95C5C)
 
 val VerdeClaro = Color(0xFFDDF1E7)
 val SubTituloGris = Color(0xFF6B7280)
+
+val GrisBorde = Color(0xFFEAEDED)
+val Fondo = Color(0xFFF8F9FA)
