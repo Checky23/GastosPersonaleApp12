@@ -40,8 +40,8 @@ fun MovimientosScreen() {
     var BusquedaDelUsuario by remember { mutableStateOf("") }
         val viewModel: MovimientoViewModel = viewModel()
     viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
+    viewModel.movimientos.add(RegistroDeMovimientos("Agua","pollo asado",":D",5052,true))
+    viewModel.movimientos.add(RegistroDeMovimientos("gaseosa","pollo asado",":D",5052,true))
     viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
     viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
     viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
