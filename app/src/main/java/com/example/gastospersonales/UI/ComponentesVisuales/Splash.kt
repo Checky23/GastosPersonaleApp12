@@ -1,4 +1,4 @@
-package com.example.gastospersonales.Pantallas
+package com.example.gastospersonales.UI.ComponentesVisuales
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.gastospersonales.ui.theme.NegroTitulo
-import com.example.gastospersonales.ui.theme.SubTituloGris
-import com.example.gastospersonales.ui.theme.VerdeApp
+import com.example.gastospersonales.UI.Temas.NegroTitulo
+import com.example.gastospersonales.UI.Temas.SubTituloGris
+import com.example.gastospersonales.UI.Temas.VerdeApp
 import kotlinx.coroutines.delay
 
 //parámetro para avisar que la app está lista

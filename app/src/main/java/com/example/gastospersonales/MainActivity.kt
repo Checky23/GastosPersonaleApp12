@@ -16,9 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.gastospersonales.Pantallas.InicioDeSesionScreen
-import com.example.gastospersonales.ui.theme.GastosPersonalesTheme
-import com.example.gastospersonales.Navegacion.AppNavigation
+import com.example.gastospersonales.UI.Navegacion.AppNavigation
+import com.example.gastospersonales.UI.Temas.GastosPersonalesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

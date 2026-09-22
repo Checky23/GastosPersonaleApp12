@@ -1,4 +1,4 @@
-package com.example.gastospersonales.Pantallas.Inicio
+package com.example.gastospersonales.UI.ComponentesVisuales
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -14,8 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.gastospersonales.ui.theme.SubTituloGris
-import com.example.gastospersonales.ui.theme.VerdeApp
+import com.example.gastospersonales.UI.Temas.SubTituloGris
+import com.example.gastospersonales.UI.Temas.VerdeApp
 import java.text.NumberFormat
 import java.util.Locale
 

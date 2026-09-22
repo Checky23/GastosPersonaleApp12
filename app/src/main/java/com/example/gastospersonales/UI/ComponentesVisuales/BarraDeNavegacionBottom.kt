@@ -1,7 +1,5 @@
-package com.example.gastospersonales.Pantallas.Inicio
+package com.example.gastospersonales.UI.ComponentesVisuales
 
-import android.service.autofill.OnClickAction
-import android.view.View
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -22,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.ui.theme.VerdeApp
+import com.example.gastospersonales.UI.Temas.VerdeApp
 
 @Composable
 fun BottomNavigationBar( onClickAction :() -> Unit ,
