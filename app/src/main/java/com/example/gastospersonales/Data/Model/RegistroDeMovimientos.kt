@@ -1,4 +1,4 @@
-package com.example.gastospersonales.Data
+package com.example.gastospersonales.Data.Model
 
 data class RegistroDeMovimientos(
     val Gasto: String,

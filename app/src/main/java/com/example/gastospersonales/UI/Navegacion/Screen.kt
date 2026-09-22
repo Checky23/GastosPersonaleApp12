@@ -1,4 +1,4 @@
-package com.example.gastospersonales.Navegacion
+package com.example.gastospersonales.UI.Navegacion
 
 sealed class Screen(val ruta: String) {
     // vero

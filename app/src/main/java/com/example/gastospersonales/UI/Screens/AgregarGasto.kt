@@ -1,4 +1,4 @@
-package com.example.gastospersonales.Pantallas
+package com.example.gastospersonales.UI.Screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,26 +13,31 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.ui.theme.Fondo
-import com.example.gastospersonales.ui.theme.GrisBorde
-import com.example.gastospersonales.ui.theme.NegroTitulo
-import com.example.gastospersonales.ui.theme.SubTituloGris
-import com.example.gastospersonales.ui.theme.VerdeApp
-import com.example.gastospersonales.ui.theme.VerdeClaro
+import com.example.gastospersonales.UI.Temas.Fondo
+import com.example.gastospersonales.UI.Temas.GrisBorde
+import com.example.gastospersonales.UI.Temas.NegroTitulo
+import com.example.gastospersonales.UI.Temas.SubTituloGris
+import com.example.gastospersonales.UI.Temas.VerdeApp
+import com.example.gastospersonales.UI.Temas.VerdeClaro
+import com.example.gastospersonales.ViewModel.MovimientoViewModel
 
 @Composable
-fun AgregarGastosScreen(navController: NavHostController) {
+fun AgregarGastosScreen(navController: NavHostController ,viewModel : MovimientoViewModel = viewModel() ) {
 
     ConstraintLayout(
         modifier = Modifier
@@ -41,11 +46,11 @@ fun AgregarGastosScreen(navController: NavHostController) {
             .padding(24.dp)
     ) {
         // Creación de las referencias
-        val (headerGroup, amountLabel, topBox, categoryLabel, gridBox, dateLabel, input1, descLabel, input2, bottomButton, cancelText) = createRefs()
+        val (TextsPresentacion, amountLabel, topBox, categoryLabel, gridBox, dateLabel, input1, descLabel, input2, bottomButton, cancelText) = createRefs()
 
-        // --- ENCABEZADO (Simulado) ---
+        // ---------- ENCABEZADO ---------------
         Column(
-            modifier = Modifier.constrainAs(headerGroup) {
+            modifier = Modifier.constrainAs(TextsPresentacion) {
                 top.linkTo(parent.top, margin = 24.dp)
                 start.linkTo(parent.start)
             }
@@ -66,19 +71,25 @@ fun AgregarGastosScreen(navController: NavHostController) {
             )
         }
 
-        // --- MONTO ---
+        // -------------- MONTO ------------
         Text(
             text = "Monto",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             color = NegroTitulo,
             modifier = Modifier.constrainAs(amountLabel) {
-                top.linkTo(headerGroup.bottom, margin = 24.dp)
+                top.linkTo(TextsPresentacion.bottom, margin = 24.dp)
                 start.linkTo(parent.start)
             }
         )
 
-        // 1. Caja superior (Monto)
+        // 1. Caja superior
+
+
+
+
+
+
         Box(
             contentAlignment = Alignment.CenterStart,
             modifier = Modifier
@@ -294,7 +305,7 @@ fun GridItem(
             color = currentTextColor,
             fontSize = 12.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -303,5 +314,5 @@ fun GridItem(
 @Preview(showBackground = true)
 fun PreviewAgregarGasto() {
     val navControler = rememberNavController()
-    AgregarGastosScreen(navControler)
+    AgregarGastosScreen(navControler )
 }

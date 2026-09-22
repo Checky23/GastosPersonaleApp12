@@ -1,14 +1,13 @@
-package com.example.gastospersonales.Navegacion
+package com.example.gastospersonales.UI.Navegacion
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.FireBase.VerificacionDeUsuario
-import com.example.gastospersonales.Pantallas.Inicio.InicioScreen
-import com.example.gastospersonales.Pantallas.InicioDeSesionScreen
-import com.example.gastospersonales.Pantallas.RegistroScreen
-import com.example.gastospersonales.Pantallas.SplashScreenConstraint
+import com.example.gastospersonales.Data.FireBase.VerificacionDeUsuario
+import com.example.gastospersonales.UI.Screens.InicioScreen
+import com.example.gastospersonales.UI.Screens.InicioDeSesionScreen
+import com.example.gastospersonales.UI.Screens.RegistroScreen
 
 @Composable
 fun AppNavigation() {

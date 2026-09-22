@@ -1,4 +1,4 @@
-package com.example.gastospersonales.Pantallas
+package com.example.gastospersonales.UI.Screens
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,11 +29,11 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.FireBase.iniciarSesionConGoogle
-import com.example.gastospersonales.Navegacion.Screen
-import com.example.gastospersonales.ui.theme.NegroTitulo
-import com.example.gastospersonales.ui.theme.SubTituloGris
-import com.example.gastospersonales.ui.theme.VerdeApp
+import com.example.gastospersonales.Data.FireBase.iniciarSesionConGoogle
+import com.example.gastospersonales.UI.Navegacion.Screen
+import com.example.gastospersonales.UI.Temas.NegroTitulo
+import com.example.gastospersonales.UI.Temas.SubTituloGris
+import com.example.gastospersonales.UI.Temas.VerdeApp
 import kotlinx.coroutines.launch
 
 @Composable
@@ -239,7 +240,7 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         // ---------------- SEPARADOR ----------------
 
-        androidx.compose.material3.HorizontalDivider(
+        HorizontalDivider(
             color = Color(0xFFE7EAF0),
             modifier = Modifier.constrainAs(separador) {
                 top.linkTo(olvidar.bottom, margin = 26.dp)

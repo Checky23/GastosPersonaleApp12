@@ -1,4 +1,4 @@
-package com.example.gastospersonales.ui.theme
+package com.example.gastospersonales.UI.Temas
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

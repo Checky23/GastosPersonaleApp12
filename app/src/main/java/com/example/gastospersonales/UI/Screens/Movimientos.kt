@@ -1,4 +1,4 @@
-package com.example.gastospersonales.Pantallas
+package com.example.gastospersonales.UI.Screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,11 +17,11 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.gastospersonales.Data.RegistroDeMovimientos
-import com.example.gastospersonales.Pantallas.VistaGenerales.BarraBusqueda
+import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
+import com.example.gastospersonales.UI.ComponentesVisuales.BarraBusqueda
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
 import androidx.compose.foundation.lazy.items
-import com.example.gastospersonales.Pantallas.Inicio.MovimientosRecientesScreen
+import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
 
 // Definición de colores basados en tu diseño
 val BgColor = Color(0xFFF7F9FC)

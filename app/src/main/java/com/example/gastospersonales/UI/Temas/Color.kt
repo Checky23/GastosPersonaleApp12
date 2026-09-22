@@ -1,4 +1,4 @@
-package com.example.gastospersonales.ui.theme
+package com.example.gastospersonales.UI.Temas
 
 import androidx.compose.ui.graphics.Color
 

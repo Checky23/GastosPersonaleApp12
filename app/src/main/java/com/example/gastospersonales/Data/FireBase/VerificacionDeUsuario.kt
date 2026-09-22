@@ -1,4 +1,4 @@
-package com.example.gastospersonales.FireBase
+package com.example.gastospersonales.Data.FireBase
 
 import com.google.firebase.auth.FirebaseAuth
 

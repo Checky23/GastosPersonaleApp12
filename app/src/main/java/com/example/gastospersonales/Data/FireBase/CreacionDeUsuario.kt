@@ -1,4 +1,4 @@
-package com.example.gastospersonales.FireBase
+package com.example.gastospersonales.Data.FireBase
 
 import android.content.Context
 import android.util.Log

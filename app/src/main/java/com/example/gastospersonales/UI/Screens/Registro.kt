@@ -1,7 +1,8 @@
-package com.example.gastospersonales.Pantallas
+package com.example.gastospersonales.UI.Screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,8 +28,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.FireBase.CreacionDeCuenta
-import com.example.gastospersonales.Navegacion.Screen
+import com.example.gastospersonales.Data.FireBase.CreacionDeCuenta
+import com.example.gastospersonales.UI.Navegacion.Screen
 
 
 @Composable
@@ -528,7 +529,7 @@ fun RegistroScreen(navController: NavHostController) {
 
         // ---------- CAJA INFORMATIVA ----------
 
-        androidx.compose.foundation.layout.Box(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)

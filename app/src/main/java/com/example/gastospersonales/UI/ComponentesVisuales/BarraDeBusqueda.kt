@@ -1,4 +1,4 @@
-package com.example.gastospersonales.Pantallas.VistaGenerales
+package com.example.gastospersonales.UI.ComponentesVisuales
 
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.fillMaxWidth
