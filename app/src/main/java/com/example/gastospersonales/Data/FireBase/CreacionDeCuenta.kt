@@ -13,7 +13,6 @@ suspend fun CreacionDeCuenta(correo: String, contraseña: String,
         //Obtengo la instancia de FirebaseAuth para crear la cuenta
         //FirebaseAuth es una clase que proporciona una interfaz para interactuar con la autenticación de Firebase
         FirebaseAuth.getInstance()
-
         //Creo la cuenta con el correo y la contraseña proporcionados activado en Firebase
         .createUserWithEmailAndPassword(correo, contraseña)
         .await()
