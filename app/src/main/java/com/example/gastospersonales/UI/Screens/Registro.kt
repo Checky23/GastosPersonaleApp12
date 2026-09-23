@@ -48,8 +48,9 @@ fun RegistroScreen(navController: NavHostController) {
     var correo = remember { mutableStateOf("") }
     var contrasena = remember { mutableStateOf("") }
     var confirmarContrasena = remember { mutableStateOf("") }
-    var contraseñaVisual = remember { mutableStateOf(false) }
 
+
+    var contraseñaVisual = remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current

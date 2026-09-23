@@ -16,8 +16,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.Data.FireBase.iniciarSesionConGoogle
@@ -34,20 +33,22 @@ import com.example.gastospersonales.UI.Navegacion.Screen
 import com.example.gastospersonales.UI.Temas.NegroTitulo
 import com.example.gastospersonales.UI.Temas.SubTituloGris
 import com.example.gastospersonales.UI.Temas.VerdeApp
+import com.example.gastospersonales.ViewModel.InicioDeSesionViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun InicioDeSesionScreen(navController: NavHostController) {
 
-    // Estados temporales para los campos
-    var correo = remember { mutableStateOf("") }
-    var contraseña = remember { mutableStateOf("") }
 
     // LocalContext para obtener el contexto de la aplicación
     val context = LocalContext.current
-
     // CoroutineScope para lanzar corutinas es decir las funciones suspendidas
     val scope = rememberCoroutineScope()
+
+    val viewModel : InicioDeSesionViewModel = viewModel()
+    val datosLogin = viewModel.uiState
+
+
 
     ConstraintLayout(
         modifier = Modifier
@@ -112,8 +113,9 @@ fun InicioDeSesionScreen(navController: NavHostController) {
         // ---- TEXTFIELHOLDER  PETICION DE CORREO ---
 
         TextField(
-            value = correo.value,
-            onValueChange = { correo.value = it },
+            value = datosLogin.correo,
+            onValueChange = { correoActualizado ->
+                viewModel.cambiarCorreo(correoActualizado) },
             placeholder = {
                 Text(
                     text = "correo@ejemplo.com",
@@ -154,8 +156,10 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         // ------- PETICION DE CONTRASEÑA
         TextField(
-            value = contraseña.value,
-            onValueChange = { contraseña.value = it },
+            value = datosLogin.contraseña,
+            onValueChange = { contraseñaActualizada ->
+                viewModel.cambiarContreña(contraseñaActualizada)
+            },
             placeholder = {
                 Text(
                     text = "••••••••",
