@@ -23,6 +23,7 @@ import com.example.gastospersonales.UI.Navegacion.Screen
 import com.example.gastospersonales.UI.ComponentesVisuales.BottomNavigationBar
 import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
 import com.example.gastospersonales.UI.ComponentesVisuales.ResumenMensualCard
+import com.example.gastospersonales.UI.ComponentesVisuales.TarjetaDeSaldoScreen
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
 import com.example.gastospersonales.UI.Temas.ColorBlanco
 import com.example.gastospersonales.UI.Temas.NegroTitulo
@@ -30,14 +31,9 @@ import com.example.gastospersonales.UI.Temas.RojoGasto
 import com.example.gastospersonales.UI.Temas.VerdeApp
 
 @Composable
-fun InicioScreen(navController: NavController  ) {
+fun InicioScreen(navController: NavController = rememberNavController()) {
 
     val viewModel: MovimientoViewModel = viewModel()
-
-   viewModel.agregarMovimiento(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-
 
 
     ConstraintLayout(

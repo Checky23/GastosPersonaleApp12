@@ -1,4 +1,4 @@
-package com.example.gastospersonales.UI.Screens
+package com.example.gastospersonales.UI.ComponentesVisuales
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
