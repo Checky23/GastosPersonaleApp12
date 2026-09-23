@@ -12,7 +12,7 @@ import com.example.gastospersonales.UI.Screens.RegistroScreen
 @Composable
 fun AppNavigation() {
 
-    // Controla la navegación entre pantallas
+    // Controla la navegación entre pantallasa
     val navController = rememberNavController()
     val usuarioLogeado = VerificacionDeUsuario()
 
