@@ -25,6 +25,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
 import com.example.gastospersonales.UI.Temas.*
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
+import kotlin.collections.getOrNull
 
 @Composable
 fun DetalleMovimientoScreen(
@@ -47,8 +50,9 @@ fun DetalleMovimientoScreen(
     onEliminarClick: () -> Unit = {},
     onEditarClick: () -> Unit = {}
 ) {
-    // Obtiene el objeto RegistroDeMovimientos directamente desde la lista del ViewModel
-    val movimiento = viewModel.movimientos.getOrNull(movimientoId)
+    // Escucha el StateFlow reactivamente mediante collectAsState()
+    val listaMovimientos by viewModel.movimientos.collectAsState()
+    val movimiento = listaMovimientos.getOrNull(movimientoId)
 
     if (movimiento != null) {
         DetalleMovimientoContent(
@@ -80,8 +84,6 @@ private fun DetalleMovimientoContent(
     onEliminarClick: () -> Unit,
     onEditarClick: () -> Unit
 ) {
-    // Evaluación dinámica según el atributo TipoDeMovimiento
-    // false = Gasto (rojo / -), true = Ingreso (verde / +)
     val esGasto = !movimiento.TipoDeMovimiento
     val colorMonto = if (esGasto) RojoGasto else VerdeApp
     val signoMonto = if (esGasto) "- C$ " else "+ C$ "
@@ -119,7 +121,7 @@ private fun DetalleMovimientoContent(
             )
         }
 
-        // TARJETA PRINCIPAL (ALIMENTADA DESDE EL MODELO)
+        // TARJETA PRINCIPAL
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -131,7 +133,6 @@ private fun DetalleMovimientoContent(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // EMOJI DINÁMICO (movimiento.Iconos)
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -147,7 +148,6 @@ private fun DetalleMovimientoContent(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // CATEGORÍA/GASTO DINÁMICO (movimiento.Gasto)
                 Text(
                     text = movimiento.Gasto,
                     fontSize = 16.sp,
@@ -157,7 +157,6 @@ private fun DetalleMovimientoContent(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // MONTO DINÁMICO (movimiento.Monto)
                 Text(
                     text = "$signoMonto${movimiento.Monto}.00",
                     fontSize = 22.sp,
