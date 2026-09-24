@@ -1,5 +1,6 @@
 package com.example.gastospersonales.UI.Screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -21,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
 import com.example.gastospersonales.UI.ComponentesVisuales.ResumenMensualCard
 import com.example.gastospersonales.UI.ComponentesVisuales.TarjetaDeSaldoScreen
+import com.example.gastospersonales.UI.Temas.Fondo
 import com.example.gastospersonales.UI.Temas.NegroTitulo
 import com.example.gastospersonales.UI.Temas.RojoGasto
 import com.example.gastospersonales.UI.Temas.VerdeApp
@@ -37,6 +39,7 @@ fun InicioScreen(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
+            .background(Fondo)
     ) {
 
         // Referencias
