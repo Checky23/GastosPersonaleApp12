@@ -1,5 +1,6 @@
 package com.example.gastospersonales.UI.Screens
 
+import com.example.gastospersonales.UI.Temas.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,24 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// ============================================================
-// COLORES //
-// ============================================================
-
-private val BackgroundColor = Color(0xFFF8FAF9)
-private val DarkText = Color(0xFF1E232A)
-private val GrayLabel = Color(0xFF7A828A)
-private val RedAmount = Color(0xFFE55252)
-private val GreenButton = Color(0xFF2E7D5B)
-private val CircleBg = Color(0xFFE5F5EC)
-private val TipBg = Color(0xFFFFF7DB)
-private val TipHeader = Color(0xFFE5A93C)
-private val DividerColor = Color(0xFFEEF0F2)
-
-// ============================================================
-// PANTALLA DETALLE DEL MOVIMIENTO //
-// ============================================================
-
 @Composable
 fun DetalleMovimientoScreen(
     onBackClick: () -> Unit = {},
@@ -61,14 +44,11 @@ fun DetalleMovimientoScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundColor)
+            .background(Fondo)
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
 
-        // ====================================================
         // TOP BAR (FLECHA + TÍTULO)
-        // ====================================================
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -78,7 +58,7 @@ fun DetalleMovimientoScreen(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Volver",
-                tint = DarkText,
+                tint = NegroTitulo,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable { onBackClick() }
@@ -90,19 +70,16 @@ fun DetalleMovimientoScreen(
                 text = "Detalle del movimiento",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = DarkText
+                color = NegroTitulo
             )
         }
 
-        // ====================================================
         // CARD PRINCIPAL
-        // ====================================================
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color.White)
+                .background(ColorBlanco)
                 .padding(vertical = 24.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -114,7 +91,7 @@ fun DetalleMovimientoScreen(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(CircleBg),
+                        .background(VerdeClaro),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -130,7 +107,7 @@ fun DetalleMovimientoScreen(
                     text = "Comida",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = DarkText
+                    color = NegroTitulo
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -140,7 +117,7 @@ fun DetalleMovimientoScreen(
                     text = "- C$ 250.00",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = RedAmount
+                    color = RojoGasto
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -149,27 +126,21 @@ fun DetalleMovimientoScreen(
                 Text(
                     text = "26 ago 2026 · 12:30",
                     fontSize = 11.sp,
-                    color = GrayLabel
+                    color = SubTituloGris
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        // ====================================================
         // CAMPOS DE INFORMACIÓN
-        // ====================================================
-
         DetailItem(label = "Categoría", value = "Comida")
         DetailItem(label = "Fecha", value = "26 ago 2026")
         DetailItem(label = "Descripción", value = "Almuerzo", showDivider = false)
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // ====================================================
         // BOTONES DE ACCIÓN
-        // ====================================================
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -181,9 +152,9 @@ fun DetalleMovimientoScreen(
                     .weight(1f)
                     .height(46.dp),
                 shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, RedAmount.copy(alpha = 0.5f)),
+                border = BorderStroke(1.dp, RojoGasto.copy(alpha = 0.5f)),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = RedAmount
+                    contentColor = RojoGasto
                 )
             ) {
                 Text(
@@ -201,7 +172,7 @@ fun DetalleMovimientoScreen(
                     .height(46.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = GreenButton,
+                    containerColor = VerdeApp,
                     contentColor = Color.White
                 )
             ) {
@@ -215,10 +186,7 @@ fun DetalleMovimientoScreen(
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        // ====================================================
         // CARD DE CONSEJO
-        // ====================================================
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -239,16 +207,12 @@ fun DetalleMovimientoScreen(
                 Text(
                     text = "Revisa este gasto antes de cerrar el mes.",
                     fontSize = 11.sp,
-                    color = DarkText
+                    color = NegroTitulo
                 )
             }
         }
     }
 }
-
-// ============================================================
-// COMPONENTE AUXILIAR PARA LOS FILAS DE INFORMACIÓN
-// ============================================================
 
 @Composable
 private fun DetailItem(
@@ -265,7 +229,7 @@ private fun DetailItem(
             text = label,
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
-            color = GrayLabel
+            color = SubTituloGris
         )
 
         Spacer(modifier = Modifier.height(2.dp))
@@ -274,7 +238,7 @@ private fun DetailItem(
             text = value,
             fontSize = 13.sp,
             fontWeight = FontWeight.Normal,
-            color = DarkText
+            color = NegroTitulo
         )
 
         if (showDivider) {
@@ -287,13 +251,8 @@ private fun DetailItem(
     }
 }
 
-// ============================================================
-// VISTA PREVIA (PREVIEW)
-// ============================================================
-
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun DetalleMovimientoScreenPreview() {
     DetalleMovimientoScreen()
 }
-
