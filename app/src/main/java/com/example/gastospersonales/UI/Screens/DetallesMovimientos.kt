@@ -251,7 +251,7 @@ private fun DetailItem(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun DetalleMovimientoScreenPreview() {
     DetalleMovimientoScreen()
