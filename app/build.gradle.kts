@@ -21,11 +21,25 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    //La configuración de la firma compartida, de Firebase
+    signingConfigs {
+        create("debugShared") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             optimization {
                 enable = false
             }
+        }
+        //Le decimos a la app que use la firma cuando estemos programando
+        debug {
+            signingConfig = signingConfigs.getByName("debugShared")
         }
     }
     compileOptions {

@@ -11,59 +11,43 @@ import com.example.gastospersonales.UI.Screens.RegistroScreen
 
 @Composable
 fun AppNavigation() {
-
-    // Controla la navegación entre pantallas
+    // 1. Instancias el controlador
     val navController = rememberNavController()
+
+    // 2. Verificas si hay sesión
     val usuarioLogeado = VerificacionDeUsuario()
 
-    if ( usuarioLogeado == true){
-        NavHost(
-            navController = navController,
-            // arranca en el splash, no en el login
-
-            startDestination = "splash"
-        ) {
-
-            // RUTA DEL SPLASH SCREEN
-          /*  composable("splash") {
-                SplashScreenConstraint(
-                    onAppReady = { destino ->
-                        // Recibo login
-                        if (destino == "login") {
-                            navController.navigate(Screen.InicioDeSesionScreen.ruta) {
-                                // Destruyo el splash para que el botón de "Atrás" del celular no vuelva a él
-                                popUpTo("splash") { inclusive = true }
-                            }
-                        }
-                    }
-                )
-            }*/
-
-            //  Inicio - Temporal
-            composable(Screen.InicioScreen.ruta) {
-               InicioScreen(navController)
-            }
-
-            // RegistroDeSesion
-            composable(Screen.RegistroScreen.ruta) {
-                RegistroScreen(navController)
-            }
-        }
-    } else{
-        NavHost(
-            navController = navController,
-            startDestination = Screen.InicioDeSesionScreen.ruta
-        ){
-            //  InicioDeSesion
-            composable(Screen.InicioDeSesionScreen.ruta){
-                InicioDeSesionScreen(navController)
-            }
-        }
+    // 3. Decides CÚAL va a ser la ruta inicial basándote en la sesión
+    val rutaInicial = if (usuarioLogeado) {
+        Screen.InicioScreen.ruta
+    } else {
+        Screen.InicioDeSesionScreen.ruta
     }
 
+    // 4. UN SOLO NAVHOST CON TODAS TUS PANTALLAS
+    NavHost(
+        navController = navController,
+        startDestination = rutaInicial
+    ) {
 
+        // Pantalla de Inicio de Sesión
+        composable(Screen.InicioDeSesionScreen.ruta) {
+            InicioDeSesionScreen(navController)
+        }
 
+        // Pantalla de Registro
+        composable(Screen.RegistroScreen.ruta) {
+            RegistroScreen(navController)
+        }
 
+        // Pantalla Principal (Inicio)
+        composable(Screen.InicioScreen.ruta) {
+            InicioScreen(navController)
+        }
 
-
+        // Pantalla Principal (Inicio)
+        composable(Screen.AgregarGastosScreen.ruta) {
+            InicioScreen(navController)
+        }
+    }
 }

@@ -21,15 +21,17 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 
 @Composable
-fun UsuarioNuevo (tituloText: String, modifierTitulo: Modifier = Modifier,
-                  tituloField: String, onValueChange: (String) -> Unit, placeholder : String,
-                  modifierField: Modifier = Modifier, keyboard : KeyboardType,
-                  contraseñaVisual : Boolean = false, hayErrorPassword : Boolean = false,
-                  esContrasena : Boolean = false  ){
+fun UsuarioNuevo(
+    tituloText: String, modifierTitulo: Modifier = Modifier,
+    tituloField: String, onValueChange: (String) -> Unit, placeholder: String,
+    modifierField: Modifier = Modifier, keyboard: KeyboardType,
+    contraseñaVisual: Boolean = false, hayErrorPassword: Boolean = false,
+    esContrasena: Boolean = false
+) {
 
 
     Text(
-        text = tituloText ,
+        text = tituloText,
         fontSize = 13.sp,
         fontWeight = FontWeight.SemiBold,
         color = Color(0xFF17202A),
@@ -41,9 +43,10 @@ fun UsuarioNuevo (tituloText: String, modifierTitulo: Modifier = Modifier,
         onValueChange = onValueChange,
         placeholder = {
             Text(
-                text =  placeholder,
+                text = placeholder,
                 fontSize = 14.sp,
-                color = Color(0xFF6B7280) )
+                color = Color(0xFF6B7280)
+            )
         },
         singleLine = true,
         shape = RoundedCornerShape(12.dp),
@@ -59,19 +62,20 @@ fun UsuarioNuevo (tituloText: String, modifierTitulo: Modifier = Modifier,
         isError = hayErrorPassword,
         visualTransformation =
             if (!esContrasena || contraseñaVisual) {
-                VisualTransformation.None} else {
-                    PasswordVisualTransformation()
-                },
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
         keyboardOptions = KeyboardOptions(keyboardType = keyboard)
 
-        )
+    )
 
 
 }
 
 @Preview
 @Composable
-fun UsuarioNuevoPreview(){
+fun UsuarioNuevoPreview() {
 
     ConstraintLayout(
         modifier = Modifier
@@ -86,19 +90,18 @@ fun UsuarioNuevoPreview(){
 
         UsuarioNuevo(
             tituloText = "Nombre",
-            modifierTitulo = Modifier.constrainAs( tituloPrincipal ){
+            modifierTitulo = Modifier.constrainAs(tituloPrincipal) {
 
-                top.linkTo( parent.top, margin = 10.dp)
-                start.linkTo(parent.start, margin = 20.dp) } ,
+                top.linkTo(parent.top, margin = 10.dp)
+                start.linkTo(parent.start, margin = 20.dp)
+            },
 
             tituloField = Usuario,
-            onValueChange = { Usuario = it},
-            placeholder = "Nombre del Usuario"
-            ,modifierField = Modifier
-                .constrainAs( titulo ){
-                top.linkTo(tituloPrincipal.bottom, margin = 10.dp)
-            }
-            ,keyboard = KeyboardType.Text
+            onValueChange = { Usuario = it },
+            placeholder = "Nombre del Usuario", modifierField = Modifier
+                .constrainAs(titulo) {
+                    top.linkTo(tituloPrincipal.bottom, margin = 10.dp)
+                }, keyboard = KeyboardType.Text
         )
 
     }
