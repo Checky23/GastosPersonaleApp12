@@ -1,6 +1,5 @@
 package com.example.gastospersonales.UI.Screens
 
-import com.example.gastospersonales.UI.Temas.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,13 +33,59 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
+import com.example.gastospersonales.UI.Temas.*
+import com.example.gastospersonales.ViewModel.MovimientoViewModel
 
 @Composable
 fun DetalleMovimientoScreen(
+    movimientoId: Int = 0,
+    viewModel: MovimientoViewModel = viewModel(),
     onBackClick: () -> Unit = {},
     onEliminarClick: () -> Unit = {},
     onEditarClick: () -> Unit = {}
 ) {
+    // Obtiene el objeto RegistroDeMovimientos directamente desde la lista del ViewModel
+    val movimiento = viewModel.movimientos.getOrNull(movimientoId)
+
+    if (movimiento != null) {
+        DetalleMovimientoContent(
+            movimiento = movimiento,
+            onBackClick = onBackClick,
+            onEliminarClick = onEliminarClick,
+            onEditarClick = onEditarClick
+        )
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Fondo),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Sin movimientos registrados",
+                color = SubTituloGris,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun DetalleMovimientoContent(
+    movimiento: RegistroDeMovimientos,
+    onBackClick: () -> Unit,
+    onEliminarClick: () -> Unit,
+    onEditarClick: () -> Unit
+) {
+    // Evaluación dinámica según el atributo TipoDeMovimiento
+    // false = Gasto (rojo / -), true = Ingreso (verde / +)
+    val esGasto = !movimiento.TipoDeMovimiento
+    val colorMonto = if (esGasto) RojoGasto else VerdeApp
+    val signoMonto = if (esGasto) "- C$ " else "+ C$ "
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,7 +93,7 @@ fun DetalleMovimientoScreen(
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
 
-        // TOP BAR (FLECHA + TÍTULO)
+        // BARRA SUPERIOR
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -74,7 +119,7 @@ fun DetalleMovimientoScreen(
             )
         }
 
-        // CARD PRINCIPAL
+        // TARJETA PRINCIPAL (ALIMENTADA DESDE EL MODELO)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -86,7 +131,7 @@ fun DetalleMovimientoScreen(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // CÍRCULO CON EMOJI
+                // EMOJI DINÁMICO (movimiento.Iconos)
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -95,16 +140,16 @@ fun DetalleMovimientoScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "🍔",
+                        text = movimiento.Iconos,
                         fontSize = 20.sp
                     )
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // NOMBRE
+                // CATEGORÍA/GASTO DINÁMICO (movimiento.Gasto)
                 Text(
-                    text = "Comida",
+                    text = movimiento.Gasto,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = NegroTitulo
@@ -112,31 +157,25 @@ fun DetalleMovimientoScreen(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // MONTO
+                // MONTO DINÁMICO (movimiento.Monto)
                 Text(
-                    text = "- C$ 250.00",
+                    text = "$signoMonto${movimiento.Monto}.00",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = RojoGasto
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                // FECHA Y HORA DE CABECERA
-                Text(
-                    text = "26 ago 2026 · 12:30",
-                    fontSize = 11.sp,
-                    color = SubTituloGris
+                    color = colorMonto
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        // CAMPOS DE INFORMACIÓN
-        DetailItem(label = "Categoría", value = "Comida")
-        DetailItem(label = "Fecha", value = "26 ago 2026")
-        DetailItem(label = "Descripción", value = "Almuerzo", showDivider = false)
+        // CAMPOS DE DETALLE DE LA LISTA
+        DetailItem(label = "Categoría", value = movimiento.Gasto)
+        DetailItem(
+            label = "Descripción",
+            value = movimiento.Descripcion.ifEmpty { "Sin descripción" },
+            showDivider = false
+        )
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -145,7 +184,6 @@ fun DetalleMovimientoScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // BOTÓN ELIMINAR
             OutlinedButton(
                 onClick = onEliminarClick,
                 modifier = Modifier
@@ -164,7 +202,6 @@ fun DetalleMovimientoScreen(
                 )
             }
 
-            // BOTÓN EDITAR
             Button(
                 onClick = onEditarClick,
                 modifier = Modifier
@@ -186,7 +223,7 @@ fun DetalleMovimientoScreen(
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        // CARD DE CONSEJO
+        // SECCIÓN DE CONSEJO
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -251,8 +288,22 @@ private fun DetailItem(
     }
 }
 
+// PREVIEW LIMPIO CON UN MOCK DIRECTO
 @Preview(showBackground = true)
 @Composable
 fun DetalleMovimientoScreenPreview() {
-    DetalleMovimientoScreen()
+    val movimientoMock = RegistroDeMovimientos(
+        Gasto = "Comida",
+        Descripcion = "Almuerzo de prueba",
+        Iconos = "🍔",
+        Monto = 250,
+        TipoDeMovimiento = false
+    )
+
+    DetalleMovimientoContent(
+        movimiento = movimientoMock,
+        onBackClick = {},
+        onEliminarClick = {},
+        onEditarClick = {}
+    )
 }
