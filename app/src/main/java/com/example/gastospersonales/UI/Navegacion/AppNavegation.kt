@@ -44,5 +44,10 @@ fun AppNavigation() {
         composable(Screen.InicioScreen.ruta) {
             InicioScreen(navController)
         }
+
+        // Pantalla Principal (Inicio)
+        composable(Screen.AgregarGastosScreen.ruta) {
+            InicioScreen(navController)
+        }
     }
 }
