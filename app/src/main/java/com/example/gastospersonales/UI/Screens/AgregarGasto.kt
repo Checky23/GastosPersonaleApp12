@@ -418,7 +418,8 @@ fun AgregarGastosScreen(
         Button(
             onClick = {
 
-                if (monto.isNotBlank() &&
+                if (
+                    monto.isNotBlank() &&
                     categoriaSeleccionada.isNotBlank() &&
                     fecha.isNotBlank()
                 ) {
@@ -430,21 +431,15 @@ fun AgregarGastosScreen(
                     )
 
                     navController.popBackStack()
-
                 }
-
             },
-
             shape = RoundedCornerShape(12.dp),
-
             colors = ButtonDefaults.buttonColors(
                 containerColor = VerdeApp
             ),
-
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-
                 .constrainAs(bottomButton) {
 
                     top.linkTo(
@@ -463,8 +458,6 @@ fun AgregarGastosScreen(
                 fontSize = 16.sp
             )
         }
-
-
         // ---------- CANCELAR ----------
 
         Text(
