@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,13 +18,12 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.UI.ComponentesVisuales.BarraBusqueda
-import com.example.gastospersonales.ViewModel.MovimientoViewModel
-import androidx.compose.foundation.lazy.items
 import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
+import com.example.gastospersonales.ViewModel.MovimientoViewModel
 
-// Definición de colores basados en tu diseño
 val BgColor = Color(0xFFF7F9FC)
 val TextPrimary = Color(0xFF1A1F36)
 val TextSecondary = Color(0xFF8F9BB3)
@@ -31,26 +31,30 @@ val GreenActive = Color(0xFF338258)
 val RedExpense = Color(0xFFE55353)
 val ChipBorder = Color(0xFFE4E9F2)
 
-
 @Composable
-fun MovimientosScreen() {
-    // Datos de ejemplo simulando el historial financiero
+fun MovimientosScreen(
+    navController: NavHostController = rememberNavController(),
+    viewModel: MovimientoViewModel = viewModel()
+) {
 
+    // Obtenemos la lista del ViewModel
+    val movimientos by viewModel.movimientos.collectAsState()
 
-    var BusquedaDelUsuario by remember { mutableStateOf("") }
-        val viewModel: MovimientoViewModel = viewModel()
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("Agua","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("gaseosa","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
-    viewModel.movimientos.add(RegistroDeMovimientos("comida","pollo asado",":D",5052,true))
+    var BusquedaDelUsuario by remember {
+        mutableStateOf("")
+    }
 
+    // Filtramos la lista
+    val movimientosFiltrados = movimientos.filter { movimiento ->
 
-    val movimientosFiltrados = viewModel.movimientos.filter { movimiento ->
-        movimiento.Gasto.contains(BusquedaDelUsuario, ignoreCase = true) ||
-                movimiento.Descripcion.contains(BusquedaDelUsuario, ignoreCase = true)
+        movimiento.Gasto.contains(
+            BusquedaDelUsuario,
+            ignoreCase = true
+        ) ||
+                movimiento.Descripcion.contains(
+                    BusquedaDelUsuario,
+                    ignoreCase = true
+                )
     }
 
     ConstraintLayout(
@@ -59,7 +63,7 @@ fun MovimientosScreen() {
             .background(BgColor)
             .padding(horizontal = 24.dp)
     ) {
-        // Referencias para las constraints del layout principal
+
         val (title, subtitle, searchBar, chips, list) = createRefs()
 
         Text(
@@ -97,8 +101,6 @@ fun MovimientosScreen() {
             }
         )
 
-
-        // Fila de Filtros (Todos, Gastos, Ingresos)
         Row(
             modifier = Modifier.constrainAs(chips) {
                 top.linkTo(searchBar.bottom, margin = 16.dp)
@@ -106,12 +108,23 @@ fun MovimientosScreen() {
             },
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            FilterChip("Todos", isSelected = true)
-            FilterChip("Gastos", isSelected = false)
-            FilterChip("Ingresos", isSelected = false)
+
+            FilterChip(
+                text = "Todos",
+                isSelected = true
+            )
+
+            FilterChip(
+                text = "Gastos",
+                isSelected = false
+            )
+
+            FilterChip(
+                text = "Ingresos",
+                isSelected = false
+            )
         }
 
-        // Lista de Movimientos (Scrollable)
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.constrainAs(list) {
@@ -124,7 +137,9 @@ fun MovimientosScreen() {
             },
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
-            items(viewModel.movimientos) { mov ->
+
+            items(movimientosFiltrados) { mov ->
+
                 MovimientosRecientesScreen(
                     Gasto = mov.Gasto,
                     CantidadDelMovimiento = mov.Monto,
@@ -137,21 +152,49 @@ fun MovimientosScreen() {
 }
 
 @Composable
-fun FilterChip(text: String, isSelected: Boolean) {
-    val bgColor = if (isSelected) GreenActive else Color.White
-    val textColor = if (isSelected) Color.White else TextSecondary
-    val modifier = if (isSelected) {
-        Modifier.background(bgColor, RoundedCornerShape(20.dp))
-    } else {
-        Modifier
-            .background(bgColor, RoundedCornerShape(20.dp))
-            .border(1.dp, ChipBorder, RoundedCornerShape(20.dp))
-    }
+fun FilterChip(
+    text: String,
+    isSelected: Boolean
+) {
+
+    val bgColor =
+        if (isSelected) GreenActive
+        else Color.White
+
+    val textColor =
+        if (isSelected) Color.White
+        else TextSecondary
+
+    val modifier =
+        if (isSelected) {
+
+            Modifier.background(
+                bgColor,
+                RoundedCornerShape(20.dp)
+            )
+
+        } else {
+
+            Modifier
+                .background(
+                    bgColor,
+                    RoundedCornerShape(20.dp)
+                )
+                .border(
+                    1.dp,
+                    ChipBorder,
+                    RoundedCornerShape(20.dp)
+                )
+        }
 
     Box(
-        modifier = modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+        modifier = modifier.padding(
+            horizontal = 20.dp,
+            vertical = 8.dp
+        ),
         contentAlignment = Alignment.Center
     ) {
+
         Text(
             text = text,
             color = textColor,
@@ -160,8 +203,10 @@ fun FilterChip(text: String, isSelected: Boolean) {
         )
     }
 }
-@Preview
+
+@Preview(showBackground = true)
 @Composable
 fun MovimientosScreenPreview() {
+
     MovimientosScreen()
 }

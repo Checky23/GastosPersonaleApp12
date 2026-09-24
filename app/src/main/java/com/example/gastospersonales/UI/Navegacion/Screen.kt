@@ -10,6 +10,6 @@ sealed class Screen(val ruta: String) {
 
     data object AgregarGastosScreen : Screen("AgregarGasto")
 
-    //hola como estas
+    data object MovimientosScreen : Screen("Movimientos")
 
 }//88888

@@ -1,11 +1,12 @@
 package com.example.gastospersonales.ViewModel
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
+import com.example.gastospersonales.Data.Repository.MovimientoRepository
 
-class MovimientoViewModel : ViewModel (){
-    val movimientos = mutableStateListOf<RegistroDeMovimientos>()
+class MovimientoViewModel : ViewModel() {
+
+    val movimientos = MovimientoRepository.movimientos
 
     fun agregarMovimiento(
         gasto: String,
@@ -31,8 +32,6 @@ class MovimientoViewModel : ViewModel (){
             TipoDeMovimiento = false
         )
 
-        movimientos.add(movimiento)
+        MovimientoRepository.agregarMovimiento(movimiento)
     }
-
-
 }

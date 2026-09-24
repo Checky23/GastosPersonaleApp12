@@ -1,10 +1,8 @@
 package com.example.gastospersonales.UI.ComponentesVisuales
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
@@ -21,19 +19,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import com.example.gastospersonales.UI.Navegacion.Screen
 import com.example.gastospersonales.UI.Temas.Fondo
 import com.example.gastospersonales.UI.Temas.VerdeApp
 
 @Composable
-fun BottomNavigationBar( onClickAction :() -> Unit ,
+fun BottomNavigationBar(
+    ClickDeBotonAgregar: () -> Unit,
+    ClickDeBotonInicio: () -> Unit,
+    ClickDeBotonHistorial: () -> Unit,
+    rutaActual: String?,
     modifier: Modifier = Modifier
-
 ) {
     Box(
         modifier = modifier
     ) {
 
-        // Barra inferior
         NavigationBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -42,8 +43,10 @@ fun BottomNavigationBar( onClickAction :() -> Unit ,
         ) {
 
             NavigationBarItem(
-                selected = true,
-                onClick = { },
+                selected = rutaActual == Screen.InicioScreen.ruta,
+                onClick = {
+                    ClickDeBotonInicio()
+                },
                 modifier = Modifier.padding(top = 22.dp),
                 icon = {
                     Icon(
@@ -56,10 +59,11 @@ fun BottomNavigationBar( onClickAction :() -> Unit ,
                 }
             )
 
-
             NavigationBarItem(
-                selected = false,
-                onClick = { },
+                selected = rutaActual == Screen.MovimientosScreen.ruta,
+                onClick = {
+                    ClickDeBotonHistorial()
+                },
                 modifier = Modifier.padding(top = 22.dp),
                 icon = {
                     Icon(
@@ -73,10 +77,9 @@ fun BottomNavigationBar( onClickAction :() -> Unit ,
             )
         }
 
-        // Botón + centrado sobre la barra
         FloatingActionButton(
             onClick = {
-                onClickAction()
+                ClickDeBotonAgregar()
             },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -94,7 +97,14 @@ fun BottomNavigationBar( onClickAction :() -> Unit ,
 
 @Preview
 @Composable
-fun BottonNavegationBarPreviwe ( ){
+fun BottonNavegationBarPreviwe() {
+
     val Navegation = rememberNavController()
-    BottomNavigationBar(onClickAction = {})
+
+    BottomNavigationBar(
+        ClickDeBotonAgregar = {},
+        ClickDeBotonInicio = {},
+        ClickDeBotonHistorial = {},
+        rutaActual = Screen.InicioScreen.ruta
+    )
 }
