@@ -8,3 +8,4 @@ data class RegistroDeMovimientos(
     val TipoDeMovimiento: Boolean
 
 )
+
