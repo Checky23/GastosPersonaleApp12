@@ -137,7 +137,8 @@ fun InicioScreen(
                     Gasto = movimiento.Gasto,
                     CantidadDelMovimiento = movimiento.Monto,
                     TipoDeMovimiento = movimiento.TipoDeMovimiento,
-                    Descripcion = movimiento.Descripcion
+                    Descripcion = movimiento.Descripcion ,
+
                 )
             }
         }

@@ -5,7 +5,7 @@ data class UI_EstadoLogin(
     val contraseña: String = "",
     val cargando: Boolean = false,
     val error: String? = null,
-    val iniciadoSesion: Boolean = false
+    val sesionIniciada: Boolean = false
 
 
 )

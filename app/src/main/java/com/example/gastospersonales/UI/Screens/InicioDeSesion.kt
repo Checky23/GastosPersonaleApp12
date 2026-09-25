@@ -13,14 +13,13 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,12 +28,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.Data.FireBase.iniciarSesionConGoogle
+import com.example.gastospersonales.UI.ComponentesVisuales.UsuarioNuevo
 import com.example.gastospersonales.UI.Navegacion.Screen
-import com.example.gastospersonales.UI.Temas.NegroTitulo
 import com.example.gastospersonales.UI.Temas.SubTituloGris
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.ViewModel.InicioDeSesionViewModel
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun InicioDeSesionScreen(navController: NavHostController) {
@@ -47,6 +47,18 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
     val viewModel : InicioDeSesionViewModel = viewModel()
     val datosLogin = viewModel.uiState
+
+
+    LaunchedEffect(datosLogin.sesionIniciada){
+        if (datosLogin.sesionIniciada){
+            navController.navigate(Screen.InicioScreen.ruta){
+                popUpTo(Screen.InicioDeSesionScreen.ruta){
+                    inclusive = true
+                }
+            }
+        }
+
+    }
 
 
 
@@ -65,6 +77,7 @@ fun InicioDeSesionScreen(navController: NavHostController) {
             correoField,
             contraseñaLabel,
             contraseñaField,
+            errorLogin,
             botonLogin,
             olvidar,
             separador,
@@ -97,111 +110,82 @@ fun InicioDeSesionScreen(navController: NavHostController) {
             }
         )
 
-        // ---------------- TEXT CORREO ELECTRONICO ----------------
 
-        Text(
-            text = "Correo electrónico",
-            fontSize = 13.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = NegroTitulo,
-            modifier = Modifier.constrainAs(correoLabel) {
+        // ---------------- CAMPO CORREO ELECTRÓNICO ----------------
+
+        UsuarioNuevo(
+            tituloText = "Correo electrónico",
+            modifierTitulo = Modifier.constrainAs(correoLabel) {
                 top.linkTo(subtitulo.bottom, margin = 50.dp)
                 start.linkTo(parent.start)
-            }
-        )
-
-        // ---- TEXTFIELHOLDER  PETICION DE CORREO ---
-
-        TextField(
-            value = datosLogin.correo,
-            onValueChange = { correoActualizado ->
-                viewModel.cambiarCorreo(correoActualizado) },
-            placeholder = {
-                Text(
-                    text = "correo@ejemplo.com",
-                    color = Color(0xFF6B7280),
-                    fontSize = 14.sp
-                )
             },
-            singleLine = true,
-            shape = RoundedCornerShape(16.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-                .constrainAs(correoField) {
-                    top.linkTo(correoLabel.bottom, margin = 10.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
+            tituloField = datosLogin.correo,
+            onValueChange = { correoActualizado ->
+                viewModel.cambiarCorreo(correoActualizado)
+            },
+            placeholder = "correo@ejemplo.com",
+            modifierField = Modifier.constrainAs(correoField) {
+                top.linkTo(correoLabel.bottom, margin = 10.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            },
+            keyboard = KeyboardType.Email,
+            // Como no es contraseña, podemos omitir los demás parámetros que tienen valores por defecto
+            esContrasena = false
         )
 
-        // ---------------- TXT DESCRIPTIVO CONTRASEÑA  ----------------
+        // ---------------- CAMPO CONTRASEÑA (Adaptado) ----------------
+
+        UsuarioNuevo(
+            tituloText = "Contraseña",
+            modifierTitulo = Modifier.constrainAs(contraseñaLabel) {
+                top.linkTo(correoField.bottom, margin = 30.dp)
+                start.linkTo(parent.start)
+            },
+            tituloField = datosLogin.contraseña, // Asumiendo que esta es tu variable de estado
+            onValueChange = { contraseñaActualizada ->
+                viewModel.cambiarContraseña(contraseñaActualizada)
+            },
+            placeholder = "••••••••",
+            modifierField = Modifier.constrainAs(contraseñaField) {
+                top.linkTo(contraseñaLabel.bottom, margin = 10.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            },
+            keyboard = KeyboardType.Password,
+
+            // Aquí usamos los parámetros específicos que definiste para contraseñas
+            esContrasena = true,
+            contraseñaVisual = false // Esto mantendrá los caracteres ocultos por defecto
+        )
+
+
 
         Text(
-            text = "Contraseña",
-            fontSize = 13.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = NegroTitulo,
-            modifier = Modifier.constrainAs(contraseñaLabel) {
-                top.linkTo(correoField.bottom, margin = 30.dp)
+            //?: se puede entender como: si el valor de la izquierda existe, úsalo;
+            // si es null, usa el valor de la derecha.
+            text = datosLogin.error ?: "",
+            color = Color.Red,
+            fontSize = 12.sp,
+            modifier = Modifier.constrainAs(errorLogin) {
+                top.linkTo(contraseñaField.bottom, margin = 6.dp)
                 start.linkTo(parent.start)
             }
         )
 
-        // ------- PETICION DE CONTRASEÑA
-        TextField(
-            value = datosLogin.contraseña,
-            onValueChange = { contraseñaActualizada ->
-                viewModel.cambiarContreña(contraseñaActualizada)
-            },
-            placeholder = {
-                Text(
-                    text = "••••••••",
-                    color = Color(0xFF6B7280)
-                )
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(16.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-                .constrainAs(contraseñaField) {
-                    top.linkTo(contraseñaLabel.bottom, margin = 10.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
+
 
         // ---------------- INICIAR SESIÓN ----------------
 
         Button(
             onClick = {
-                scope.launch{
-
-                    navController.navigate(Screen.InicioScreen.ruta){
-                        popUpTo(Screen.InicioDeSesionScreen.ruta){
-                            inclusive = true
-                        }
-
-                    }
-
-                }
+                viewModel.iniciarSesion()
 
 
 
             },
+            //se desactiva si hay un error o si está cargando
+            enabled = !datosLogin.cargando,
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF2E7D5B)
@@ -210,13 +194,17 @@ fun InicioDeSesionScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .height(56.dp)
                 .constrainAs(botonLogin) {
-                    top.linkTo(contraseñaField.bottom, margin = 29.dp)
+                    top.linkTo(errorLogin.bottom, margin = 29.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
         ) {
             Text(
-                text = "Iniciar sesión",
+                // Si está cargando, muestra "Iniciando sesión..."
+                text = if (datosLogin.cargando)
+                    "Iniciando sesión..."
+                else
+                    "Iniciar sesión",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold
             )

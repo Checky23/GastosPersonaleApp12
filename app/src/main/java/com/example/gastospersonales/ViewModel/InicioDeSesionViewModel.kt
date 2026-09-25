@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gastospersonales.Data.Model.UI_EstadoLogin
 import com.example.gastospersonales.Data.Repository.AuthRepository
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.launch
 
 class InicioDeSesionViewModel: ViewModel()  {
@@ -15,35 +16,51 @@ class InicioDeSesionViewModel: ViewModel()  {
     var uiState by mutableStateOf(UI_EstadoLogin())
         // Estado de inicio de sesión
         private set
-    fun cambiarCorreo ( correo:String){
-        uiState = uiState.copy(correo = correo)
+    fun cambiarCorreo (nuevoCorreo:String){
+        uiState = uiState.copy(correo = nuevoCorreo)
     }
-    fun cambiarContreña ( nuevacontraseña:String){
-        uiState = uiState.copy(contraseña = nuevacontraseña)
+    fun cambiarContraseña (nuevaContraseña:String){
+        uiState = uiState.copy(contraseña = nuevaContraseña)
     }
 
     fun iniciarSesion(){
-        viewModelScope.launch {
 
-            uiState = uiState.copy(
-                cargando = true,
-                error = null
-            )
+        //el .trim() para elimina espacios en blanco que estén al principio o al final
+        val correo = uiState.correo.trim()
+        val contraseña = uiState.contraseña
+
+        if (correo.isEmpty()){
+            uiState = uiState.copy(error = "Error - El correo no puede estar vacío")
+            return
+        }
+        if (contraseña.isEmpty()){
+            uiState = uiState.copy(error = "Error - La contraseña no puede estar vacía")
+            return
+        }
+
+        viewModelScope.launch {
+            uiState = uiState.copy(cargando = true, error = null)
+
             try {
                 repository.iniciarSesionConCorreo(correo = uiState.correo, contrasena = uiState.contraseña)
 
-                uiState = uiState.copy(
-                    cargando = false,
-                    iniciadoSesion = true
-                )
+                uiState = uiState.copy(cargando = false, sesionIniciada = true)
 
             }catch (e: Exception){
 
-                uiState = uiState.copy(
-                    cargando = false,
-                    error = e.localizedMessage
-                        ?: "Error al iniciar sesión"
-                )
+
+                val mensaje = when (e) {
+
+                    is FirebaseAuthInvalidCredentialsException ->
+                        "El correo o la contraseña no son correctos."
+
+                    else ->
+                        e.localizedMessage ?: "Error al iniciar sesión"
+                }
+
+
+
+                uiState = uiState.copy(cargando = false, error = mensaje)
             }
 
         }

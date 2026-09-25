@@ -1,7 +1,5 @@
 package com.example.gastospersonales.UI.Screens
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -10,13 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,21 +29,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.Data.FireBase.CreacionDeCuenta
 import com.example.gastospersonales.UI.ComponentesVisuales.UsuarioNuevo
 import com.example.gastospersonales.UI.Navegacion.Screen
-import kotlinx.coroutines.launch
+import com.example.gastospersonales.ViewModel.RegistroViewModel
 
 
 @Composable
-fun RegistroScreen(navController: NavHostController) {
+fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewModel = viewModel()) {
 
-    var nombre = remember { mutableStateOf("") }
-    var correo = remember { mutableStateOf("") }
-    var contrasena = remember { mutableStateOf("") }
-    var confirmarContrasena = remember { mutableStateOf("") }
+    val uiState = viewModel.uiState
 
 
     var contraseñaVisual = remember { mutableStateOf(false) }
@@ -145,8 +138,8 @@ fun RegistroScreen(navController: NavHostController) {
 
                 UsuarioNuevo(
                     tituloText = "Nombre",
-                    tituloField = nombre.value,
-                    onValueChange = { nombre.value = it },
+                    tituloField = uiState.nombre,
+                    onValueChange = { viewModel.cambiarNombre(it) },
                     placeholder = "Tu nombre",
                     keyboard = KeyboardType.Text,
                     modifierTitulo = Modifier.padding(
@@ -167,8 +160,8 @@ fun RegistroScreen(navController: NavHostController) {
 
                 UsuarioNuevo(
                     tituloText = "Correo electrónico",
-                    tituloField = correo.value,
-                    onValueChange = { correo.value = it },
+                    tituloField = uiState.correo,
+                    onValueChange = { viewModel.cambiarCorreo(it) },
                     placeholder = "ejemplo@correo.com",
                     keyboard = KeyboardType.Email,
                     modifierTitulo = Modifier.padding(
@@ -189,8 +182,10 @@ fun RegistroScreen(navController: NavHostController) {
 
                 UsuarioNuevo(
                     tituloText = "Contraseña",
-                    tituloField = contrasena.value,
-                    onValueChange = { contrasena.value = it },
+                    tituloField = uiState.contraseña,
+                    onValueChange = {
+                        viewModel.cambiarContraseña(it)
+                    },
                     placeholder = "••••••••",
                     keyboard = KeyboardType.Password,
                     modifierTitulo = Modifier.padding(
@@ -212,9 +207,9 @@ fun RegistroScreen(navController: NavHostController) {
 
                 UsuarioNuevo(
                     tituloText = "Confirmar contraseña",
-                    tituloField = confirmarContrasena.value,
+                    tituloField = uiState.confirmarContraseña,
                     onValueChange = {
-                        confirmarContrasena.value = it
+                        viewModel.cambiarConfirmarContraseña(it)
                         hayErrorPassword = false
                     },
                     placeholder = "••••••••",
@@ -290,7 +285,10 @@ fun RegistroScreen(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        if (contrasena.value != confirmarContrasena.value) {
+
+                        viewModel.crearCuenta()
+
+                        /*if (uiState.contraseña != uiState.confirmarContraseña) {
                             hayErrorPassword = true
                         } else {
                             hayErrorPassword = false
@@ -333,9 +331,8 @@ fun RegistroScreen(navController: NavHostController) {
                                     }
                                 )
                             }
+                        }*/
 
-
-                        }
                     },
 
                     shape = RoundedCornerShape(16.dp),
@@ -379,7 +376,7 @@ fun RegistroScreen(navController: NavHostController) {
                             top = 20.dp,
 
 
-                        )
+                            )
                 )
             }
 
@@ -472,5 +469,5 @@ fun RegistroScreen(navController: NavHostController) {
 @Composable
 fun VistaRegistroScreen() {
     val navController = rememberNavController()
-    RegistroScreen(navController,)
+    RegistroScreen(navController)
 }
