@@ -10,12 +10,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -25,9 +30,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,7 +47,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
+import com.example.gastospersonales.UI.ComponentesVisuales.SelectorTipoMovimiento
 import com.example.gastospersonales.UI.Temas.Fondo
 import com.example.gastospersonales.UI.Temas.GrisBorde
 import com.example.gastospersonales.UI.Temas.NegroTitulo
@@ -48,7 +55,7 @@ import com.example.gastospersonales.UI.Temas.SubTituloGris
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.UI.Temas.VerdeClaro
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-
+import kotlinx.coroutines.launch
 
 @Composable
 fun AgregarGastosScreen(
@@ -82,9 +89,35 @@ fun AgregarGastosScreen(
         "🚂\nTransporte",
         "🏠\nHogar",
         "💡\nServicios",
-        "🎮\nOcio",
-        "🎛️\nOtros"
+        "🎮\nOcioa",
+        "🎛️\nOtrosa",
+        "🍔\nComidaa",
+        "🚂\nTransportea",
+        "🏠\nHogara",
+        "💡\nServicioss",
+        "🎮\nOciod",
+        "🎛️\nOtrosv"
     )
+
+
+    // ---------------- SCROLL ----------------
+
+    val scrollState = rememberScrollState()
+
+    val scope = rememberCoroutineScope()
+
+    // Para llevar cada TextField visible cuando recibe el foco
+    val montoRequester = remember {
+        BringIntoViewRequester()
+    }
+
+    val fechaRequester = remember {
+        BringIntoViewRequester()
+    }
+
+    val descripcionRequester = remember {
+        BringIntoViewRequester()
+    }
 
 
     ConstraintLayout(
@@ -96,30 +129,33 @@ fun AgregarGastosScreen(
 
         val (
             TextsPresentacion,
-            amountLabel,
-            topBox,
-            categoryLabel,
-            gridBox,
-            dateLabel,
-            input1,
-            descLabel,
-            input2,
             bottomButton,
             cancelText
         ) = createRefs()
 
 
-        // ---------- ENCABEZADO ----------
+        // ======================================================
+        // FORMULARIO SCROLLEABLE
+        // ======================================================
 
         Column(
-            modifier = Modifier.constrainAs(TextsPresentacion) {
-                top.linkTo(parent.top, margin = 24.dp)
-                start.linkTo(parent.start)
-            }
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .imePadding()
+                .constrainAs(TextsPresentacion) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+                .padding(bottom = 110.dp)
         ) {
 
+            // ---------- ENCABEZADO ----------
+
             Text(
-                text = "Agregar gasto",
+                text = "Agregar Movimiento",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = NegroTitulo
@@ -134,288 +170,278 @@ fun AgregarGastosScreen(
                 fontSize = 14.sp,
                 color = SubTituloGris
             )
-        }
 
 
-        // ---------- MONTO ----------
+            // ======================================================
+            // MONTO
+            // ======================================================
 
-        Text(
-            text = "Monto",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            color = NegroTitulo,
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
 
-            modifier = Modifier.constrainAs(amountLabel) {
-
-                top.linkTo(
-                    TextsPresentacion.bottom,
-                    margin = 24.dp
-                )
-
-                start.linkTo(parent.start)
-            }
-        )
-
-
-        // ---------- TEXT FIELD MONTO ----------
-
-        TextField(
-            value = monto,
-
-            onValueChange = {
-                monto = it
-            },
-
-            singleLine = true,
-
-            textStyle = TextStyle(
-                fontSize = 20.sp,
+            Text(
+                text = "Monto",
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = NegroTitulo
-            ),
+            )
 
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Decimal
-            ),
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
 
-            placeholder = {
-                Text(
-                    text = "C$ 0.00",
+            TextField(
+                value = monto,
+
+                onValueChange = {
+                    monto = it
+                },
+
+                singleLine = true,
+
+                textStyle = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = NegroTitulo
-                )
-            },
+                ),
 
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = VerdeApp,
-                unfocusedIndicatorColor = VerdeApp
-            ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal
+                ),
 
-            shape = RoundedCornerShape(12.dp),
-
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-
-                .constrainAs(topBox) {
-
-                    top.linkTo(
-                        amountLabel.bottom,
-                        margin = 8.dp
+                placeholder = {
+                    Text(
+                        text = "C$ 0.00",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = NegroTitulo
                     )
+                },
 
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = VerdeApp,
+                    unfocusedIndicatorColor = VerdeApp
+                ),
 
+                shape = RoundedCornerShape(12.dp),
 
-        // ---------- CATEGORÍA ----------
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .bringIntoViewRequester(montoRequester)
+                    .onFocusChanged { focusState ->
 
-        Text(
-            text = "Categoría",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            color = NegroTitulo,
+                        if (focusState.isFocused) {
 
-            modifier = Modifier.constrainAs(categoryLabel) {
-
-                top.linkTo(
-                    topBox.bottom,
-                    margin = 24.dp
-                )
-
-                start.linkTo(parent.start)
-            }
-        )
-
-
-        // ---------- GRID DE CATEGORÍAS ----------
-
-        LazyVerticalGrid(
-
-            columns = GridCells.Fixed(3),
-
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-
-            userScrollEnabled = false,
-
-            modifier = Modifier
-                .fillMaxWidth()
-
-                .constrainAs(gridBox) {
-
-                    top.linkTo(
-                        categoryLabel.bottom,
-                        margin = 8.dp
-                    )
-
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        ) {
-
-            items(categorias) { categoria ->
-
-                GridItem(
-
-                    text = categoria,
-
-                    isSelected =
-                        categoriaSeleccionada ==
-                                categoria.substringAfter("\n"),
-
-                    onClick = {
-
-                        categoriaSeleccionada =
-                            categoria.substringAfter("\n")
+                            scope.launch {
+                                montoRequester.bringIntoView()
+                            }
+                        }
                     }
-                )
+            )
+
+
+            // ======================================================
+            // CATEGORÍA
+            // ======================================================
+
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
+
+            Text(
+                text = "Categoría",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = NegroTitulo
+            )
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(categorias.chunked(2)) { grupo ->
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        grupo.forEach { categoria ->
+
+                            GridItem(
+                                text = categoria,
+
+                                isSelected =
+                                    categoriaSeleccionada ==
+                                            categoria.substringAfter("\n"),
+
+                                onClick = {
+                                    categoriaSeleccionada =
+                                        categoria.substringAfter("\n")
+                                },
+
+                                modifier = Modifier.width(100.dp)
+                            )
+                        }
+                    }
+                }
             }
+
+
+            // ======================================================
+            // FECHA
+            // ======================================================
+
+            Text(
+                text = "Fecha",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = NegroTitulo
+            )
+
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
+
+
+            TextField(
+
+                value = fecha,
+
+                onValueChange = {
+                    fecha = it
+                },
+
+                singleLine = true,
+
+                textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    color = NegroTitulo
+                ),
+
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = VerdeApp,
+                    unfocusedIndicatorColor = VerdeApp
+                ),
+
+                shape = RoundedCornerShape(16.dp),
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .bringIntoViewRequester(fechaRequester)
+                    .onFocusChanged { focusState ->
+
+                        if (focusState.isFocused) {
+
+                            scope.launch {
+                                fechaRequester.bringIntoView()
+                            }
+                        }
+                    }
+            )
+
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+
+            // ======================================================
+            // DESCRIPCIÓN
+            // ======================================================
+
+            Text(
+                text = "Descripción (opcional)",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = NegroTitulo
+            )
+
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
+
+
+            TextField(
+
+                value = descripcion,
+
+                onValueChange = {
+                    descripcion = it
+                },
+
+                singleLine = true,
+
+                placeholder = {
+                    Text(
+                        text = "¿Qué compraste?",
+                        color = SubTituloGris
+                    )
+                },
+
+                textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    color = NegroTitulo
+                ),
+
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = VerdeApp,
+                    unfocusedIndicatorColor = VerdeApp
+                ),
+
+                shape = RoundedCornerShape(16.dp),
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .bringIntoViewRequester(descripcionRequester)
+                    .onFocusChanged { focusState ->
+
+                        if (focusState.isFocused) {
+
+                            scope.launch {
+                                descripcionRequester.bringIntoView()
+                            }
+                        }
+                    }
+            )
+
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
+
+            SelectorTipoMovimiento()
+
+
+            // Espacio final para poder hacer scroll
+            // y que el último campo no quede pegado al teclado.
+            Spacer(
+                modifier = Modifier.height(100.dp)
+            )
+
+
         }
 
 
-        // ---------- FECHA ----------
-
-        Text(
-            text = "Fecha",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            color = NegroTitulo,
-
-            modifier = Modifier.constrainAs(dateLabel) {
-
-                top.linkTo(
-                    gridBox.bottom,
-                    margin = 24.dp
-                )
-
-                start.linkTo(parent.start)
-            }
-        )
-
-
-        // ---------- TEXT FIELD FECHA ----------
-
-        TextField(
-
-            value = fecha,
-
-            onValueChange = {
-                fecha = it
-            },
-
-            singleLine = true,
-
-            textStyle = TextStyle(
-                fontSize = 14.sp,
-                color = NegroTitulo
-            ),
-
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = VerdeApp,
-                unfocusedIndicatorColor = VerdeApp
-            ),
-
-            shape = RoundedCornerShape(16.dp),
-
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-
-                .constrainAs(input1) {
-
-                    top.linkTo(
-                        dateLabel.bottom,
-                        margin = 8.dp
-                    )
-
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
-
-
-        // ---------- DESCRIPCIÓN ----------
-
-        Text(
-            text = "Descripción (opcional)",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            color = NegroTitulo,
-
-            modifier = Modifier.constrainAs(descLabel) {
-
-                top.linkTo(
-                    input1.bottom,
-                    margin = 24.dp
-                )
-
-                start.linkTo(parent.start)
-            }
-        )
-
-
-        // ---------- TEXT FIELD DESCRIPCIÓN ----------
-
-        TextField(
-
-            value = descripcion,
-
-            onValueChange = {
-                descripcion = it
-            },
-
-            singleLine = true,
-
-            placeholder = {
-                Text(
-                    text = "¿Qué compraste?",
-                    color = SubTituloGris
-                )
-            },
-
-            textStyle = TextStyle(
-                fontSize = 14.sp,
-                color = NegroTitulo
-            ),
-
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = VerdeApp,
-                unfocusedIndicatorColor = VerdeApp
-            ),
-
-            shape = RoundedCornerShape(16.dp),
-
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-
-                .constrainAs(input2) {
-
-                    top.linkTo(
-                        descLabel.bottom,
-                        margin = 8.dp
-                    )
-
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
-
-
-        // ---------- BOTÓN GUARDAR ----------
+        // ======================================================
+        // BOTÓN GUARDAR
+        // ======================================================
 
         Button(
+
             onClick = {
 
                 if (
@@ -433,24 +459,29 @@ fun AgregarGastosScreen(
                     navController.popBackStack()
                 }
             },
+
             shape = RoundedCornerShape(12.dp),
+
             colors = ButtonDefaults.buttonColors(
                 containerColor = VerdeApp
             ),
+
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
                 .constrainAs(bottomButton) {
 
-                    top.linkTo(
-                        input2.bottom,
-                        margin = 32.dp
-                    )
-
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
+
+                    bottom.linkTo(
+                        parent.bottom,
+                        margin = 30.dp
+                    )
                 }
+
         ) {
+
             Text(
                 text = "Guardar gasto",
                 color = Color.White,
@@ -458,7 +489,11 @@ fun AgregarGastosScreen(
                 fontSize = 16.sp
             )
         }
-        // ---------- CANCELAR ----------
+
+
+        // ======================================================
+        // CANCELAR
+        // ======================================================
 
         Text(
 
@@ -469,18 +504,13 @@ fun AgregarGastosScreen(
             color = SubTituloGris,
 
             modifier = Modifier
-
                 .clickable {
                     navController.popBackStack()
-                    // Aquí posteriormente
-                    // colocaremos la acción de cancelar.
                 }
-
                 .constrainAs(cancelText) {
 
-                    top.linkTo(
-                        bottomButton.bottom,
-                        margin = 16.dp
+                    bottom.linkTo(
+                        parent.bottom
                     )
 
                     start.linkTo(parent.start)
@@ -559,12 +589,15 @@ fun GridItem(
 // ======================================================
 // PREVIEW
 // ======================================================
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewAgregarGasto() {
 
-    val navControler = rememberNavController()
+    val navController = rememberNavController()
 
-    AgregarGastosScreen(navControler)
+    AgregarGastosScreen(
+        navController = navController,
+        viewModel = viewModel()
+    )
 }
+
