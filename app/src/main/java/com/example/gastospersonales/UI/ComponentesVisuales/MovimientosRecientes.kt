@@ -15,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
 import com.example.gastospersonales.UI.Temas.NegroTitulo
 import com.example.gastospersonales.UI.Temas.RojoGasto
 import com.example.gastospersonales.UI.Temas.SubTituloGris
@@ -23,95 +22,220 @@ import com.example.gastospersonales.UI.Temas.VerdeApp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
 @Composable
 fun MovimientosRecientesScreen(
     Gasto: String,
     CantidadDelMovimiento: Int,
     TipoDeMovimiento: Boolean,
-    Descripcion: String
+    Descripcion: String,
+    modifier: Modifier = Modifier
 ) {
-    val fechaHora = LocalDateTime.now()
-    val formato = DateTimeFormatter.ofPattern("h:mm a")
-    val hora = fechaHora.format(formato)
-    val textoFecha = obtenerFechaMovimiento(fechaHora)
 
+    val fechaHora =
+        LocalDateTime.now()
 
+    val formato =
+        DateTimeFormatter.ofPattern(
+            "h:mm a"
+        )
+
+    val hora =
+        fechaHora.format(formato)
+
+    val textoFecha =
+        obtenerFechaMovimiento(
+            fechaHora
+        )
 
     Card(
-        modifier = Modifier
+
+        modifier = modifier
             .fillMaxWidth()
             .height(64.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
+
+        colors =
+            CardDefaults.cardColors(
+                containerColor =
+                    Color.White
+            )
     ) {
+
         ConstraintLayout(
+
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            val (GastoR, TextoYHoraR, DescripcionR, MontoR, TipoDeMovimientoR) = createRefs()
+
+            val (
+                GastoR,
+                TextoYHoraR,
+                DescripcionR,
+                MontoR,
+                TipoDeMovimientoR
+            ) = createRefs()
+
+            // ---------------------------
+            // NOMBRE DEL MOVIMIENTO
+            // ---------------------------
 
             Text(
-                text = "🍔  $Gasto",
+
+                text =
+                    "🍔  $Gasto",
+
                 fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = NegroTitulo,
-                modifier = Modifier.constrainAs(GastoR) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                }
+
+                fontWeight =
+                    FontWeight.SemiBold,
+
+                color =
+                    NegroTitulo,
+
+                modifier =
+                    Modifier.constrainAs(
+                        GastoR
+                    ) {
+
+                        start.linkTo(
+                            parent.start
+                        )
+
+                        top.linkTo(
+                            parent.top
+                        )
+                    }
             )
+
+            // ---------------------------
+            // FECHA Y HORA
+            // ---------------------------
 
             Text(
-                text = "$textoFecha · $hora",
+
+                text =
+                    "$textoFecha · $hora",
+
                 fontSize = 11.sp,
-                color = SubTituloGris,
-                modifier = Modifier.constrainAs(TextoYHoraR) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top, 20.dp)
-                }
+
+                color =
+                    SubTituloGris,
+
+                modifier =
+                    Modifier.constrainAs(
+                        TextoYHoraR
+                    ) {
+
+                        start.linkTo(
+                            parent.start
+                        )
+
+                        top.linkTo(
+                            parent.top,
+                            20.dp
+                        )
+                    }
             )
+
+            // ---------------------------
+            // MONTO
+            // ---------------------------
+
             if (TipoDeMovimiento) {
+
                 Text(
-                    text = " C$ $CantidadDelMovimiento",
+
+                    text =
+                        "C$ $CantidadDelMovimiento",
+
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = VerdeApp,
-                    modifier = Modifier.constrainAs(TipoDeMovimientoR) {
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
 
+                    fontWeight =
+                        FontWeight.Bold,
 
-                    }
+                    color =
+                        VerdeApp,
+
+                    modifier =
+                        Modifier.constrainAs(
+                            TipoDeMovimientoR
+                        ) {
+
+                            end.linkTo(
+                                parent.end
+                            )
+
+                            top.linkTo(
+                                parent.top
+                            )
+                        }
                 )
+
             } else {
+
                 Text(
-                    text = "− C$ $CantidadDelMovimiento",
+
+                    text =
+                        "− C$ $CantidadDelMovimiento",
+
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = RojoGasto,
-                    modifier = Modifier.constrainAs(MontoR) {
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
 
+                    fontWeight =
+                        FontWeight.Bold,
 
-                    }
+                    color =
+                        RojoGasto,
+
+                    modifier =
+                        Modifier.constrainAs(
+                            MontoR
+                        ) {
+
+                            end.linkTo(
+                                parent.end
+                            )
+
+                            top.linkTo(
+                                parent.top
+                            )
+                        }
                 )
             }
+
+            // ---------------------------
+            // DESCRIPCIÓN
+            // ---------------------------
+
             Text(
-                text = Descripcion,
+
+                text =
+                    Descripcion,
+
                 fontSize = 11.sp,
-                color = SubTituloGris,
-                modifier = Modifier.constrainAs(DescripcionR) {
-                    start.linkTo(TextoYHoraR.end, margin = 10.dp)
-                    top.linkTo(parent.top, margin = 20.dp)
-                    bottom.linkTo(parent.bottom)
 
-                }
+                color =
+                    SubTituloGris,
+
+                modifier =
+                    Modifier.constrainAs(
+                        DescripcionR
+                    ) {
+
+                        start.linkTo(
+                            TextoYHoraR.end,
+                            margin = 10.dp
+                        )
+
+                        top.linkTo(
+                            parent.top,
+                            margin = 20.dp
+                        )
+
+                        bottom.linkTo(
+                            parent.bottom
+                        )
+                    }
             )
-
         }
     }
 }
@@ -119,19 +243,44 @@ fun MovimientosRecientesScreen(
 @Preview
 @Composable
 fun MovimientosRecientesPreview() {
-    MovimientosRecientesScreen("Comida", 2500, false, "pollo asado")
+
+    MovimientosRecientesScreen(
+
+        Gasto = "Comida",
+
+        CantidadDelMovimiento = 2500,
+
+        TipoDeMovimiento = false,
+
+        Descripcion = "pollo asado"
+    )
 }
 
-fun obtenerFechaMovimiento(fecha: LocalDateTime): String {
+fun obtenerFechaMovimiento(
+    fecha: LocalDateTime
+): String {
 
-    val hoy = LocalDateTime.now().toLocalDate()
-    val fechaMovimiento = fecha.toLocalDate()
+    val hoy =
+        LocalDateTime.now()
+            .toLocalDate()
+
+    val fechaMovimiento =
+        fecha.toLocalDate()
 
     return when {
-        fechaMovimiento == hoy -> "Hoy"
-        fechaMovimiento == hoy.minusDays(1) -> "Ayer"
-        else -> fecha.format(
-            DateTimeFormatter.ofPattern("dd MMM")
-        )
+
+        fechaMovimiento == hoy ->
+            "Hoy"
+
+        fechaMovimiento ==
+                hoy.minusDays(1) ->
+            "Ayer"
+
+        else ->
+            fecha.format(
+                DateTimeFormatter.ofPattern(
+                    "dd MMM"
+                )
+            )
     }
 }
