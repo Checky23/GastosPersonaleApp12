@@ -1,6 +1,7 @@
 package com.example.gastospersonales.UI.Screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -214,7 +215,11 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         TextButton(
             onClick = {
-                // Recuperación de contraseña
+                Toast.makeText(
+                context,
+                "Próximamente: Recuperación de contraseña",
+                Toast.LENGTH_SHORT
+            ).show()
             },
             modifier = Modifier.constrainAs(olvidar) {
                 top.linkTo(botonLogin.bottom, margin = 4.dp)

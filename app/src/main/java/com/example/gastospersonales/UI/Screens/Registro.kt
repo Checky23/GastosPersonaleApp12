@@ -1,5 +1,6 @@
 package com.example.gastospersonales.UI.Screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,16 +43,29 @@ import com.example.gastospersonales.ViewModel.RegistroViewModel
 fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewModel = viewModel()) {
 
     val uiState = viewModel.uiState
-
-
-    var contraseñaVisual = remember { mutableStateOf(false) }
-
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    var hayErrorPassword by remember {
-        mutableStateOf(false)
+    LaunchedEffect(uiState.cuentaCreada) {
+
+        if (uiState.cuentaCreada) {
+
+            Toast.makeText(
+                context,
+                "Cuenta creada correctamente",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(
+                Screen.InicioDeSesionScreen.ruta
+            ) {
+                popUpTo(Screen.RegistroScreen.ruta) {
+                    inclusive = true
+                }
+            }
+        }
     }
+
+    var contraseñaVisual = remember { mutableStateOf(false) }
 
 
     // ---------- CONTENEDOR PRINCIPAL ----------
@@ -196,7 +211,7 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                     ),
                     esContrasena = true,
                     contraseñaVisual = contraseñaVisual.value,
-                    hayErrorPassword = hayErrorPassword
+
                 )
             }
 
@@ -210,7 +225,7 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                     tituloField = uiState.confirmarContraseña,
                     onValueChange = {
                         viewModel.cambiarConfirmarContraseña(it)
-                        hayErrorPassword = false
+
                     },
                     placeholder = "••••••••",
                     keyboard = KeyboardType.Password,
@@ -222,19 +237,19 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                     ),
                     esContrasena = true,
                     contraseñaVisual = contraseñaVisual.value,
-                    hayErrorPassword = hayErrorPassword
+
                 )
             }
 
 
             // ---------- ERROR ----------
 
-            if (hayErrorPassword) {
+            if (uiState.error != null) {
 
                 item {
 
                     Text(
-                        text = "Las contraseñas no coinciden",
+                        text = uiState.error!!,
                         fontSize = 12.sp,
                         color = Color.Red,
                         modifier = Modifier.padding(
@@ -334,6 +349,7 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                         }*/
 
                     },
+                    enabled = !uiState.cargando,
 
                     shape = RoundedCornerShape(16.dp),
 
@@ -352,7 +368,11 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                 ) {
 
                     Text(
-                        text = "Crear cuenta",
+                        text = if (uiState.cargando) {
+                            "Creando cuenta..."
+                        } else {
+                            "Crear cuenta"
+                        },
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
