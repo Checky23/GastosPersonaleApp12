@@ -42,17 +42,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.UI.ComponentesVisuales.SelectorTipoMovimiento
-import com.example.gastospersonales.UI.Temas.Dimens
 import com.example.gastospersonales.UI.Temas.Fondo
 import com.example.gastospersonales.UI.Temas.GrisBorde
 import com.example.gastospersonales.UI.Temas.NegroTitulo
 import com.example.gastospersonales.UI.Temas.SubTituloGris
-import com.example.gastospersonales.UI.Temas.TextSizes
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.UI.Temas.VerdeClaro
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
@@ -125,7 +124,7 @@ fun AgregarGastosScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Fondo)
-            .padding(Dimens.EspacioGrande)
+            .padding(24.dp)
     ) {
 
         val (
@@ -157,18 +156,18 @@ fun AgregarGastosScreen(
 
             Text(
                 text = "Agregar Movimiento",
-                fontSize = TextSizes.Titulo3,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = NegroTitulo
             )
 
             Spacer(
-                modifier = Modifier.height(Dimens.EspacioPequeno)
+                modifier = Modifier.height(8.dp)
             )
 
             Text(
                 text = "Registra una compra en pocos segundos.",
-                fontSize = TextSizes.Cuerpo,
+                fontSize = 14.sp,
                 color = SubTituloGris
             )
 
@@ -183,7 +182,7 @@ fun AgregarGastosScreen(
 
             Text(
                 text = "Monto",
-                fontSize = TextSizes.Etiqueta,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = NegroTitulo
             )
@@ -202,7 +201,7 @@ fun AgregarGastosScreen(
                 singleLine = true,
 
                 textStyle = TextStyle(
-                    fontSize = TextSizes.Titulo3,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = NegroTitulo
                 ),
@@ -214,7 +213,7 @@ fun AgregarGastosScreen(
                 placeholder = {
                     Text(
                         text = "C$ 0.00",
-                        fontSize = TextSizes.Titulo3,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = NegroTitulo
                     )
@@ -227,7 +226,7 @@ fun AgregarGastosScreen(
                     unfocusedIndicatorColor = VerdeApp
                 ),
 
-                shape = RoundedCornerShape(Dimens.RadioEsquina),
+                shape = RoundedCornerShape(12.dp),
 
                 modifier = Modifier
                     .fillMaxWidth()
@@ -255,13 +254,13 @@ fun AgregarGastosScreen(
 
             Text(
                 text = "Categoría",
-                fontSize = TextSizes.Etiqueta,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = NegroTitulo
             )
 
             Spacer(
-                modifier = Modifier.height(Dimens.EspacioMedio)
+                modifier = Modifier.height(16.dp)
             )
 
 
@@ -303,7 +302,7 @@ fun AgregarGastosScreen(
 
             Text(
                 text = "Fecha",
-                fontSize = TextSizes.Etiqueta,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = NegroTitulo
             )
@@ -324,7 +323,7 @@ fun AgregarGastosScreen(
                 singleLine = true,
 
                 textStyle = TextStyle(
-                    fontSize = TextSizes.Cuerpo,
+                    fontSize = 14.sp,
                     color = NegroTitulo
                 ),
 
@@ -354,7 +353,7 @@ fun AgregarGastosScreen(
 
 
             Spacer(
-                modifier = Modifier.height(Dimens.EspacioMedio)
+                modifier = Modifier.height(16.dp)
             )
 
 
@@ -364,7 +363,7 @@ fun AgregarGastosScreen(
 
             Text(
                 text = "Descripción (opcional)",
-                fontSize = TextSizes.Etiqueta,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = NegroTitulo
             )
@@ -387,13 +386,12 @@ fun AgregarGastosScreen(
                 placeholder = {
                     Text(
                         text = "¿Qué compraste?",
-                        color = SubTituloGris,
-                        fontSize = TextSizes.Cuerpo
+                        color = SubTituloGris
                     )
                 },
 
                 textStyle = TextStyle(
-                    fontSize = TextSizes.Cuerpo,
+                    fontSize = 14.sp,
                     color = NegroTitulo
                 ),
 
@@ -462,7 +460,7 @@ fun AgregarGastosScreen(
                 }
             },
 
-            shape = RoundedCornerShape(Dimens.RadioEsquina),
+            shape = RoundedCornerShape(12.dp),
 
             colors = ButtonDefaults.buttonColors(
                 containerColor = VerdeApp
@@ -488,7 +486,7 @@ fun AgregarGastosScreen(
                 text = "Guardar gasto",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontSize = TextSizes.Subtitulo2
+                fontSize = 16.sp
             )
         }
 
@@ -501,7 +499,7 @@ fun AgregarGastosScreen(
 
             text = "Cancelar",
 
-            fontSize = TextSizes.Cuerpo,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = SubTituloGris,
 
@@ -557,13 +555,13 @@ fun GridItem(
 
             .background(
                 currentBgColor,
-                shape = RoundedCornerShape(Dimens.RadioEsquina)
+                shape = RoundedCornerShape(12.dp)
             )
 
             .border(
                 1.dp,
                 currentBorderColor,
-                shape = RoundedCornerShape(Dimens.RadioEsquina)
+                shape = RoundedCornerShape(12.dp)
             )
 
             .clickable {
@@ -574,7 +572,7 @@ fun GridItem(
         Text(
             text = text,
             color = currentTextColor,
-            fontSize = TextSizes.Etiqueta,
+            fontSize = 12.sp,
 
             fontWeight =
                 if (isSelected)
@@ -602,3 +600,4 @@ fun PreviewAgregarGasto() {
         viewModel = viewModel()
     )
 }
+

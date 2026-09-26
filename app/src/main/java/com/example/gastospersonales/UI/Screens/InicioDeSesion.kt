@@ -251,6 +251,12 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
                         onError = { error ->
                             Log.e("GoogleAuth", error)
+
+                            Toast.makeText(
+                                context,
+                                "No se pudo iniciar sesión con Google",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     )
                 }
