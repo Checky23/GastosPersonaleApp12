@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+//
 object TextSizes {
     val Titulo1: TextUnit = 28.sp
     val Titulo2: TextUnit = 24.sp

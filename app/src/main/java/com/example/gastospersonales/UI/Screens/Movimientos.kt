@@ -43,7 +43,7 @@ import com.example.gastospersonales.UI.Temas.SubTituloGris
 import com.example.gastospersonales.UI.Temas.TextSizes
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-
+//
 enum class TipoFiltro {
     TODOS,
     GASTOS,

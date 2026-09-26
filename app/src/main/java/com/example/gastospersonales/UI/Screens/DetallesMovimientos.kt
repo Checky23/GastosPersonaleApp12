@@ -40,7 +40,7 @@ import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
 import com.example.gastospersonales.UI.Temas.*
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
 import kotlin.collections.getOrNull
-
+//
 @Composable
 fun DetalleMovimientoScreen(
     movimientoId: Int = 0,

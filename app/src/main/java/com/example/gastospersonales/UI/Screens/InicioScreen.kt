@@ -28,7 +28,7 @@ import com.example.gastospersonales.UI.Temas.RojoGasto
 import com.example.gastospersonales.UI.Temas.TextSizes
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-
+//
 @Composable
 fun InicioScreen(
     navController: NavController = rememberNavController(),

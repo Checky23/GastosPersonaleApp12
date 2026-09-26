@@ -56,7 +56,7 @@ import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.UI.Temas.VerdeClaro
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
 import kotlinx.coroutines.launch
-
+//
 @Composable
 fun AgregarGastosScreen(
     navController: NavHostController,

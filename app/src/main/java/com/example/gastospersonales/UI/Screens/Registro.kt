@@ -38,7 +38,7 @@ import com.example.gastospersonales.UI.ComponentesVisuales.UsuarioNuevo
 import com.example.gastospersonales.UI.Navegacion.Screen
 import com.example.gastospersonales.ViewModel.RegistroViewModel
 
-
+//
 @Composable
 fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewModel = viewModel()) {
 
