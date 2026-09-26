@@ -14,28 +14,61 @@ object MovimientoRepository {
     val movimientos: StateFlow<List<RegistroDeMovimientos>> =
         _movimientos.asStateFlow()
 
+
+    // =========================================================
+    // AGREGAR MOVIMIENTO
+    // =========================================================
+
     fun agregarMovimiento(movimiento: RegistroDeMovimientos) {
 
+        val nuevoId = if (_movimientos.value.isEmpty()) {
+            1
+        } else {
+            _movimientos.value.maxOf { it.Id } + 1
+        }
+
+        val movimientoConId = movimiento.copy(
+            Id = nuevoId
+        )
+
         _movimientos.update { listaActual ->
-            listaActual + movimiento
+            listaActual + movimientoConId
         }
     }
 
-    // Se elimina el movimiento filtrando por ID
+
+    // =========================================================
+    // ELIMINAR MOVIMIENTO
+    // =========================================================
+
     fun eliminarMovimiento(id: Int) {
+
         _movimientos.update { listaActual ->
-            // Se crea una lista nueva sin el movimiento que tenga este ID
-            listaActual.filterNot { it.Id == id }
+            listaActual.filterNot {
+                it.Id == id
+            }
         }
     }
 
 
-    // Editamos el movimiento mediante un map por su id y lo reemplazamos por el nuevo
-    fun editarMovimiento(id: Int, nuevoMovimiento: RegistroDeMovimientos) {
+    // =========================================================
+    // EDITAR MOVIMIENTO
+    // =========================================================
+
+    fun editarMovimiento(
+        id: Int,
+        nuevoMovimiento: RegistroDeMovimientos
+    ) {
+
         _movimientos.update { listaActual ->
+
             listaActual.map { itemExistente ->
-                // Si encontramos el id lo reemplazamos por el nuevo. Si no, lo dejamos igual.
-                if (itemExistente.Id == id) nuevoMovimiento.copy(Id = id) else itemExistente
+
+                if (itemExistente.Id == id) {
+                    nuevoMovimiento.copy(Id = id)
+                } else {
+                    itemExistente
+                }
             }
         }
     }

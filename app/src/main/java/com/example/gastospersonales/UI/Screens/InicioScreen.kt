@@ -28,7 +28,7 @@ import com.example.gastospersonales.UI.Temas.RojoGasto
 import com.example.gastospersonales.UI.Temas.TextSizes
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-//
+
 @Composable
 fun InicioScreen(
     navController: NavController = rememberNavController(),
@@ -37,13 +37,25 @@ fun InicioScreen(
 
     val movimientos by viewModel.movimientos.collectAsState()
 
+    // Sumar ingresos
+    val totalIngresos = movimientos
+        .filter { it.TipoDeMovimiento }
+        .sumOf { it.Monto }
+
+    // Sumar gastos
+    val totalGastos = movimientos
+        .filter { !it.TipoDeMovimiento }
+        .sumOf { it.Monto }
+
+    // Calcular saldo
+    val saldo = totalIngresos - totalGastos
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
             .background(Fondo)
     ) {
 
-        // Referencias
         val (
             tituloResumen,
             tarjetaSaldo,
@@ -66,7 +78,7 @@ fun InicioScreen(
         )
 
         TarjetaDeSaldoScreen(
-            250000040,
+            saldo,
             modifier = Modifier.constrainAs(tarjetaSaldo) {
                 start.linkTo(parent.start, Dimens.EspacioGrande)
                 end.linkTo(parent.end, Dimens.EspacioGrande)
@@ -91,7 +103,7 @@ fun InicioScreen(
                 top.linkTo(parent.top, 340.dp)
             },
             colorDeLetra = VerdeApp,
-            Cantidad = 2500,
+            Cantidad = totalIngresos,
             "Ingresos"
         )
 
@@ -101,7 +113,7 @@ fun InicioScreen(
                 top.linkTo(parent.top, 340.dp)
             },
             colorDeLetra = RojoGasto,
-            Cantidad = 5600,
+            Cantidad = totalGastos,
             "Gastos"
         )
 
@@ -123,8 +135,6 @@ fun InicioScreen(
                 .constrainAs(listaMovimientos) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-
-                    // Queda debajo del título
                     top.linkTo(
                         tituloMovimientos.bottom,
                         margin = Dimens.EspacioPequeno

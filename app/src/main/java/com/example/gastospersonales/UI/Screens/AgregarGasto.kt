@@ -71,23 +71,12 @@ fun AgregarGastosScreen(
 
     // ---------------- ESTADOS ----------------
 
+    var categoriaSeleccionada by remember { mutableStateOf("Comida") }
+    var monto by remember { mutableStateOf("") }
+    var fecha by remember { mutableStateOf("26 ago 2026") }
+    var descripcion by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    var categoriaSeleccionada by remember {
-        mutableStateOf("Comida")
-    }
-
-    var monto by remember {
-        mutableStateOf("")
-    }
-
-    var fecha by remember {
-        mutableStateOf("26 ago 2026")
-    }
-
-    var descripcion by remember {
-        mutableStateOf("")
-    }
 
     // Tipo de movimiento (Ingreso/Egreso), elevado desde SelectorTipoMovimiento
     var tipoSeleccionado by remember {
@@ -490,9 +479,12 @@ fun AgregarGastosScreen(
 
             onClick = {
 
-                val montoValido = monto.replace(",", ".").toDoubleOrNull()
+                val montoValido = monto
+                    .replace(",", ".")
+                    .toDoubleOrNull()
 
                 when {
+
                     monto.isBlank() -> {
                         Toast.makeText(
                             context,
@@ -530,6 +522,7 @@ fun AgregarGastosScreen(
                         val esIngreso = tipoSeleccionado == "Ingreso"
 
                         if (esEdicion) {
+
                             viewModel.editarMovimiento(
                                 id = movimientoId,
                                 gasto = categoriaSeleccionada,
@@ -538,7 +531,9 @@ fun AgregarGastosScreen(
                                 tipoDeMovimiento = esIngreso,
                                 fechaHoraOriginal = fechaHoraOriginal
                             )
+
                         } else {
+
                             viewModel.agregarMovimiento(
                                 gasto = categoriaSeleccionada,
                                 descripcion = descripcion,
@@ -575,7 +570,7 @@ fun AgregarGastosScreen(
         ) {
 
             Text(
-                text = "Guardar gasto",
+                text = if (esEdicion) "Actualizar gasto" else "Guardar gasto",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
@@ -692,3 +687,4 @@ fun PreviewAgregarGasto() {
         movimientoId = 0
     )
 }
+

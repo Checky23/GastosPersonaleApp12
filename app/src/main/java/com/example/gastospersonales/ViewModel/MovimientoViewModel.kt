@@ -9,6 +9,11 @@ class MovimientoViewModel : ViewModel() {
 
     val movimientos = MovimientoRepository.movimientos
 
+
+    // =========================================================
+    // AGREGAR MOVIMIENTO
+    // =========================================================
+
     fun agregarMovimiento(
         gasto: String,
         descripcion: String,
@@ -28,8 +33,11 @@ class MovimientoViewModel : ViewModel() {
         MovimientoRepository.agregarMovimiento(movimiento)
     }
 
-    // Se usa cuando el usuario está editando un movimiento existente.
-    // Mantiene la FechaHora original (no se pisa con la hora actual).
+
+    // =========================================================
+    // EDITAR MOVIMIENTO
+    // =========================================================
+
     fun editarMovimiento(
         id: Int,
         gasto: String,
@@ -49,21 +57,38 @@ class MovimientoViewModel : ViewModel() {
             FechaHora = fechaHoraOriginal
         )
 
-        MovimientoRepository.editarMovimiento(id, movimientoEditado)
+        MovimientoRepository.editarMovimiento(
+            id,
+            movimientoEditado
+        )
     }
 
+
+    // =========================================================
+    // ELIMINAR MOVIMIENTO
+    // =========================================================
+
     fun eliminarMovimiento(id: Int) {
+
         MovimientoRepository.eliminarMovimiento(id)
     }
 
+
+    // =========================================================
+    // OBTENER ICONO
+    // =========================================================
+
     private fun obtenerIcono(gasto: String): String {
+
         return when (gasto) {
+
             "Comida" -> "🍔"
             "Transporte" -> "🚂"
             "Hogar" -> "🏠"
             "Servicios" -> "💡"
             "Ocio" -> "🎮"
             "Otros" -> "🎛️"
+
             else -> "🎛️"
         }
     }

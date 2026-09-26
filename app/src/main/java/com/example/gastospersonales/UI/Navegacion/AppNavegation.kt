@@ -150,12 +150,7 @@ fun AppNavigation() {
             ) { backStackEntry ->
 
                 val movimientoId =
-                    backStackEntry
-                        .arguments
-                        ?.getInt(
-                            "movimientoId"
-                        )
-                        ?: 0
+                    backStackEntry.arguments?.getInt("movimientoId") ?: 0
 
                 DetalleMovimientoScreen(
                     movimientoId = movimientoId,
@@ -167,6 +162,16 @@ fun AppNavigation() {
                             //si hay retrocedo a la pantalla anterior
                             navController.popBackStack()
                         }
+
+                    },
+                    // Acción al eliminar (regresa a la pantalla anterior)
+                    onEliminarClick = {
+                        navController.popBackStack()
+                    },
+
+                    // Acción al editar (navega al formulario pasándole el ID)
+                    onEditarClick = {
+                        navController.navigate("${Screen.AgregarGastosScreen.ruta}/$movimientoId")
                     }
                 )
             }
