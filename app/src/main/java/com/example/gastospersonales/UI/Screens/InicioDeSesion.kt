@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -31,7 +30,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.Data.FireBase.iniciarSesionConGoogle
 import com.example.gastospersonales.UI.ComponentesVisuales.UsuarioNuevo
 import com.example.gastospersonales.UI.Navegacion.Screen
+import com.example.gastospersonales.UI.Temas.Dimens
+import com.example.gastospersonales.UI.Temas.Fondo
 import com.example.gastospersonales.UI.Temas.SubTituloGris
+import com.example.gastospersonales.UI.Temas.TextSizes
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.ViewModel.InicioDeSesionViewModel
 import kotlinx.coroutines.launch
@@ -39,7 +41,6 @@ import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun InicioDeSesionScreen(navController: NavHostController) {
-
 
     // LocalContext para obtener el contexto de la aplicación
     val context = LocalContext.current
@@ -49,7 +50,6 @@ fun InicioDeSesionScreen(navController: NavHostController) {
     val viewModel : InicioDeSesionViewModel = viewModel()
     val datosLogin = viewModel.uiState
 
-
     LaunchedEffect(datosLogin.sesionIniciada){
         if (datosLogin.sesionIniciada){
             navController.navigate(Screen.InicioScreen.ruta){
@@ -58,16 +58,13 @@ fun InicioDeSesionScreen(navController: NavHostController) {
                 }
             }
         }
-
     }
-
-
 
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F9FC))
-            .padding(horizontal = 24.dp)
+            .background(Fondo)
+            .padding(horizontal = Dimens.EspacioGrande)
     ) {
 
         // Referencias para el constraintlayout
@@ -90,7 +87,7 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         Text(
             text = "ControlDeGastos",
-            fontSize = 26.sp,
+            fontSize = TextSizes.Titulo1,
             fontWeight = FontWeight.Bold,
             color = VerdeApp,
             modifier = Modifier.constrainAs(titulo) {
@@ -103,14 +100,13 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         Text(
             text = "Tu dinero, en orden.",
-            fontSize = 14.sp,
+            fontSize = TextSizes.Cuerpo,
             color = SubTituloGris,
             modifier = Modifier.constrainAs(subtitulo) {
-                top.linkTo(titulo.bottom, margin = 8.dp)
+                top.linkTo(titulo.bottom, margin = Dimens.EspacioPequeno)
                 start.linkTo(parent.start)
             }
         )
-
 
         // ---------------- CAMPO CORREO ELECTRÓNICO ----------------
 
@@ -131,11 +127,10 @@ fun InicioDeSesionScreen(navController: NavHostController) {
                 end.linkTo(parent.end)
             },
             keyboard = KeyboardType.Email,
-            // Como no es contraseña, podemos omitir los demás parámetros que tienen valores por defecto
             esContrasena = false
         )
 
-        // ---------------- CAMPO CONTRASEÑA (Adaptado) ----------------
+        // ---------------- CAMPO CONTRASEÑA ----------------
 
         UsuarioNuevo(
             tituloText = "Contraseña",
@@ -143,7 +138,7 @@ fun InicioDeSesionScreen(navController: NavHostController) {
                 top.linkTo(correoField.bottom, margin = 30.dp)
                 start.linkTo(parent.start)
             },
-            tituloField = datosLogin.contraseña, // Asumiendo que esta es tu variable de estado
+            tituloField = datosLogin.contraseña,
             onValueChange = { contraseñaActualizada ->
                 viewModel.cambiarContraseña(contraseñaActualizada)
             },
@@ -154,42 +149,30 @@ fun InicioDeSesionScreen(navController: NavHostController) {
                 end.linkTo(parent.end)
             },
             keyboard = KeyboardType.Password,
-
-            // Aquí usamos los parámetros específicos que definiste para contraseñas
             esContrasena = true,
-            contraseñaVisual = false // Esto mantendrá los caracteres ocultos por defecto
+            contraseñaVisual = false
         )
 
-
-
         Text(
-            //?: se puede entender como: si el valor de la izquierda existe, úsalo;
-            // si es null, usa el valor de la derecha.
             text = datosLogin.error ?: "",
             color = Color.Red,
-            fontSize = 12.sp,
+            fontSize = TextSizes.Etiqueta,
             modifier = Modifier.constrainAs(errorLogin) {
                 top.linkTo(contraseñaField.bottom, margin = 6.dp)
                 start.linkTo(parent.start)
             }
         )
 
-
-
         // ---------------- INICIAR SESIÓN ----------------
 
         Button(
             onClick = {
                 viewModel.iniciarSesion()
-
-
-
             },
-            //se desactiva si hay un error o si está cargando
             enabled = !datosLogin.cargando,
-            shape = RoundedCornerShape(15.dp),
+            shape = RoundedCornerShape(Dimens.RadioEsquina),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2E7D5B)
+                containerColor = VerdeApp
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -201,12 +184,11 @@ fun InicioDeSesionScreen(navController: NavHostController) {
                 }
         ) {
             Text(
-                // Si está cargando, muestra "Iniciando sesión..."
                 text = if (datosLogin.cargando)
                     "Iniciando sesión..."
                 else
                     "Iniciar sesión",
-                fontSize = 15.sp,
+                fontSize = TextSizes.Subtitulo2,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -216,10 +198,10 @@ fun InicioDeSesionScreen(navController: NavHostController) {
         TextButton(
             onClick = {
                 Toast.makeText(
-                context,
-                "Próximamente: Recuperación de contraseña",
-                Toast.LENGTH_SHORT
-            ).show()
+                    context,
+                    "Próximamente: Recuperación de contraseña",
+                    Toast.LENGTH_SHORT
+                ).show()
             },
             modifier = Modifier.constrainAs(olvidar) {
                 top.linkTo(botonLogin.bottom, margin = 4.dp)
@@ -229,7 +211,7 @@ fun InicioDeSesionScreen(navController: NavHostController) {
         ) {
             Text(
                 text = "¿Olvidaste tu contraseña?",
-                fontSize = 12.sp,
+                fontSize = TextSizes.Etiqueta,
                 fontWeight = FontWeight.SemiBold,
                 color = Color(0xFF4778D0)
             )
@@ -248,42 +230,32 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         // ---------------- GOOGLE ----------------
 
-
-
         val webClientId =
             "1021709456536-alfu7gq32e4h3v5sq8696eidkakcam80.apps.googleusercontent.com"
 
         OutlinedButton(
             onClick = {
-
-
                 scope.launch {
                     iniciarSesionConGoogle(
                         context = context,
                         webClientId = webClientId,
 
                         onSuccess = {
-
                             Log.d("GoogleAuth", "Inicio de sesión exitoso")
                             navController.navigate(Screen.InicioScreen.ruta){
                                 popUpTo(Screen.InicioDeSesionScreen.ruta){
                                     inclusive = true
                                 }
                             }
-
-
                         },
 
                         onError = { error ->
                             Log.e("GoogleAuth", error)
                         }
-
-
                     )
                 }
-
             },
-            shape = RoundedCornerShape(14.dp),
+            shape = RoundedCornerShape(Dimens.RadioEsquina),
             colors = ButtonDefaults.outlinedButtonColors(
                 containerColor = Color.White
             ),
@@ -298,7 +270,7 @@ fun InicioDeSesionScreen(navController: NavHostController) {
         ) {
             Text(
                 text = "Continuar con Google",
-                fontSize = 14.sp,
+                fontSize = TextSizes.Cuerpo,
                 fontWeight = FontWeight.SemiBold,
                 color = Color(0xFF17202A)
             )
@@ -318,9 +290,9 @@ fun InicioDeSesionScreen(navController: NavHostController) {
         ) {
             Text(
                 text = "Crear una cuenta",
-                fontSize = 14.sp,
+                fontSize = TextSizes.Cuerpo,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF2E7D5B)
+                color = VerdeApp
             )
         }
     }

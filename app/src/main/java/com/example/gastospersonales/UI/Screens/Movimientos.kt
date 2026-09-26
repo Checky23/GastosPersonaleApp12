@@ -3,12 +3,23 @@ package com.example.gastospersonales.UI.Screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,14 +35,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.UI.ComponentesVisuales.BarraBusqueda
 import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
 import com.example.gastospersonales.UI.Navegacion.Screen
+import com.example.gastospersonales.UI.Temas.Dimens
+import com.example.gastospersonales.UI.Temas.Fondo
+import com.example.gastospersonales.UI.Temas.GrisBorde
+import com.example.gastospersonales.UI.Temas.NegroTitulo
+import com.example.gastospersonales.UI.Temas.SubTituloGris
+import com.example.gastospersonales.UI.Temas.TextSizes
+import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-
-val BgColor = Color(0xFFF7F9FC)
-val TextPrimary = Color(0xFF1A1F36)
-val TextSecondary = Color(0xFF8F9BB3)
-val GreenActive = Color(0xFF338258)
-val RedExpense = Color(0xFFE55353)
-val ChipBorder = Color(0xFFE4E9F2)
 
 enum class TipoFiltro {
     TODOS,
@@ -88,8 +98,8 @@ fun MovimientosScreen(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(BgColor)
-            .padding(horizontal = 24.dp)
+            .background(Fondo)
+            .padding(horizontal = Dimens.EspacioGrande)
     ) {
 
         val (
@@ -106,9 +116,9 @@ fun MovimientosScreen(
 
         Text(
             text = "Movimientos",
-            fontSize = 28.sp,
+            fontSize = TextSizes.Titulo1,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary,
+            color = NegroTitulo,
             modifier = Modifier.constrainAs(title) {
                 top.linkTo(
                     parent.top,
@@ -125,12 +135,12 @@ fun MovimientosScreen(
 
         Text(
             text = "Historial financiero",
-            fontSize = 14.sp,
-            color = TextSecondary,
+            fontSize = TextSizes.Cuerpo,
+            color = SubTituloGris,
             modifier = Modifier.constrainAs(subtitle) {
                 top.linkTo(
                     title.bottom,
-                    margin = 4.dp
+                    margin = Dimens.EspacioPequeno
                 )
 
                 start.linkTo(parent.start)
@@ -154,7 +164,7 @@ fun MovimientosScreen(
 
                 top.linkTo(
                     subtitle.bottom,
-                    margin = 24.dp
+                    margin = Dimens.EspacioGrande
                 )
 
                 start.linkTo(parent.start)
@@ -175,7 +185,7 @@ fun MovimientosScreen(
 
                 top.linkTo(
                     searchBar.bottom,
-                    margin = 16.dp
+                    margin = Dimens.EspacioMedio
                 )
 
                 start.linkTo(parent.start)
@@ -232,14 +242,14 @@ fun MovimientosScreen(
         LazyColumn(
 
             verticalArrangement =
-                Arrangement.spacedBy(8.dp),
+                Arrangement.spacedBy(Dimens.EspacioPequeno),
 
             modifier =
                 Modifier.constrainAs(list) {
 
                     top.linkTo(
                         chips.bottom,
-                        margin = 24.dp
+                        margin = Dimens.EspacioGrande
                     )
 
                     bottom.linkTo(parent.bottom)
@@ -269,9 +279,9 @@ fun MovimientosScreen(
                         text =
                             "No se encontraron movimientos",
 
-                        color = TextSecondary,
+                        color = SubTituloGris,
 
-                        fontSize = 14.sp,
+                        fontSize = TextSizes.Cuerpo,
 
                         textAlign =
                             TextAlign.Center,
@@ -279,7 +289,7 @@ fun MovimientosScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
-                                vertical = 24.dp
+                                vertical = Dimens.EspacioGrande
                             )
                     )
                 }
@@ -337,7 +347,7 @@ fun FilterChip(
 
     val bgColor =
         if (isSelected)
-            GreenActive
+            VerdeApp
         else
             Color.White
 
@@ -345,7 +355,7 @@ fun FilterChip(
         if (isSelected)
             Color.White
         else
-            TextSecondary
+            SubTituloGris
 
     val modifier =
         if (isSelected) {
@@ -364,7 +374,7 @@ fun FilterChip(
                 )
                 .border(
                     1.dp,
-                    ChipBorder,
+                    GrisBorde,
                     RoundedCornerShape(20.dp)
                 )
         }
@@ -377,7 +387,7 @@ fun FilterChip(
             )
             .padding(
                 horizontal = 20.dp,
-                vertical = 8.dp
+                vertical = Dimens.EspacioPequeno
             ),
 
         contentAlignment =
@@ -387,7 +397,7 @@ fun FilterChip(
         Text(
             text = text,
             color = textColor,
-            fontSize = 13.sp,
+            fontSize = TextSizes.Cuerpo,
             fontWeight =
                 FontWeight.SemiBold
         )

@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -22,9 +21,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
 import com.example.gastospersonales.UI.ComponentesVisuales.ResumenMensualCard
 import com.example.gastospersonales.UI.ComponentesVisuales.TarjetaDeSaldoScreen
+import com.example.gastospersonales.UI.Temas.Dimens
 import com.example.gastospersonales.UI.Temas.Fondo
 import com.example.gastospersonales.UI.Temas.NegroTitulo
 import com.example.gastospersonales.UI.Temas.RojoGasto
+import com.example.gastospersonales.UI.Temas.TextSizes
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
 
@@ -55,11 +56,11 @@ fun InicioScreen(
 
         Text(
             text = "Resumen financiero",
-            fontSize = 24.sp,
+            fontSize = TextSizes.Titulo2,
             fontWeight = FontWeight.Bold,
             color = NegroTitulo,
             modifier = Modifier.constrainAs(tituloResumen) {
-                start.linkTo(parent.start, 24.dp)
+                start.linkTo(parent.start, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 35.dp)
             }
         )
@@ -67,26 +68,26 @@ fun InicioScreen(
         TarjetaDeSaldoScreen(
             250000040,
             modifier = Modifier.constrainAs(tarjetaSaldo) {
-                start.linkTo(parent.start, 24.dp)
-                end.linkTo(parent.end, 24.dp)
+                start.linkTo(parent.start, Dimens.EspacioGrande)
+                end.linkTo(parent.end, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 95.dp)
             }
         )
 
         Text(
             text = "Este mes",
-            fontSize = 18.sp,
+            fontSize = TextSizes.Subtitulo1,
             fontWeight = FontWeight.Bold,
             color = NegroTitulo,
             modifier = Modifier.constrainAs(tituloEsteMes) {
-                start.linkTo(parent.start, 24.dp)
+                start.linkTo(parent.start, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 300.dp)
             }
         )
 
         ResumenMensualCard(
             modifier = Modifier.constrainAs(tarjetaIngresos) {
-                start.linkTo(parent.start, 24.dp)
+                start.linkTo(parent.start, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 340.dp)
             },
             colorDeLetra = VerdeApp,
@@ -96,7 +97,7 @@ fun InicioScreen(
 
         ResumenMensualCard(
             modifier = Modifier.constrainAs(tarjetaGastos) {
-                end.linkTo(parent.end, 24.dp)
+                end.linkTo(parent.end, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 340.dp)
             },
             colorDeLetra = RojoGasto,
@@ -106,11 +107,11 @@ fun InicioScreen(
 
         Text(
             text = "Movimientos recientes",
-            fontSize = 18.sp,
+            fontSize = TextSizes.Subtitulo1,
             fontWeight = FontWeight.Bold,
             color = NegroTitulo,
             modifier = Modifier.constrainAs(tituloMovimientos) {
-                start.linkTo(parent.start, 24.dp)
+                start.linkTo(parent.start, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 444.dp)
             }
         )
@@ -123,10 +124,10 @@ fun InicioScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
 
-                    // Ahora queda debajo del título
+                    // Queda debajo del título
                     top.linkTo(
                         tituloMovimientos.bottom,
-                        margin = 8.dp
+                        margin = Dimens.EspacioPequeno
                     )
                 }
         ) {
@@ -137,8 +138,7 @@ fun InicioScreen(
                     Gasto = movimiento.Gasto,
                     CantidadDelMovimiento = movimiento.Monto,
                     TipoDeMovimiento = movimiento.TipoDeMovimiento,
-                    Descripcion = movimiento.Descripcion ,
-
+                    Descripcion = movimiento.Descripcion
                 )
             }
         }

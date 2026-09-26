@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
@@ -71,7 +70,7 @@ fun DetalleMovimientoScreen(
             Text(
                 text = "Sin movimientos registrados",
                 color = SubTituloGris,
-                fontSize = 14.sp
+                fontSize = TextSizes.Cuerpo
             )
         }
     }
@@ -92,7 +91,7 @@ private fun DetalleMovimientoContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Fondo)
-            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .padding(horizontal = Dimens.EspacioMedio, vertical = Dimens.EspacioMedio)
     ) {
 
         // BARRA SUPERIOR
@@ -100,7 +99,7 @@ private fun DetalleMovimientoContent(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp)
+                .padding(bottom = Dimens.EspacioGrande)
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -111,11 +110,11 @@ private fun DetalleMovimientoContent(
                     .clickable { onBackClick() }
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(Dimens.EspacioMedio))
 
             Text(
                 text = "Detalle del movimiento",
-                fontSize = 18.sp,
+                fontSize = TextSizes.Subtitulo1,
                 fontWeight = FontWeight.Bold,
                 color = NegroTitulo
             )
@@ -125,9 +124,9 @@ private fun DetalleMovimientoContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(Dimens.RadioEsquina))
                 .background(ColorBlanco)
-                .padding(vertical = 24.dp),
+                .padding(vertical = Dimens.EspacioGrande),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -142,7 +141,7 @@ private fun DetalleMovimientoContent(
                 ) {
                     Text(
                         text = movimiento.Iconos,
-                        fontSize = 20.sp
+                        fontSize = TextSizes.Titulo3
                     )
                 }
 
@@ -150,16 +149,16 @@ private fun DetalleMovimientoContent(
 
                 Text(
                     text = movimiento.Gasto,
-                    fontSize = 16.sp,
+                    fontSize = TextSizes.Subtitulo2,
                     fontWeight = FontWeight.Bold,
                     color = NegroTitulo
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(Dimens.EspacioPequeno))
 
                 Text(
                     text = "$signoMonto${movimiento.Monto}.00",
-                    fontSize = 22.sp,
+                    fontSize = TextSizes.Titulo2,
                     fontWeight = FontWeight.Bold,
                     color = colorMonto
                 )
@@ -188,7 +187,7 @@ private fun DetalleMovimientoContent(
                 modifier = Modifier
                     .weight(1f)
                     .height(46.dp),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(Dimens.RadioEsquina),
                 border = BorderStroke(1.dp, RojoGasto.copy(alpha = 0.5f)),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = RojoGasto
@@ -196,7 +195,7 @@ private fun DetalleMovimientoContent(
             ) {
                 Text(
                     text = "Eliminar",
-                    fontSize = 13.sp,
+                    fontSize = TextSizes.Cuerpo,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -206,7 +205,7 @@ private fun DetalleMovimientoContent(
                 modifier = Modifier
                     .weight(1f)
                     .height(46.dp),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(Dimens.RadioEsquina),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = VerdeApp,
                     contentColor = Color.White
@@ -214,7 +213,7 @@ private fun DetalleMovimientoContent(
             ) {
                 Text(
                     text = "Editar",
-                    fontSize = 13.sp,
+                    fontSize = TextSizes.Cuerpo,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -226,14 +225,14 @@ private fun DetalleMovimientoContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(Dimens.RadioEsquina))
                 .background(TipBg)
-                .padding(14.dp)
+                .padding(Dimens.EspacioMedio)
         ) {
             Column {
                 Text(
                     text = "Consejo",
-                    fontSize = 11.sp,
+                    fontSize = TextSizes.Etiqueta,
                     fontWeight = FontWeight.Bold,
                     color = TipHeader
                 )
@@ -242,7 +241,7 @@ private fun DetalleMovimientoContent(
 
                 Text(
                     text = "Revisa este gasto antes de cerrar el mes.",
-                    fontSize = 11.sp,
+                    fontSize = TextSizes.Etiqueta,
                     color = NegroTitulo
                 )
             }
@@ -259,11 +258,11 @@ private fun DetailItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = Dimens.EspacioPequeno)
     ) {
         Text(
             text = label,
-            fontSize = 11.sp,
+            fontSize = TextSizes.Etiqueta,
             fontWeight = FontWeight.Bold,
             color = SubTituloGris
         )
@@ -272,13 +271,13 @@ private fun DetailItem(
 
         Text(
             text = value,
-            fontSize = 13.sp,
+            fontSize = TextSizes.Cuerpo,
             fontWeight = FontWeight.Normal,
             color = NegroTitulo
         )
 
         if (showDivider) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Dimens.EspacioPequeno))
             HorizontalDivider(
                 color = DividerColor,
                 thickness = 1.dp
