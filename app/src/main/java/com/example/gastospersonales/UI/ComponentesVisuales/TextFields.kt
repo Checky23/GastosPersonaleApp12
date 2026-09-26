@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.gastospersonales.UI.Temas.NegroTitulo
 
 @Composable
 fun UsuarioNuevo(
@@ -52,8 +53,8 @@ fun UsuarioNuevo(
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
 
-            focusedTextColor = Color.Black,
-            unfocusedTextColor = Color.Black,
+            focusedTextColor = NegroTitulo,
+            unfocusedTextColor = NegroTitulo,
 
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,

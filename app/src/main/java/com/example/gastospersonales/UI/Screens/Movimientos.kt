@@ -14,12 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,13 +22,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.UI.ComponentesVisuales.BarraBusqueda
 import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
+import com.example.gastospersonales.UI.Extenciones.clickableUnico
 import com.example.gastospersonales.UI.Navegacion.Screen
 import com.example.gastospersonales.UI.Temas.Dimens
 import com.example.gastospersonales.UI.Temas.Fondo
@@ -56,6 +55,8 @@ fun MovimientosScreen(
     viewModel: MovimientoViewModel = viewModel()
 ) {
 
+    val cicleLifeOwner = LocalLifecycleOwner.current
+
     val movimientos by viewModel.movimientos.collectAsState()
 
     var busquedaDelUsuario by remember {
@@ -68,8 +69,7 @@ fun MovimientosScreen(
 
     // Filtrado por búsqueda y por tipo
     val movimientosFiltrados = movimientos
-        .withIndex()
-        .filter { (_, movimiento) ->
+        .filter { movimiento ->
 
             val coincideBusqueda =
                 movimiento.Gasto.contains(
@@ -253,22 +253,14 @@ fun MovimientosScreen(
                     )
 
                     bottom.linkTo(parent.bottom)
-
                     start.linkTo(parent.start)
-
                     end.linkTo(parent.end)
-
-                    width =
-                        Dimension.fillToConstraints
-
-                    height =
-                        Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
                 },
 
             contentPadding =
-                PaddingValues(
-                    bottom = 90.dp
-                )
+                PaddingValues(bottom = 90.dp)
         ) {
 
             if (movimientosFiltrados.isEmpty()) {
@@ -278,13 +270,10 @@ fun MovimientosScreen(
                     Text(
                         text =
                             "No se encontraron movimientos",
-
                         color = SubTituloGris,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
 
-                        fontSize = TextSizes.Cuerpo,
-
-                        textAlign =
-                            TextAlign.Center,
 
                         modifier = Modifier
                             .fillMaxWidth()
@@ -298,39 +287,30 @@ fun MovimientosScreen(
 
                 items(
                     items = movimientosFiltrados,
-
-                    key = {
-                        it.index
+                    key = { movimiento ->
+                        movimiento.Id
                     }
-                ) { item ->
-
-                    val indiceOriginal =
-                        item.index
-
-                    val movimiento =
-                        item.value
+                ) { movimiento ->
 
                     MovimientosRecientesScreen(
-
-                        Gasto =
-                            movimiento.Gasto,
-
-                        CantidadDelMovimiento =
-                            movimiento.Monto,
-
-                        TipoDeMovimiento =
-                            movimiento.TipoDeMovimiento,
-
-                        Descripcion =
-                            movimiento.Descripcion,
-
+                        Gasto = movimiento.Gasto,
+                        CantidadDelMovimiento = movimiento.Monto,
+                        TipoDeMovimiento = movimiento.TipoDeMovimiento,
+                        Descripcion = movimiento.Descripcion,
                         modifier =
-                            Modifier.clickable {
+                            Modifier.clickableUnico(500L,{
 
-                                navController.navigate(
-                                    "${Screen.DetalleMovimientoScreen.ruta}/$indiceOriginal"
-                                )
+                                if (cicleLifeOwner.lifecycle.currentState
+                                    .isAtLeast(Lifecycle.State.STARTED)){
+
+                                    navController.navigate(
+                                        "${Screen.DetalleMovimientoScreen.ruta}/${movimiento.Id}"
+                                    ){
+                                        launchSingleTop = true }
+
+                                }
                             }
+                            )
                     )
                 }
             }

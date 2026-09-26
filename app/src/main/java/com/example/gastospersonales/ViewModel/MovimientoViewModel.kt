@@ -34,4 +34,10 @@ class MovimientoViewModel : ViewModel() {
 
         MovimientoRepository.agregarMovimiento(movimiento)
     }
+
+    fun eliminarMovimiento(id: Int) {
+        MovimientoRepository.eliminarMovimiento(id)
+    }
+
+
 }

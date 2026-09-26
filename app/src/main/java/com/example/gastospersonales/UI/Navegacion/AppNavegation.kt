@@ -27,18 +27,9 @@ fun AppNavigation() {
     val navController =
         rememberNavController()
 
-    val usuarioLogeado =
-        VerificacionDeUsuario()
+    val usuarioLogeado = VerificacionDeUsuario()
 
-    val rutaInicial =
-        if (usuarioLogeado) {
-
-            Screen.InicioScreen.ruta
-
-        } else {
-
-            Screen.InicioDeSesionScreen.ruta
-        }
+    val rutaInicial = if (usuarioLogeado) { Screen.InicioScreen.ruta } else { Screen.InicioDeSesionScreen.ruta }
 
     val navBackStackEntry by
     navController
@@ -115,11 +106,19 @@ fun AppNavigation() {
             // ---------------------------
 
             composable(
-                Screen.AgregarGastosScreen.ruta
+                route = "${Screen.AgregarGastosScreen.ruta}/{movimientoId}",
+                arguments = listOf(
+                    navArgument("movimientoId") { type = NavType.IntType
+                    }
+                )
             ) {
+                    backStackEntry ->
+
+                val movimientoId = backStackEntry.arguments?.getInt("movimientoId") ?: 0
 
                 AgregarGastosScreen(
-                    navController
+                    navController = navController,
+                    movimientoId = movimientoId // Le pasamos el ID a la pantalla
                 )
             }
 
@@ -142,18 +141,10 @@ fun AppNavigation() {
 
             composable(
 
-                route =
-                    "${Screen.DetalleMovimientoScreen.ruta}/{movimientoId}",
-
-                arguments =
-                    listOf(
-
-                        navArgument(
-                            "movimientoId"
-                        ) {
-
-                            type =
-                                NavType.IntType
+                route = "${Screen.DetalleMovimientoScreen.ruta}/{movimientoId}",
+                arguments = listOf(
+                        navArgument("movimientoId") {
+                            type = NavType.IntType
                         }
                     )
             ) { backStackEntry ->
@@ -167,14 +158,15 @@ fun AppNavigation() {
                         ?: 0
 
                 DetalleMovimientoScreen(
-
-                    movimientoId =
-                        movimientoId,
-
+                    movimientoId = movimientoId,
                     onBackClick = {
 
-                        navController
-                            .popBackStack()
+                        //controlo y verifico si hay mas pantallas en la pila para poder retroceder, si hay retrocedo
+                        if (navController.previousBackStackEntry != null) {
+
+                            //si hay retrocedo a la pantalla anterior
+                            navController.popBackStack()
+                        }
                     }
                 )
             }
@@ -199,11 +191,9 @@ fun AppNavigation() {
                 ClickDeBotonAgregar = {
 
                     navController.navigate(
-                        Screen.AgregarGastosScreen.ruta
+                        "${Screen.AgregarGastosScreen.ruta}/0"
                     ) {
-
-                        launchSingleTop =
-                            true
+                        launchSingleTop = true
                     }
                 },
 

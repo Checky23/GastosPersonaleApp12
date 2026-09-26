@@ -27,6 +27,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,7 +62,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AgregarGastosScreen(
     navController: NavHostController,
-    viewModel: MovimientoViewModel = viewModel()
+    viewModel: MovimientoViewModel = viewModel(),
+    movimientoId: Int
 ) {
 
     // ---------------- ESTADOS ----------------
@@ -79,6 +82,25 @@ fun AgregarGastosScreen(
 
     var descripcion by remember {
         mutableStateOf("")
+    }
+
+    val esEdicion = movimientoId != 0
+
+    // Observamos la lista para buscar el movimiento si es edición
+    val movimientos by viewModel.movimientos.collectAsState()
+    
+    // Cuando la pantalla se abre, revisa si hay un ID.
+    // Si lo hay, busca el movimiento y "autocompleta" los campos.
+    LaunchedEffect(movimientoId) {
+        if (esEdicion) {
+            val movimientoAEditar = movimientos.find { it.Id == movimientoId }
+            if (movimientoAEditar != null) {
+                categoriaSeleccionada = movimientoAEditar.Gasto
+                monto = movimientoAEditar.Monto.toString()
+                descripcion = movimientoAEditar.Descripcion
+                // Si en el futuro tienes fecha en el modelo, la asignas aquí también
+            }
+        }
     }
 
 
@@ -597,7 +619,7 @@ fun PreviewAgregarGasto() {
 
     AgregarGastosScreen(
         navController = navController,
-        viewModel = viewModel()
+        movimientoId = 0
     )
 }
 

@@ -34,13 +34,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
+import com.example.gastospersonales.UI.Extenciones.clickableUnico
 import com.example.gastospersonales.UI.Temas.*
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-import kotlin.collections.getOrNull
-//
+
 @Composable
 fun DetalleMovimientoScreen(
     movimientoId: Int = 0,
@@ -51,7 +52,8 @@ fun DetalleMovimientoScreen(
 ) {
     // Escucha el StateFlow reactivamente mediante collectAsState()
     val listaMovimientos by viewModel.movimientos.collectAsState()
-    val movimiento = listaMovimientos.getOrNull(movimientoId)
+
+    val movimiento = listaMovimientos.find { it.Id == movimientoId }
 
     if (movimiento != null) {
         DetalleMovimientoContent(
@@ -107,7 +109,7 @@ private fun DetalleMovimientoContent(
                 tint = NegroTitulo,
                 modifier = Modifier
                     .size(20.dp)
-                    .clickable { onBackClick() }
+                    .clickableUnico(500L) { onBackClick() }
             )
 
             Spacer(modifier = Modifier.width(Dimens.EspacioMedio))
