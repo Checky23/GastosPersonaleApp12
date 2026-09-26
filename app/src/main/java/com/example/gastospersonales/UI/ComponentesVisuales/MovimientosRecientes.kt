@@ -28,11 +28,13 @@ fun MovimientosRecientesScreen(
     CantidadDelMovimiento: Int,
     TipoDeMovimiento: Boolean,
     Descripcion: String,
+    FechaHora: LocalDateTime,
     modifier: Modifier = Modifier
 ) {
 
-    val fechaHora =
-        LocalDateTime.now()
+    // La fecha y hora YA NO se calculan aquí.
+    // Llegan listas desde el Model -> Repository -> ViewModel.
+    // Este componente solo las formatea para mostrarlas.
 
     val formato =
         DateTimeFormatter.ofPattern(
@@ -40,11 +42,11 @@ fun MovimientosRecientesScreen(
         )
 
     val hora =
-        fechaHora.format(formato)
+        FechaHora.format(formato)
 
     val textoFecha =
         obtenerFechaMovimiento(
-            fechaHora
+            FechaHora
         )
 
     Card(
@@ -252,7 +254,9 @@ fun MovimientosRecientesPreview() {
 
         TipoDeMovimiento = false,
 
-        Descripcion = "pollo asado"
+        Descripcion = "pollo asado",
+
+        FechaHora = LocalDateTime.now()
     )
 }
 

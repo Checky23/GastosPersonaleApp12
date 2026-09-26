@@ -21,9 +21,11 @@ import com.example.gastospersonales.UI.Temas.Fondo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectorTipoMovimiento() {
+fun SelectorTipoMovimiento(
+    valorSeleccionado: String,
+    onValorSeleccionadoChange: (String) -> Unit
+) {
 
-    var tipoMovimiento by remember { mutableStateOf("Egreso") }
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
@@ -33,13 +35,13 @@ fun SelectorTipoMovimiento() {
         }) {
 
         TextField(
-            value = tipoMovimiento, onValueChange = {}, readOnly = true, label = {
-            Text("Tipo de movimiento")
-        }, trailingIcon = {
-            ExposedDropdownMenuDefaults.TrailingIcon(
-                expanded = expanded
-            )
-        }, modifier = Modifier
+            value = valorSeleccionado, onValueChange = {}, readOnly = true, label = {
+                Text("Tipo de movimiento")
+            }, trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            }, modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
         )
@@ -51,12 +53,12 @@ fun SelectorTipoMovimiento() {
             }) {
 
             DropdownMenuItem(text = { Text("Egreso") }, onClick = {
-                tipoMovimiento = "Egreso"
+                onValorSeleccionadoChange("Egreso")
                 expanded = false
             })
 
             DropdownMenuItem(text = { Text("Ingreso") }, onClick = {
-                tipoMovimiento = "Ingreso"
+                onValorSeleccionadoChange("Ingreso")
                 expanded = false
             })
         }

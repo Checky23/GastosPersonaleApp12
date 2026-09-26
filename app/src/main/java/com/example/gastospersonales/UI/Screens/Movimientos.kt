@@ -297,11 +297,12 @@ fun MovimientosScreen(
                         CantidadDelMovimiento = movimiento.Monto,
                         TipoDeMovimiento = movimiento.TipoDeMovimiento,
                         Descripcion = movimiento.Descripcion,
+                        FechaHora = movimiento.FechaHora,
                         modifier =
                             Modifier.clickableUnico(500L,{
 
                                 if (cicleLifeOwner.lifecycle.currentState
-                                    .isAtLeast(Lifecycle.State.STARTED)){
+                                        .isAtLeast(Lifecycle.State.STARTED)){
 
                                     navController.navigate(
                                         "${Screen.DetalleMovimientoScreen.ruta}/${movimiento.Id}"

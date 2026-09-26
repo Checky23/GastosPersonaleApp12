@@ -38,34 +38,47 @@ import com.example.gastospersonales.UI.ComponentesVisuales.UsuarioNuevo
 import com.example.gastospersonales.UI.Navegacion.Screen
 import com.example.gastospersonales.ViewModel.RegistroViewModel
 
-//
+
 @Composable
 fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewModel = viewModel()) {
 
     val uiState = viewModel.uiState
+
+
+    var contraseñaVisual = remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    var hayErrorPassword by remember {
+        mutableStateOf(false)
+    }
+
+    // Muestra un Toast cada vez que el ViewModel reporta un error
+    // (campos vacíos, contraseñas distintas, error de Firebase, etc.)
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { mensaje ->
+            Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
+            viewModel.limpiarError()
+        }
+    }
+
+    // Avisa y navega al login cuando la cuenta se crea correctamente
     LaunchedEffect(uiState.cuentaCreada) {
-
         if (uiState.cuentaCreada) {
-
             Toast.makeText(
                 context,
                 "Cuenta creada correctamente",
                 Toast.LENGTH_SHORT
             ).show()
 
-            navController.navigate(
-                Screen.InicioDeSesionScreen.ruta
-            ) {
-                popUpTo(Screen.RegistroScreen.ruta) {
+            navController.navigate(Screen.InicioDeSesionScreen.ruta) {
+                popUpTo(Screen.InicioDeSesionScreen.ruta) {
                     inclusive = true
                 }
             }
         }
     }
-
-    var contraseñaVisual = remember { mutableStateOf(false) }
 
 
     // ---------- CONTENEDOR PRINCIPAL ----------
@@ -211,7 +224,7 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                     ),
                     esContrasena = true,
                     contraseñaVisual = contraseñaVisual.value,
-
+                    hayErrorPassword = hayErrorPassword
                 )
             }
 
@@ -225,7 +238,7 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                     tituloField = uiState.confirmarContraseña,
                     onValueChange = {
                         viewModel.cambiarConfirmarContraseña(it)
-
+                        hayErrorPassword = false
                     },
                     placeholder = "••••••••",
                     keyboard = KeyboardType.Password,
@@ -237,19 +250,19 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                     ),
                     esContrasena = true,
                     contraseñaVisual = contraseñaVisual.value,
-
+                    hayErrorPassword = hayErrorPassword
                 )
             }
 
 
             // ---------- ERROR ----------
 
-            if (uiState.error != null) {
+            if (hayErrorPassword) {
 
                 item {
 
                     Text(
-                        text = uiState.error!!,
+                        text = "Las contraseñas no coinciden",
                         fontSize = 12.sp,
                         color = Color.Red,
                         modifier = Modifier.padding(
@@ -302,54 +315,7 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                     onClick = {
 
                         viewModel.crearCuenta()
-
-                        /*if (uiState.contraseña != uiState.confirmarContraseña) {
-                            hayErrorPassword = true
-                        } else {
-                            hayErrorPassword = false
-
-                            // ---------- CREAR CUENTA ----------
-                            scope.launch {
-                                CreacionDeCuenta(
-                                    correo = correo.value,
-                                    contraseña = contrasena.value,
-                                    onSuccess = {
-                                        // Cuenta creada correctamente este sale en consola
-                                        Log.d("FirebaseAuth", "Cuenta creada correctamente")
-
-                                        //Mensaje Emergente de Confirmacion
-                                        Toast.makeText(context,
-                                            "Cuenta creada correctamente", Toast.LENGTH_SHORT
-                                        ).show()
-
-                                        //Navega a la pantalla de inicio de sesion
-                                        navController.navigate(Screen.InicioDeSesionScreen.ruta
-                                        ) { popUpTo(Screen.InicioDeSesionScreen.ruta) {
-                                            inclusive = true }
-                                        }
-
-                                    },
-                                    onError = { error ->
-                                        // Error al crear la cuenta este sale en consola
-                                        Log.e(
-                                            "FirebaseAuth",
-                                            "Error al crear cuenta",
-                                            Exception(error)
-                                        )
-
-                                        //Mensaje Emergente de Error
-                                        Toast.makeText(
-                                            context,
-                                            "Error al crear cuenta",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                )
-                            }
-                        }*/
-
                     },
-                    enabled = !uiState.cargando,
 
                     shape = RoundedCornerShape(16.dp),
 
@@ -368,11 +334,7 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
                 ) {
 
                     Text(
-                        text = if (uiState.cargando) {
-                            "Creando cuenta..."
-                        } else {
-                            "Crear cuenta"
-                        },
+                        text = "Crear cuenta",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White

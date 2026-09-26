@@ -34,10 +34,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import android.widget.Toast
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -57,8 +59,9 @@ import com.example.gastospersonales.UI.Temas.SubTituloGris
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.UI.Temas.VerdeClaro
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
+import java.time.LocalDateTime
 import kotlinx.coroutines.launch
-//
+
 @Composable
 fun AgregarGastosScreen(
     navController: NavHostController,
@@ -67,6 +70,8 @@ fun AgregarGastosScreen(
 ) {
 
     // ---------------- ESTADOS ----------------
+
+    val context = LocalContext.current
 
     var categoriaSeleccionada by remember {
         mutableStateOf("Comida")
@@ -84,11 +89,22 @@ fun AgregarGastosScreen(
         mutableStateOf("")
     }
 
+    // Tipo de movimiento (Ingreso/Egreso), elevado desde SelectorTipoMovimiento
+    var tipoSeleccionado by remember {
+        mutableStateOf("Egreso")
+    }
+
+    // Guarda la FechaHora original del movimiento cuando se está editando,
+    // para no pisarla con la hora actual al guardar.
+    var fechaHoraOriginal by remember {
+        mutableStateOf(LocalDateTime.now())
+    }
+
     val esEdicion = movimientoId != 0
 
     // Observamos la lista para buscar el movimiento si es edición
     val movimientos by viewModel.movimientos.collectAsState()
-    
+
     // Cuando la pantalla se abre, revisa si hay un ID.
     // Si lo hay, busca el movimiento y "autocompleta" los campos.
     LaunchedEffect(movimientoId) {
@@ -98,7 +114,9 @@ fun AgregarGastosScreen(
                 categoriaSeleccionada = movimientoAEditar.Gasto
                 monto = movimientoAEditar.Monto.toString()
                 descripcion = movimientoAEditar.Descripcion
-                // Si en el futuro tienes fecha en el modelo, la asignas aquí también
+                tipoSeleccionado =
+                    if (movimientoAEditar.TipoDeMovimiento) "Ingreso" else "Egreso"
+                fechaHoraOriginal = movimientoAEditar.FechaHora
             }
         }
     }
@@ -333,6 +351,9 @@ fun AgregarGastosScreen(
                 modifier = Modifier.height(10.dp)
             )
 
+            // Nota: este campo de texto libre todavía no está conectado
+            // a la FechaHora real del movimiento (esa se genera sola,
+            // en el ViewModel). Se deja igual para no romper la validación.
 
             TextField(
 
@@ -445,7 +466,10 @@ fun AgregarGastosScreen(
                 modifier = Modifier.height(20.dp)
             )
 
-            SelectorTipoMovimiento()
+            SelectorTipoMovimiento(
+                valorSeleccionado = tipoSeleccionado,
+                onValorSeleccionadoChange = { tipoSeleccionado = it }
+            )
 
 
             // Espacio final para poder hacer scroll
@@ -466,19 +490,65 @@ fun AgregarGastosScreen(
 
             onClick = {
 
-                if (
-                    monto.isNotBlank() &&
-                    categoriaSeleccionada.isNotBlank() &&
-                    fecha.isNotBlank()
-                ) {
+                val montoValido = monto.replace(",", ".").toDoubleOrNull()
 
-                    viewModel.agregarMovimiento(
-                        gasto = categoriaSeleccionada,
-                        descripcion = descripcion,
-                        monto = monto
-                    )
+                when {
+                    monto.isBlank() -> {
+                        Toast.makeText(
+                            context,
+                            "Ingresa un monto para continuar",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-                    navController.popBackStack()
+                    montoValido == null || montoValido <= 0.0 -> {
+                        Toast.makeText(
+                            context,
+                            "Ingresa un monto válido",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    categoriaSeleccionada.isBlank() -> {
+                        Toast.makeText(
+                            context,
+                            "Selecciona una categoría",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    fecha.isBlank() -> {
+                        Toast.makeText(
+                            context,
+                            "Ingresa una fecha",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    else -> {
+
+                        val esIngreso = tipoSeleccionado == "Ingreso"
+
+                        if (esEdicion) {
+                            viewModel.editarMovimiento(
+                                id = movimientoId,
+                                gasto = categoriaSeleccionada,
+                                descripcion = descripcion,
+                                monto = monto,
+                                tipoDeMovimiento = esIngreso,
+                                fechaHoraOriginal = fechaHoraOriginal
+                            )
+                        } else {
+                            viewModel.agregarMovimiento(
+                                gasto = categoriaSeleccionada,
+                                descripcion = descripcion,
+                                monto = monto,
+                                tipoDeMovimiento = esIngreso
+                            )
+                        }
+
+                        navController.popBackStack()
+                    }
                 }
             },
 
@@ -622,4 +692,3 @@ fun PreviewAgregarGasto() {
         movimientoId = 0
     )
 }
-
