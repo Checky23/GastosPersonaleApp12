@@ -51,6 +51,10 @@ fun UsuarioNuevo(
         singleLine = true,
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
+
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             focusedIndicatorColor = Color(0xFFE7EAF0),

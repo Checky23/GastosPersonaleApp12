@@ -215,7 +215,11 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
         TextButton(
             onClick = {
-                // Recuperación de contraseña
+                Toast.makeText(
+                context,
+                "Próximamente: Recuperación de contraseña",
+                Toast.LENGTH_SHORT
+            ).show()
             },
             modifier = Modifier.constrainAs(olvidar) {
                 top.linkTo(botonLogin.bottom, margin = 4.dp)
