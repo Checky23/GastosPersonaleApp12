@@ -1,6 +1,7 @@
 package com.example.gastospersonales.UI.Screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -271,6 +272,12 @@ fun InicioDeSesionScreen(navController: NavHostController) {
 
                         onError = { error ->
                             Log.e("GoogleAuth", error)
+
+                            Toast.makeText(
+                                context,
+                                "No se pudo iniciar sesión con Google",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
 
 

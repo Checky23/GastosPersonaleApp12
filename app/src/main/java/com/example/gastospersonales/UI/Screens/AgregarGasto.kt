@@ -32,10 +32,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import android.widget.Toast
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -64,6 +66,8 @@ fun AgregarGastosScreen(
 ) {
 
     // ---------------- ESTADOS ----------------
+
+    val context = LocalContext.current
 
     var categoriaSeleccionada by remember {
         mutableStateOf("Comida")
@@ -444,19 +448,50 @@ fun AgregarGastosScreen(
 
             onClick = {
 
-                if (
-                    monto.isNotBlank() &&
-                    categoriaSeleccionada.isNotBlank() &&
-                    fecha.isNotBlank()
-                ) {
+                val montoValido = monto.replace(",", ".").toDoubleOrNull()
 
-                    viewModel.agregarMovimiento(
-                        gasto = categoriaSeleccionada,
-                        descripcion = descripcion,
-                        monto = monto
-                    )
+                when {
+                    monto.isBlank() -> {
+                        Toast.makeText(
+                            context,
+                            "Ingresa un monto para continuar",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-                    navController.popBackStack()
+                    montoValido == null || montoValido <= 0.0 -> {
+                        Toast.makeText(
+                            context,
+                            "Ingresa un monto válido",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    categoriaSeleccionada.isBlank() -> {
+                        Toast.makeText(
+                            context,
+                            "Selecciona una categoría",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    fecha.isBlank() -> {
+                        Toast.makeText(
+                            context,
+                            "Ingresa una fecha",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    else -> {
+                        viewModel.agregarMovimiento(
+                            gasto = categoriaSeleccionada,
+                            descripcion = descripcion,
+                            monto = monto
+                        )
+
+                        navController.popBackStack()
+                    }
                 }
             },
 
@@ -600,4 +635,3 @@ fun PreviewAgregarGasto() {
         viewModel = viewModel()
     )
 }
-

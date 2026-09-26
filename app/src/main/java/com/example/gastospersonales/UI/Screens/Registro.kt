@@ -1,5 +1,6 @@
 package com.example.gastospersonales.UI.Screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +52,32 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
 
     var hayErrorPassword by remember {
         mutableStateOf(false)
+    }
+
+    // Muestra un Toast cada vez que el ViewModel reporta un error
+    // (campos vacíos, contraseñas distintas, error de Firebase, etc.)
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { mensaje ->
+            Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
+            viewModel.limpiarError()
+        }
+    }
+
+    // Avisa y navega al login cuando la cuenta se crea correctamente
+    LaunchedEffect(uiState.cuentaCreada) {
+        if (uiState.cuentaCreada) {
+            Toast.makeText(
+                context,
+                "Cuenta creada correctamente",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(Screen.InicioDeSesionScreen.ruta) {
+                popUpTo(Screen.InicioDeSesionScreen.ruta) {
+                    inclusive = true
+                }
+            }
+        }
     }
 
 
@@ -285,54 +313,7 @@ fun RegistroScreen(navController: NavHostController, viewModel: RegistroViewMode
 
                 Button(
                     onClick = {
-
                         viewModel.crearCuenta()
-
-                        /*if (uiState.contraseña != uiState.confirmarContraseña) {
-                            hayErrorPassword = true
-                        } else {
-                            hayErrorPassword = false
-
-                            // ---------- CREAR CUENTA ----------
-                            scope.launch {
-                                CreacionDeCuenta(
-                                    correo = correo.value,
-                                    contraseña = contrasena.value,
-                                    onSuccess = {
-                                        // Cuenta creada correctamente este sale en consola
-                                        Log.d("FirebaseAuth", "Cuenta creada correctamente")
-
-                                        //Mensaje Emergente de Confirmacion
-                                        Toast.makeText(context,
-                                            "Cuenta creada correctamente", Toast.LENGTH_SHORT
-                                        ).show()
-
-                                        //Navega a la pantalla de inicio de sesion
-                                        navController.navigate(Screen.InicioDeSesionScreen.ruta
-                                        ) { popUpTo(Screen.InicioDeSesionScreen.ruta) {
-                                            inclusive = true }
-                                        }
-
-                                    },
-                                    onError = { error ->
-                                        // Error al crear la cuenta este sale en consola
-                                        Log.e(
-                                            "FirebaseAuth",
-                                            "Error al crear cuenta",
-                                            Exception(error)
-                                        )
-
-                                        //Mensaje Emergente de Error
-                                        Toast.makeText(
-                                            context,
-                                            "Error al crear cuenta",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                )
-                            }
-                        }*/
-
                     },
 
                     shape = RoundedCornerShape(16.dp),

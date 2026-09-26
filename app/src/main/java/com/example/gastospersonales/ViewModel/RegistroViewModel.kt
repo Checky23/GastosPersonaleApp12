@@ -16,7 +16,7 @@ class RegistroViewModel : ViewModel() {
 
     private val repository = AuthRepository()
     var uiState by mutableStateOf(UI_EstadoRegistro())
-    private set
+        private set
 
     fun cambiarNombre (nuevoNombre:String){
         uiState = uiState.copy(nombre = nuevoNombre)
@@ -50,7 +50,7 @@ class RegistroViewModel : ViewModel() {
             confirmarContraseña.isEmpty() -> "Error - La confirmacion de la contraseña no puede estar vacía"
             contraseña != confirmarContraseña -> "Error - Las contraseñas no coinciden"
             else -> null
-        // Si todo está bien, no hay error
+            // Si todo está bien, no hay error
         }
 
         //  Actualizamos el estado de la UI una sola vez
@@ -94,5 +94,11 @@ class RegistroViewModel : ViewModel() {
 
     }
 
+    // Se llama justo después de mostrar el Toast, para que si el usuario
+    // vuelve a cometer el mismo error, el estado cambie (null -> mensaje)
+    // y el Toast se pueda volver a disparar.
+    fun limpiarError() {
+        uiState = uiState.copy(error = null)
+    }
 
 }
