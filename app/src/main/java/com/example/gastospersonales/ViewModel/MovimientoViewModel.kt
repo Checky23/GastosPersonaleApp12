@@ -7,13 +7,9 @@ import java.time.LocalDateTime
 
 class MovimientoViewModel : ViewModel() {
 
+
+    // Accedemos al Repositoy para obtener la lista de movimientos desde el ViewModel.
     val movimientos = MovimientoRepository.movimientos
-
-
-    // =========================================================
-    // AGREGAR MOVIMIENTO
-    // =========================================================
-
     fun agregarMovimiento(
         gasto: String,
         descripcion: String,
@@ -33,10 +29,6 @@ class MovimientoViewModel : ViewModel() {
         MovimientoRepository.agregarMovimiento(movimiento)
     }
 
-
-    // =========================================================
-    // EDITAR MOVIMIENTO
-    // =========================================================
 
     fun editarMovimiento(
         id: Int,
@@ -63,20 +55,15 @@ class MovimientoViewModel : ViewModel() {
         )
     }
 
-
-    // =========================================================
-    // ELIMINAR MOVIMIENTO
-    // =========================================================
+    fun obtenerMovimiento(id: Int): RegistroDeMovimientos? {
+        return movimientos.value.find { it.Id == id }
+    }
 
     fun eliminarMovimiento(id: Int) {
 
         MovimientoRepository.eliminarMovimiento(id)
     }
 
-
-    // =========================================================
-    // OBTENER ICONO
-    // =========================================================
 
     private fun obtenerIcono(gasto: String): String {
 

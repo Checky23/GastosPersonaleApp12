@@ -64,9 +64,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AgregarGastosScreen(
-    navController: NavHostController,
     viewModel: MovimientoViewModel = viewModel(),
-    movimientoId: Int
+    movimientoId: Int,
+    onTerminar : () -> Unit,
 ) {
 
     // ---------------- ESTADOS ----------------
@@ -542,7 +542,7 @@ fun AgregarGastosScreen(
                             )
                         }
 
-                        navController.popBackStack()
+                        onTerminar()
                     }
                 }
             },
@@ -592,7 +592,7 @@ fun AgregarGastosScreen(
 
             modifier = Modifier
                 .clickable {
-                    navController.popBackStack()
+                    onTerminar()
                 }
                 .constrainAs(cancelText) {
 
@@ -683,8 +683,8 @@ fun PreviewAgregarGasto() {
     val navController = rememberNavController()
 
     AgregarGastosScreen(
-        navController = navController,
-        movimientoId = 0
+        movimientoId = 0,
+        onTerminar = {}
     )
 }
 

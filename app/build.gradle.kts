@@ -50,6 +50,8 @@ android {
     buildFeatures {
         compose = true
     }
+
+
 }
 
 dependencies {
@@ -66,10 +68,12 @@ dependencies {
 
     testImplementation(libs.junit)
     implementation(libs.androidx.constraintlayout.compose)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 
+    debugImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
