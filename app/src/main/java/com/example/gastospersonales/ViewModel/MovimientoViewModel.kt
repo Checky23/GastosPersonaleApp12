@@ -7,9 +7,29 @@ import java.time.LocalDateTime
 
 class MovimientoViewModel : ViewModel() {
 
-
-    // Accedemos al Repositoy para obtener la lista de movimientos desde el ViewModel.
+    // Accedemos al Repository para obtener la lista de movimientos.
     val movimientos = MovimientoRepository.movimientos
+
+
+    // Calculamos el total de ingresos a partir de los movimientos.
+    val totalIngresos: Int
+        get() = movimientos.value
+            .filter { it.TipoDeMovimiento }
+            .sumOf { it.Monto }
+
+
+    // Calculamos el total de gastos a partir de los movimientos.
+    val totalGastos: Int
+        get() = movimientos.value
+            .filter { !it.TipoDeMovimiento }
+            .sumOf { it.Monto }
+
+
+    // Calculamos el saldo restando los gastos a los ingresos.
+    val saldo: Int
+        get() = totalIngresos - totalGastos
+
+
     fun agregarMovimiento(
         gasto: String,
         descripcion: String,
@@ -55,9 +75,6 @@ class MovimientoViewModel : ViewModel() {
         )
     }
 
-    fun obtenerMovimiento(id: Int): RegistroDeMovimientos? {
-        return movimientos.value.find { it.Id == id }
-    }
 
     fun eliminarMovimiento(id: Int) {
 

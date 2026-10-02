@@ -1,5 +1,6 @@
 package com.example.gastospersonales.UI.Screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,7 +35,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import android.widget.Toast
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.gastospersonales.UI.ComponentesVisuales.SelectorTipoMovimiento
 import com.example.gastospersonales.UI.Temas.Fondo
@@ -59,14 +58,14 @@ import com.example.gastospersonales.UI.Temas.SubTituloGris
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.UI.Temas.VerdeClaro
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-import java.time.LocalDateTime
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @Composable
 fun AgregarGastosScreen(
     viewModel: MovimientoViewModel = viewModel(),
     movimientoId: Int,
-    onTerminar : () -> Unit,
+    onTerminar: () -> Unit,
 ) {
 
     // ---------------- ESTADOS ----------------

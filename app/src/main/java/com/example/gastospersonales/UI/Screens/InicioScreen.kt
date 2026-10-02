@@ -8,16 +8,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
 import com.example.gastospersonales.UI.ComponentesVisuales.ResumenMensualCard
 import com.example.gastospersonales.UI.ComponentesVisuales.TarjetaDeSaldoScreen
@@ -31,24 +29,27 @@ import com.example.gastospersonales.ViewModel.MovimientoViewModel
 
 @Composable
 fun InicioScreen(
-    navController: NavController = rememberNavController(),
-    viewModel: MovimientoViewModel = viewModel()
+    viewModel: MovimientoViewModel
 ) {
 
-    val movimientos by viewModel.movimientos.collectAsState()
+    val movimientos by viewModel.movimientos.collectAsStateWithLifecycle()
 
-    // Sumar ingresos
-    val totalIngresos = movimientos
-        .filter { it.TipoDeMovimiento }
-        .sumOf { it.Monto }
+    InicioContent(
+        movimientos = movimientos,
+        saldo = viewModel.saldo,
+        totalIngresos = viewModel.totalIngresos,
+        totalGastos = viewModel.totalGastos
+    )
+}
 
-    // Sumar gastos
-    val totalGastos = movimientos
-        .filter { !it.TipoDeMovimiento }
-        .sumOf { it.Monto }
 
-    // Calcular saldo
-    val saldo = totalIngresos - totalGastos
+@Composable
+private fun InicioContent(
+    movimientos: List<com.example.gastospersonales.Data.Model.RegistroDeMovimientos>,
+    saldo: Int,
+    totalIngresos: Int,
+    totalGastos: Int
+) {
 
     ConstraintLayout(
         modifier = Modifier
@@ -66,19 +67,19 @@ fun InicioScreen(
             listaMovimientos
         ) = createRefs()
 
-        Text(
-            text = "Resumen financiero",
-            fontSize = TextSizes.Titulo2,
-            fontWeight = FontWeight.Bold,
-            color = NegroTitulo,
+
+        TextosTitulo(
+            texto = "Resumen financiero",
+            fontSize = TextSizes.Titulo1,
             modifier = Modifier.constrainAs(tituloResumen) {
                 start.linkTo(parent.start, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 35.dp)
             }
         )
 
+
         TarjetaDeSaldoScreen(
-            saldo,
+            saldo = saldo,
             modifier = Modifier.constrainAs(tarjetaSaldo) {
                 start.linkTo(parent.start, Dimens.EspacioGrande)
                 end.linkTo(parent.end, Dimens.EspacioGrande)
@@ -86,16 +87,16 @@ fun InicioScreen(
             }
         )
 
-        Text(
-            text = "Este mes",
+
+        TextosTitulo(
+            texto = "Este mes",
             fontSize = TextSizes.Subtitulo1,
-            fontWeight = FontWeight.Bold,
-            color = NegroTitulo,
             modifier = Modifier.constrainAs(tituloEsteMes) {
                 start.linkTo(parent.start, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 300.dp)
             }
         )
+
 
         ResumenMensualCard(
             modifier = Modifier.constrainAs(tarjetaIngresos) {
@@ -103,9 +104,10 @@ fun InicioScreen(
                 top.linkTo(parent.top, 340.dp)
             },
             colorDeLetra = VerdeApp,
-            Cantidad = totalIngresos,
-            "Ingresos"
+            cantidad = totalIngresos,
+            texto = "Ingresos"
         )
+
 
         ResumenMensualCard(
             modifier = Modifier.constrainAs(tarjetaGastos) {
@@ -113,20 +115,20 @@ fun InicioScreen(
                 top.linkTo(parent.top, 340.dp)
             },
             colorDeLetra = RojoGasto,
-            Cantidad = totalGastos,
-            "Gastos"
+            cantidad = totalGastos,
+            texto = "Gastos"
         )
 
-        Text(
-            text = "Movimientos recientes",
+
+        TextosTitulo(
+            texto = "Movimientos recientes",
             fontSize = TextSizes.Subtitulo1,
-            fontWeight = FontWeight.Bold,
-            color = NegroTitulo,
             modifier = Modifier.constrainAs(tituloMovimientos) {
                 start.linkTo(parent.start, Dimens.EspacioGrande)
                 top.linkTo(parent.top, 444.dp)
             }
         )
+
 
         LazyColumn(
             modifier = Modifier
@@ -156,11 +158,31 @@ fun InicioScreen(
     }
 }
 
+
+@Composable
+private fun TextosTitulo(
+    texto: String,
+    fontSize: TextUnit,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = texto,
+        fontSize = fontSize,
+        fontWeight = FontWeight.Bold,
+        color = NegroTitulo,
+        modifier = modifier
+    )
+}
+
+
 @Preview(showBackground = true)
 @Composable
-fun InicioPreviow() {
+fun InicioPreview() {
 
-    val navController = rememberNavController()
-
-    InicioScreen(navController)
+    InicioContent(
+        movimientos = emptyList(),
+        saldo = 0,
+        totalIngresos = 0,
+        totalGastos = 0
+    )
 }

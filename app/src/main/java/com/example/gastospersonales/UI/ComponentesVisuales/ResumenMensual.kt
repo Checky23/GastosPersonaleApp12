@@ -23,8 +23,8 @@ import java.util.Locale
 fun ResumenMensualCard(
     modifier: Modifier = Modifier,
     colorDeLetra: Color,
-    Cantidad: Int,
-    Texto: String
+    cantidad: Int,
+    texto: String
 ) {
     Surface(
         modifier = modifier
@@ -39,7 +39,7 @@ fun ResumenMensualCard(
         ) {
 
             Text(
-                text = Texto,
+                text = texto,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
                 color = SubTituloGris,
@@ -48,7 +48,10 @@ fun ResumenMensualCard(
                     top.linkTo(parent.top, 20.dp)
                 }
             )
-            val dinero = NumberFormat.getNumberInstance(Locale.US).format(Cantidad)
+
+            val dinero =
+                NumberFormat.getNumberInstance(Locale.US).format(cantidad)
+
             Text(
                 text = "C$ $dinero",
                 fontSize = 21.sp,
@@ -63,8 +66,13 @@ fun ResumenMensualCard(
     }
 }
 
+
 @Preview
 @Composable
 fun ResumenMensualCardPreview() {
-    ResumenMensualCard(colorDeLetra = VerdeApp , Cantidad = 5000 , Texto = "Gastos")
+    ResumenMensualCard(
+        colorDeLetra = VerdeApp,
+        cantidad = 5000,
+        texto = "Gastos"
+    )
 }

@@ -21,7 +21,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun TarjetaDeSaldoScreen (Cantidad: Int ,modifier: Modifier = Modifier){
+fun TarjetaDeSaldoScreen (saldo: Int ,modifier: Modifier = Modifier){
 
 
     Surface(
@@ -48,9 +48,9 @@ fun TarjetaDeSaldoScreen (Cantidad: Int ,modifier: Modifier = Modifier){
                     top.linkTo(parent.top, 30.dp)
                 }
             )
-            val dinero = NumberFormat.getNumberInstance(Locale.US).format(Cantidad)
+            val dinero = NumberFormat.getNumberInstance(Locale.US).format(saldo)
             // Cantidad disponible
-            if (Cantidad >= 0 ){
+            if (saldo >= 0 ){
 
                 Text(
                     text = "C$ $dinero",
@@ -75,7 +75,7 @@ fun TarjetaDeSaldoScreen (Cantidad: Int ,modifier: Modifier = Modifier){
                 )
             }
 
-            if (Cantidad >0 ){
+            if (saldo >0 ){
                 Text(
                     text = "Disponible para tus próximos gastos",
                     fontSize = 12.sp,
