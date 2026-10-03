@@ -139,6 +139,7 @@ fun NavGraphBuilder.movimientoNavigation(
                 },
 
                 onEliminarClick = {
+                    viewModel.eliminarMovimiento(movimientoId)
                     navController.popBackStack()
                 },
 
