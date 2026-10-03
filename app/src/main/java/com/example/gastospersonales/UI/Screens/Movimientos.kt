@@ -13,8 +13,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,42 +32,46 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.gastospersonales.UI.ComponentesVisuales.BarraBusqueda
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
 import com.example.gastospersonales.UI.ComponentesVisuales.MovimientosRecientesScreen
+import com.example.gastospersonales.UI.ComponentesVisuales.TextosTitulo
 import com.example.gastospersonales.UI.Extenciones.clickableUnico
-import com.example.gastospersonales.UI.Navegacion.Screen
 import com.example.gastospersonales.UI.Temas.Dimens
 import com.example.gastospersonales.UI.Temas.Fondo
 import com.example.gastospersonales.UI.Temas.GrisBorde
-import com.example.gastospersonales.UI.Temas.NegroTitulo
 import com.example.gastospersonales.UI.Temas.SubTituloGris
 import com.example.gastospersonales.UI.Temas.TextSizes
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-//
-enum class TipoFiltro {
-    TODOS,
-    GASTOS,
-    INGRESOS
-}
+
 
 @Composable
 fun MovimientosScreen(
-    navController: NavHostController = rememberNavController(),
-    viewModel: MovimientoViewModel = viewModel()
+    viewModel: MovimientoViewModel,
+    onMovimientoClick: (Int) -> Unit
 ) {
 
-    val cicleLifeOwner = LocalLifecycleOwner.current
+    val movimientos by viewModel.movimientos.collectAsStateWithLifecycle()
 
-    val movimientos by viewModel.movimientos.collectAsState()
+    MovimientosScreenContent(
+        movimientos = movimientos,
+        onMovimientoClick = onMovimientoClick
+    )
+}
+
+
+@Composable
+private fun MovimientosScreenContent(
+    movimientos: List<RegistroDeMovimientos>,
+    onMovimientoClick: (Int) -> Unit
+) {
+
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     var busquedaDelUsuario by remember {
         mutableStateOf("")
@@ -67,21 +81,21 @@ fun MovimientosScreen(
         mutableStateOf(TipoFiltro.TODOS)
     }
 
-    // Filtrado por búsqueda y por tipo
-    val movimientosFiltrados = movimientos
-        .filter { movimiento ->
 
-            val coincideBusqueda =
-                movimiento.Gasto.contains(
-                    busquedaDelUsuario,
-                    ignoreCase = true
-                ) ||
-                        movimiento.Descripcion.contains(
-                            busquedaDelUsuario,
-                            ignoreCase = true
-                        )
+    val movimientosFiltrados = movimientos.filter { movimiento ->
 
-            val coincideFiltro = when (filtroSeleccionado) {
+        val coincideBusqueda =
+            movimiento.Gasto.contains(
+                busquedaDelUsuario,
+                ignoreCase = true
+            ) ||
+                    movimiento.Descripcion.contains(
+                        busquedaDelUsuario,
+                        ignoreCase = true
+                    )
+
+        val coincideFiltro =
+            when (filtroSeleccionado) {
 
                 TipoFiltro.TODOS -> true
 
@@ -92,8 +106,9 @@ fun MovimientosScreen(
                     movimiento.TipoDeMovimiento
             }
 
-            coincideBusqueda && coincideFiltro
-        }
+        coincideBusqueda && coincideFiltro
+    }
+
 
     ConstraintLayout(
         modifier = Modifier
@@ -110,15 +125,9 @@ fun MovimientosScreen(
             list
         ) = createRefs()
 
-        // ---------------------------
-        // TÍTULO
-        // ---------------------------
-
-        Text(
-            text = "Movimientos",
+        TextosTitulo(
+            texto = "Movimientos",
             fontSize = TextSizes.Titulo1,
-            fontWeight = FontWeight.Bold,
-            color = NegroTitulo,
             modifier = Modifier.constrainAs(title) {
                 top.linkTo(
                     parent.top,
@@ -127,11 +136,9 @@ fun MovimientosScreen(
 
                 start.linkTo(parent.start)
             }
+
         )
 
-        // ---------------------------
-        // SUBTÍTULO
-        // ---------------------------
 
         Text(
             text = "Historial financiero",
@@ -147,9 +154,6 @@ fun MovimientosScreen(
             }
         )
 
-        // ---------------------------
-        // BARRA DE BÚSQUEDA
-        // ---------------------------
 
         BarraBusqueda(
             texto = busquedaDelUsuario,
@@ -168,19 +172,14 @@ fun MovimientosScreen(
                 )
 
                 start.linkTo(parent.start)
-
                 end.linkTo(parent.end)
 
                 width = Dimension.fillToConstraints
             }
         )
 
-        // ---------------------------
-        // FILTROS
-        // ---------------------------
 
         Row(
-
             modifier = Modifier.constrainAs(chips) {
 
                 top.linkTo(
@@ -197,67 +196,51 @@ fun MovimientosScreen(
 
             FilterChip(
                 text = "Todos",
-
                 isSelected =
-                    filtroSeleccionado ==
-                            TipoFiltro.TODOS,
-
+                    filtroSeleccionado == TipoFiltro.TODOS,
                 onClick = {
-                    filtroSeleccionado =
-                        TipoFiltro.TODOS
+                    filtroSeleccionado = TipoFiltro.TODOS
                 }
             )
 
             FilterChip(
                 text = "Gastos",
-
                 isSelected =
-                    filtroSeleccionado ==
-                            TipoFiltro.GASTOS,
-
+                    filtroSeleccionado == TipoFiltro.GASTOS,
                 onClick = {
-                    filtroSeleccionado =
-                        TipoFiltro.GASTOS
+                    filtroSeleccionado = TipoFiltro.GASTOS
                 }
             )
 
             FilterChip(
                 text = "Ingresos",
-
                 isSelected =
-                    filtroSeleccionado ==
-                            TipoFiltro.INGRESOS,
-
+                    filtroSeleccionado == TipoFiltro.INGRESOS,
                 onClick = {
-                    filtroSeleccionado =
-                        TipoFiltro.INGRESOS
+                    filtroSeleccionado = TipoFiltro.INGRESOS
                 }
             )
         }
 
-        // ---------------------------
-        // LISTA
-        // ---------------------------
 
         LazyColumn(
-
             verticalArrangement =
                 Arrangement.spacedBy(Dimens.EspacioPequeno),
 
-            modifier =
-                Modifier.constrainAs(list) {
+            modifier = Modifier.constrainAs(list) {
 
-                    top.linkTo(
-                        chips.bottom,
-                        margin = Dimens.EspacioGrande
-                    )
+                top.linkTo(
+                    chips.bottom,
+                    margin = Dimens.EspacioGrande
+                )
 
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                },
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+
+                width = Dimension.fillToConstraints
+                height = Dimension.fillToConstraints
+            },
 
             contentPadding =
                 PaddingValues(bottom = 90.dp)
@@ -268,12 +251,10 @@ fun MovimientosScreen(
                 item {
 
                     Text(
-                        text =
-                            "No se encontraron movimientos",
+                        text = "No se encontraron movimientos",
                         color = SubTituloGris,
-                        fontSize = 14.sp,
+                        fontSize = TextSizes.Cuerpo,
                         textAlign = TextAlign.Center,
-
 
                         modifier = Modifier
                             .fillMaxWidth()
@@ -298,20 +279,18 @@ fun MovimientosScreen(
                         TipoDeMovimiento = movimiento.TipoDeMovimiento,
                         Descripcion = movimiento.Descripcion,
                         FechaHora = movimiento.FechaHora,
-                        modifier =
-                            Modifier.clickableUnico(500L,{
 
-                                if (cicleLifeOwner.lifecycle.currentState
-                                        .isAtLeast(Lifecycle.State.STARTED)){
+                        modifier = Modifier.clickableUnico(
+                            500L
+                        ) {
 
-                                    navController.navigate(
-                                        "${Screen.DetalleMovimientoScreen.ruta}/${movimiento.Id}"
-                                    ){
-                                        launchSingleTop = true }
-
-                                }
+                            if (
+                                lifecycleOwner.lifecycle.currentState
+                                    .isAtLeast(Lifecycle.State.STARTED)
+                            ) {
+                                onMovimientoClick(movimiento.Id)
                             }
-                            )
+                        }
                     )
                 }
             }
@@ -319,8 +298,9 @@ fun MovimientosScreen(
     }
 }
 
+
 @Composable
-fun FilterChip(
+private fun FilterChip(
     text: String,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -360,8 +340,8 @@ fun FilterChip(
                 )
         }
 
-    Box(
 
+    Box(
         modifier = modifier
             .clickable(
                 onClick = onClick
@@ -371,23 +351,70 @@ fun FilterChip(
                 vertical = Dimens.EspacioPequeno
             ),
 
-        contentAlignment =
-            Alignment.Center
+        contentAlignment = Alignment.Center
     ) {
 
         Text(
             text = text,
             color = textColor,
             fontSize = TextSizes.Cuerpo,
-            fontWeight =
-                FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun MovimientosScreenPreview() {
 
-    MovimientosScreen()
+    MovimientosScreenContent(
+        movimientos = emptyList(),
+        onMovimientoClick = {}
+    )
+}
+
+private enum class TipoFiltro {
+    TODOS,
+    GASTOS,
+    INGRESOS
+}
+
+
+@Composable
+private fun BarraBusqueda(
+    texto: String,
+    onTextoChange: (String) -> Unit,
+    placeholder: String = "Buscar...",
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = texto,
+        onValueChange = onTextoChange,
+        modifier = modifier.fillMaxWidth(),
+        placeholder = {
+            Text(text = placeholder)
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Buscar"
+            )
+        },
+        trailingIcon = {
+            if (texto.isNotEmpty()) {
+                IconButton(
+                    onClick = {
+                        onTextoChange("")
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Limpiar búsqueda"
+                    )
+                }
+            }
+        },
+        singleLine = true
+    )
 }

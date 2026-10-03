@@ -1,7 +1,9 @@
 package com.example.gastospersonales.UI.Navegacion
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -14,41 +16,38 @@ import com.example.gastospersonales.UI.Screens.InicioScreen
 import com.example.gastospersonales.UI.Screens.MovimientosScreen
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
 
+
 fun NavGraphBuilder.movimientoNavigation(
     navController: NavHostController
 ) {
 
     navigation(
         startDestination = Screen.InicioScreen.ruta,
-        route = "grupo_movimientos"
+        route = Screen.GrupoMovimientos.ruta
     ) {
 
+
+        // INICIO
 
 
         composable(
             Screen.InicioScreen.ruta
         ) { backStackEntry ->
 
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(
-                    "grupo_movimientos"
+            val viewModel =
+                obtenerMovimientoViewModel(
+                    navController,
+                    backStackEntry
                 )
-            }
-
-            val viewModel: MovimientoViewModel = viewModel(
-                viewModelStoreOwner = parentEntry
-            )
 
             InicioScreen(
-                navController = navController,
                 viewModel = viewModel
             )
         }
 
 
-        // ---------------------------
         // AGREGAR / EDITAR
-        // ---------------------------
+
 
         composable(
             route = "${Screen.AgregarGastosScreen.ruta}/{movimientoId}",
@@ -64,15 +63,11 @@ fun NavGraphBuilder.movimientoNavigation(
                     ?.getInt("movimientoId")
                     ?: 0
 
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(
-                    "grupo_movimientos"
+            val viewModel =
+                obtenerMovimientoViewModel(
+                    navController,
+                    backStackEntry
                 )
-            }
-
-            val viewModel: MovimientoViewModel = viewModel(
-                viewModelStoreOwner = parentEntry
-            )
 
             AgregarGastosScreen(
                 viewModel = viewModel,
@@ -84,34 +79,34 @@ fun NavGraphBuilder.movimientoNavigation(
         }
 
 
-        // ---------------------------
         // MOVIMIENTOS
-        // ---------------------------
 
         composable(
             Screen.MovimientosScreen.ruta
         ) { backStackEntry ->
 
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(
-                    "grupo_movimientos"
+            val viewModel =
+                obtenerMovimientoViewModel(
+                    navController,
+                    backStackEntry
                 )
-            }
-
-            val viewModel: MovimientoViewModel = viewModel(
-                viewModelStoreOwner = parentEntry
-            )
 
             MovimientosScreen(
-                navController = navController,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onMovimientoClick = { movimientoId ->
+
+                    navController.navigate(
+                        "${Screen.DetalleMovimientoScreen.ruta}/$movimientoId"
+                    ) {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 
 
-        // ---------------------------
         // DETALLE
-        // ---------------------------
+
 
         composable(
             route = "${Screen.DetalleMovimientoScreen.ruta}/{movimientoId}",
@@ -127,15 +122,11 @@ fun NavGraphBuilder.movimientoNavigation(
                     ?.getInt("movimientoId")
                     ?: 0
 
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(
-                    "grupo_movimientos"
+            val viewModel =
+                obtenerMovimientoViewModel(
+                    navController,
+                    backStackEntry
                 )
-            }
-
-            val viewModel: MovimientoViewModel = viewModel(
-                viewModelStoreOwner = parentEntry
-            )
 
             DetalleMovimientoScreen(
                 viewModel = viewModel,
@@ -157,4 +148,22 @@ fun NavGraphBuilder.movimientoNavigation(
             )
         }
     }
+}
+
+
+@Composable
+private fun obtenerMovimientoViewModel(
+    navController: NavHostController,
+    backStackEntry: NavBackStackEntry
+): MovimientoViewModel {
+
+    val parentEntry = remember(backStackEntry) {
+        navController.getBackStackEntry(
+            Screen.GrupoMovimientos.ruta
+        )
+    }
+
+    return viewModel(
+        viewModelStoreOwner = parentEntry
+    )
 }

@@ -2,6 +2,8 @@ package com.example.gastospersonales.UI.Navegacion
 
 sealed class Screen(val ruta: String) {
 
+    data object GrupoMovimientos :
+        Screen("grupo_movimientos")
     data object InicioDeSesionScreen :
         Screen("InicioDeSesion")
 

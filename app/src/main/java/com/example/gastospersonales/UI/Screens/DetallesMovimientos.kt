@@ -2,7 +2,6 @@ package com.example.gastospersonales.UI.Screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,41 +32,56 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
 import com.example.gastospersonales.UI.Extenciones.clickableUnico
-import com.example.gastospersonales.UI.Temas.*
+import com.example.gastospersonales.UI.Temas.ColorBlanco
+import com.example.gastospersonales.UI.Temas.Dimens
+import com.example.gastospersonales.UI.Temas.DividerColor
+import com.example.gastospersonales.UI.Temas.Fondo
+import com.example.gastospersonales.UI.Temas.NegroTitulo
+import com.example.gastospersonales.UI.Temas.RojoGasto
+import com.example.gastospersonales.UI.Temas.SubTituloGris
+import com.example.gastospersonales.UI.Temas.TextSizes
+import com.example.gastospersonales.UI.Temas.TipBg
+import com.example.gastospersonales.UI.Temas.TipHeader
+import com.example.gastospersonales.UI.Temas.VerdeApp
+import com.example.gastospersonales.UI.Temas.VerdeClaro
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
+
 
 @Composable
 fun DetalleMovimientoScreen(
-    movimientoId: Int = 0,
-    viewModel: MovimientoViewModel = viewModel(),
-    onBackClick: () -> Unit = {},
-    onEliminarClick: () -> Unit = {},
-    onEditarClick: () -> Unit = {}
+    movimientoId: Int,
+    viewModel: MovimientoViewModel,
+    onBackClick: () -> Unit,
+    onEliminarClick: () -> Unit,
+    onEditarClick: () -> Unit
 ) {
-    // Escucha el StateFlow reactivamente mediante collectAsState()
-    val listaMovimientos by viewModel.movimientos.collectAsState()
 
-    val movimiento = listaMovimientos.find { it.Id == movimientoId }
+    val movimientos by viewModel.movimientos.collectAsStateWithLifecycle()
+
+    val movimiento =
+        movimientos.find { it.Id == movimientoId }
 
     if (movimiento != null) {
+
         DetalleMovimientoContent(
             movimiento = movimiento,
             onBackClick = onBackClick,
             onEliminarClick = onEliminarClick,
             onEditarClick = onEditarClick
         )
+
     } else {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Fondo),
             contentAlignment = Alignment.Center
         ) {
+
             Text(
                 text = "Sin movimientos registrados",
                 color = SubTituloGris,
@@ -78,6 +91,7 @@ fun DetalleMovimientoScreen(
     }
 }
 
+
 @Composable
 private fun DetalleMovimientoContent(
     movimiento: RegistroDeMovimientos,
@@ -85,34 +99,63 @@ private fun DetalleMovimientoContent(
     onEliminarClick: () -> Unit,
     onEditarClick: () -> Unit
 ) {
+
     val esGasto = !movimiento.TipoDeMovimiento
-    val colorMonto = if (esGasto) RojoGasto else VerdeApp
-    val signoMonto = if (esGasto) "- C$ " else "+ C$ "
+
+    val colorMonto =
+        if (esGasto)
+            RojoGasto
+        else
+            VerdeApp
+
+    val signoMonto =
+        if (esGasto)
+            "- C$ "
+        else
+            "+ C$ "
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Fondo)
-            .padding(horizontal = Dimens.EspacioMedio, vertical = Dimens.EspacioMedio)
+            .padding(
+                horizontal = Dimens.EspacioMedio,
+                vertical = Dimens.EspacioMedio
+            )
     ) {
 
         // BARRA SUPERIOR
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = Dimens.EspacioGrande)
+                .padding(
+                    bottom = Dimens.EspacioGrande
+                )
         ) {
+
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                imageVector =
+                    Icons.AutoMirrored.Filled.ArrowBack,
+
                 contentDescription = "Volver",
+
                 tint = NegroTitulo,
+
                 modifier = Modifier
                     .size(20.dp)
-                    .clickableUnico(500L) { onBackClick() }
+                    .clickableUnico(500L) {
+                        onBackClick()
+                    }
             )
 
-            Spacer(modifier = Modifier.width(Dimens.EspacioMedio))
+            Spacer(
+                modifier = Modifier.width(
+                    Dimens.EspacioMedio
+                )
+            )
 
             Text(
                 text = "Detalle del movimiento",
@@ -122,32 +165,47 @@ private fun DetalleMovimientoContent(
             )
         }
 
+
         // TARJETA PRINCIPAL
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(Dimens.RadioEsquina))
+                .clip(
+                    RoundedCornerShape(
+                        Dimens.RadioEsquina
+                    )
+                )
                 .background(ColorBlanco)
-                .padding(vertical = Dimens.EspacioGrande),
+                .padding(
+                    vertical = Dimens.EspacioGrande
+                ),
+
             contentAlignment = Alignment.Center
         ) {
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Box(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
                         .background(VerdeClaro),
+
                     contentAlignment = Alignment.Center
                 ) {
+
                     Text(
                         text = movimiento.Iconos,
                         fontSize = TextSizes.Titulo3
                     )
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(
+                    modifier = Modifier.height(10.dp)
+                )
 
                 Text(
                     text = movimiento.Gasto,
@@ -156,7 +214,11 @@ private fun DetalleMovimientoContent(
                     color = NegroTitulo
                 )
 
-                Spacer(modifier = Modifier.height(Dimens.EspacioPequeno))
+                Spacer(
+                    modifier = Modifier.height(
+                        Dimens.EspacioPequeno
+                    )
+                )
 
                 Text(
                     text = "$signoMonto${movimiento.Monto}.00",
@@ -167,34 +229,62 @@ private fun DetalleMovimientoContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(28.dp))
 
-        // CAMPOS DE DETALLE DE LA LISTA
-        DetailItem(label = "Categoría", value = movimiento.Gasto)
+        Spacer(
+            modifier = Modifier.height(28.dp)
+        )
+
+
+        // CAMPOS DE DETALLE
+
+        DetailItem(
+            label = "Categoría",
+            value = movimiento.Gasto
+        )
+
         DetailItem(
             label = "Descripción",
-            value = movimiento.Descripcion.ifEmpty { "Sin descripción" },
+            value = movimiento.Descripcion.ifEmpty {
+                "Sin descripción"
+            },
             showDivider = false
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+
+        Spacer(
+            modifier = Modifier.height(32.dp)
+        )
+
 
         // BOTONES DE ACCIÓN
+
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement =
+                Arrangement.spacedBy(12.dp)
         ) {
+
             OutlinedButton(
                 onClick = onEliminarClick,
+
                 modifier = Modifier
                     .weight(1f)
                     .height(46.dp),
-                shape = RoundedCornerShape(Dimens.RadioEsquina),
-                border = BorderStroke(1.dp, RojoGasto.copy(alpha = 0.5f)),
+
+                shape = RoundedCornerShape(
+                    Dimens.RadioEsquina
+                ),
+
+                border = BorderStroke(
+                    1.dp,
+                    RojoGasto.copy(alpha = 0.5f)
+                ),
+
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = RojoGasto
                 )
             ) {
+
                 Text(
                     text = "Eliminar",
                     fontSize = TextSizes.Cuerpo,
@@ -202,17 +292,24 @@ private fun DetalleMovimientoContent(
                 )
             }
 
+
             Button(
                 onClick = onEditarClick,
+
                 modifier = Modifier
                     .weight(1f)
                     .height(46.dp),
-                shape = RoundedCornerShape(Dimens.RadioEsquina),
+
+                shape = RoundedCornerShape(
+                    Dimens.RadioEsquina
+                ),
+
                 colors = ButtonDefaults.buttonColors(
                     containerColor = VerdeApp,
                     contentColor = Color.White
                 )
             ) {
+
                 Text(
                     text = "Editar",
                     fontSize = TextSizes.Cuerpo,
@@ -221,17 +318,28 @@ private fun DetalleMovimientoContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(28.dp))
+
+        Spacer(
+            modifier = Modifier.height(28.dp)
+        )
+
 
         // SECCIÓN DE CONSEJO
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(Dimens.RadioEsquina))
+                .clip(
+                    RoundedCornerShape(
+                        Dimens.RadioEsquina
+                    )
+                )
                 .background(TipBg)
                 .padding(Dimens.EspacioMedio)
         ) {
+
             Column {
+
                 Text(
                     text = "Consejo",
                     fontSize = TextSizes.Etiqueta,
@@ -239,7 +347,9 @@ private fun DetalleMovimientoContent(
                     color = TipHeader
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(
+                    modifier = Modifier.height(6.dp)
+                )
 
                 Text(
                     text = "Revisa este gasto antes de cerrar el mes.",
@@ -251,17 +361,22 @@ private fun DetalleMovimientoContent(
     }
 }
 
+
 @Composable
 private fun DetailItem(
     label: String,
     value: String,
     showDivider: Boolean = true
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = Dimens.EspacioPequeno)
+            .padding(
+                vertical = Dimens.EspacioPequeno
+            )
     ) {
+
         Text(
             text = label,
             fontSize = TextSizes.Etiqueta,
@@ -269,7 +384,9 @@ private fun DetailItem(
             color = SubTituloGris
         )
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(
+            modifier = Modifier.height(2.dp)
+        )
 
         Text(
             text = value,
@@ -279,7 +396,13 @@ private fun DetailItem(
         )
 
         if (showDivider) {
-            Spacer(modifier = Modifier.height(Dimens.EspacioPequeno))
+
+            Spacer(
+                modifier = Modifier.height(
+                    Dimens.EspacioPequeno
+                )
+            )
+
             HorizontalDivider(
                 color = DividerColor,
                 thickness = 1.dp
@@ -288,10 +411,11 @@ private fun DetailItem(
     }
 }
 
-// PREVIEW LIMPIO CON UN MOCK DIRECTO
+
 @Preview(showBackground = true)
 @Composable
 fun DetalleMovimientoScreenPreview() {
+
     val movimientoMock = RegistroDeMovimientos(
         Gasto = "Comida",
         Descripcion = "Almuerzo de prueba",
