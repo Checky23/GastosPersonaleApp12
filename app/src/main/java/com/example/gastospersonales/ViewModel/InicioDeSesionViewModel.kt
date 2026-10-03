@@ -10,44 +10,60 @@ import com.example.gastospersonales.Data.Repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.launch
 
-class InicioDeSesionViewModel: ViewModel()  {
+class InicioDeSesionViewModel : ViewModel() {
 
     private val repository = AuthRepository()
+
     var uiState by mutableStateOf(UI_EstadoLogin())
-        // Estado de inicio de sesión
         private set
-    fun cambiarCorreo (nuevoCorreo:String){
+
+    fun cambiarCorreo(nuevoCorreo: String) {
         uiState = uiState.copy(correo = nuevoCorreo)
     }
-    fun cambiarContraseña (nuevaContraseña:String){
+
+    fun cambiarContraseña(nuevaContraseña: String) {
         uiState = uiState.copy(contraseña = nuevaContraseña)
     }
 
-    fun iniciarSesion(){
+    fun iniciarSesion() {
 
-        //el .trim() para elimina espacios en blanco que estén al principio o al final
         val correo = uiState.correo.trim()
         val contraseña = uiState.contraseña
 
-        if (correo.isEmpty()){
-            uiState = uiState.copy(error = "Error - El correo no puede estar vacío")
+        if (correo.isEmpty()) {
+            uiState = uiState.copy(
+                error = "Error - El correo no puede estar vacío"
+            )
             return
         }
-        if (contraseña.isEmpty()){
-            uiState = uiState.copy(error = "Error - La contraseña no puede estar vacía")
+
+        if (contraseña.isEmpty()) {
+            uiState = uiState.copy(
+                error = "Error - La contraseña no puede estar vacía"
+            )
             return
         }
 
         viewModelScope.launch {
-            uiState = uiState.copy(cargando = true, error = null)
+
+            uiState = uiState.copy(
+                cargando = true,
+                error = null
+            )
 
             try {
-                repository.iniciarSesionConCorreo(correo = uiState.correo, contrasena = uiState.contraseña)
 
-                uiState = uiState.copy(cargando = false, sesionIniciada = true)
+                repository.iniciarSesionConCorreo(
+                    correo = correo,
+                    contrasena = contraseña
+                )
 
-            }catch (e: Exception){
+                uiState = uiState.copy(
+                    cargando = false,
+                    sesionIniciada = true
+                )
 
+            } catch (e: Exception) {
 
                 val mensaje = when (e) {
 
@@ -55,18 +71,16 @@ class InicioDeSesionViewModel: ViewModel()  {
                         "El correo o la contraseña no son correctos."
 
                     else ->
-                        e.localizedMessage ?: "Error al iniciar sesión"
+                        e.localizedMessage
+                            ?: "Error al iniciar sesión"
                 }
 
-
-
-                uiState = uiState.copy(cargando = false, error = mensaje)
+                uiState = uiState.copy(
+                    cargando = false,
+                    error = mensaje
+                )
             }
-
         }
     }
-
-
-
 }
 

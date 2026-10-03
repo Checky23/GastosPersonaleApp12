@@ -48,8 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
 import com.example.gastospersonales.UI.ComponentesVisuales.SelectorTipoMovimiento
 import com.example.gastospersonales.UI.Temas.Fondo
 import com.example.gastospersonales.UI.Temas.GrisBorde
@@ -61,91 +61,68 @@ import com.example.gastospersonales.ViewModel.MovimientoViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
+
+// PANTALLA PRINCIPAL (STATEFUL - Habla con el ViewModel)
 @Composable
 fun AgregarGastosScreen(
-    viewModel: MovimientoViewModel = viewModel(),
+    viewModel: MovimientoViewModel,
     movimientoId: Int,
-    onTerminar: () -> Unit,
+    onTerminar: () -> Unit
 ) {
+    // 1. Recolección de estado de la base de datos
+    val movimientos by viewModel.movimientos.collectAsState()
+    val movimientoOriginal = movimientos.find { it.Id == movimientoId }
 
-    // ---------------- ESTADOS ----------------
+    // 2. Delegación a la UI Stateless
+    AgregarGastosContent(
+        movimientoId = movimientoId,
+        movimientoOriginal = movimientoOriginal,
+        onTerminar = onTerminar,
+        onAgregarMovimiento = viewModel::agregarMovimiento,
+        onEditarMovimiento = viewModel::editarMovimiento
+    )
+}
 
-    var categoriaSeleccionada by remember { mutableStateOf("Comida") }
-    var monto by remember { mutableStateOf("") }
-    var fecha by remember { mutableStateOf("26 ago 2026") }
-    var descripcion by remember { mutableStateOf("") }
+
+// CONTENIDO DE LA UI (STATELESS - Solo dibuja y emite eventos)
+@Composable
+fun AgregarGastosContent(
+    movimientoId: Int,
+    movimientoOriginal: RegistroDeMovimientos?,
+    onTerminar: () -> Unit,
+    onAgregarMovimiento: (RegistroDeMovimientos) -> Unit,
+    onEditarMovimiento: (RegistroDeMovimientos) -> Unit
+) {
     val context = LocalContext.current
-
-
-    // Tipo de movimiento (Ingreso/Egreso), elevado desde SelectorTipoMovimiento
-    var tipoSeleccionado by remember {
-        mutableStateOf("Egreso")
-    }
-
-    // Guarda la FechaHora original del movimiento cuando se está editando,
-    // para no pisarla con la hora actual al guardar.
-    var fechaHoraOriginal by remember {
-        mutableStateOf(LocalDateTime.now())
-    }
-
     val esEdicion = movimientoId != 0
 
-    // Observamos la lista para buscar el movimiento si es edición
-    val movimientos by viewModel.movimientos.collectAsState()
-
-    // Cuando la pantalla se abre, revisa si hay un ID.
-    // Si lo hay, busca el movimiento y "autocompleta" los campos.
-    LaunchedEffect(movimientoId) {
-        if (esEdicion) {
-            val movimientoAEditar = movimientos.find { it.Id == movimientoId }
-            if (movimientoAEditar != null) {
-                categoriaSeleccionada = movimientoAEditar.Gasto
-                monto = movimientoAEditar.Monto.toString()
-                descripcion = movimientoAEditar.Descripcion
-                tipoSeleccionado =
-                    if (movimientoAEditar.TipoDeMovimiento) "Ingreso" else "Egreso"
-                fechaHoraOriginal = movimientoAEditar.FechaHora
-            }
-        }
+    // Estado local del formulario
+    var movimiento by remember(movimientoOriginal) {
+        mutableStateOf(
+            movimientoOriginal ?: RegistroDeMovimientos(
+                Gasto = "Comida",
+                Descripcion = "",
+                Iconos = "",
+                Monto = 0,
+                TipoDeMovimiento = false,
+                FechaHora = LocalDateTime.now()
+            )
+        )
     }
 
 
-    // ---------------- LISTA DE CATEGORÍAS ----------------
-
+    // Datos estáticos y controladores de UI
     val categorias = listOf(
-        "🍔\nComida",
-        "🚂\nTransporte",
-        "🏠\nHogar",
-        "💡\nServicios",
-        "🎮\nOcioa",
-        "🎛️\nOtrosa",
-        "🍔\nComidaa",
-        "🚂\nTransportea",
-        "🏠\nHogara",
-        "💡\nServicioss",
-        "🎮\nOciod",
-        "🎛️\nOtrosv"
+        "🍔\nComida", "🚂\nTransporte", "🏠\nHogar",
+        "💡\nServicios", "🎮\nOcio", "🎛️\nOtros"
     )
-
-
-    // ---------------- SCROLL ----------------
-
     val scrollState = rememberScrollState()
-
     val scope = rememberCoroutineScope()
 
-    // Para llevar cada TextField visible cuando recibe el foco
-    val montoRequester = remember {
-        BringIntoViewRequester()
-    }
-
-    val fechaRequester = remember {
-        BringIntoViewRequester()
-    }
-
-    val descripcionRequester = remember {
-        BringIntoViewRequester()
-    }
+    // Controladores de scroll automático para el teclado
+    val montoRequester = remember { BringIntoViewRequester() }
+    val fechaRequester = remember { BringIntoViewRequester() }
+    val descripcionRequester = remember { BringIntoViewRequester() }
 
 
     ConstraintLayout(
@@ -154,24 +131,14 @@ fun AgregarGastosScreen(
             .background(Fondo)
             .padding(24.dp)
     ) {
-
-        val (
-            TextsPresentacion,
-            bottomButton,
-            cancelText
-        ) = createRefs()
-
-
-        // ======================================================
-        // FORMULARIO SCROLLEABLE
-        // ======================================================
+        val (contenido, botonGuardar, textoCancelar) = createRefs()
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(scrollState)
                 .imePadding()
-                .constrainAs(TextsPresentacion) {
+                .constrainAs(contenido) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
@@ -179,426 +146,93 @@ fun AgregarGastosScreen(
                 }
                 .padding(bottom = 110.dp)
         ) {
+            EncabezadoMovimiento(esEdicion = esEdicion)
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // ---------- ENCABEZADO ----------
-
-            Text(
-                text = "Agregar Movimiento",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = NegroTitulo
-            )
-
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-
-            Text(
-                text = "Registra una compra en pocos segundos.",
-                fontSize = 14.sp,
-                color = SubTituloGris
-            )
-
-
-            // ======================================================
-            // MONTO
-            // ======================================================
-
-            Spacer(
-                modifier = Modifier.height(20.dp)
-            )
-
-            Text(
-                text = "Monto",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = NegroTitulo
-            )
-
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-
-            TextField(
-                value = monto,
-
-                onValueChange = {
-                    monto = it
+            CampoMonto(
+                monto = if (movimiento.Monto == 0) "" else movimiento.Monto.toString(),
+                onMontoChange = { newValue ->
+                    movimiento = movimiento.copy(Monto = newValue.toIntOrNull() ?: 0)
                 },
-
-                singleLine = true,
-
-                textStyle = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = NegroTitulo
-                ),
-
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal
-                ),
-
-                placeholder = {
-                    Text(
-                        text = "C$ 0.00",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = NegroTitulo
-                    )
-                },
-
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = VerdeApp,
-                    unfocusedIndicatorColor = VerdeApp
-                ),
-
-                shape = RoundedCornerShape(12.dp),
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .bringIntoViewRequester(montoRequester)
-                    .onFocusChanged { focusState ->
-
-                        if (focusState.isFocused) {
-
-                            scope.launch {
-                                montoRequester.bringIntoView()
-                            }
-                        }
-                    }
+                montoRequester = montoRequester,
+                scope = scope
             )
+            Spacer(modifier = Modifier.height(20.dp))
 
-
-            // ======================================================
-            // CATEGORÍA
-            // ======================================================
-
-            Spacer(
-                modifier = Modifier.height(20.dp)
-            )
-
-            Text(
-                text = "Categoría",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = NegroTitulo
-            )
-
-            Spacer(
-                modifier = Modifier.height(16.dp)
-            )
-
-
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(categorias.chunked(2)) { grupo ->
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-
-                        grupo.forEach { categoria ->
-
-                            GridItem(
-                                text = categoria,
-
-                                isSelected =
-                                    categoriaSeleccionada ==
-                                            categoria.substringAfter("\n"),
-
-                                onClick = {
-                                    categoriaSeleccionada =
-                                        categoria.substringAfter("\n")
-                                },
-
-                                modifier = Modifier.width(100.dp)
-                            )
-                        }
-                    }
+            SelectorCategoria(
+                categorias = categorias,
+                categoriaSeleccionada = movimiento.Gasto,
+                onCategoriaSeleccionada = { categoria ->
+                    movimiento = movimiento.copy(Gasto = categoria)
                 }
-            }
-
-
-            // ======================================================
-            // FECHA
-            // ======================================================
-
-            Text(
-                text = "Fecha",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = NegroTitulo
             )
 
-            Spacer(
-                modifier = Modifier.height(10.dp)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CampoFecha(
+                fecha = movimiento.FechaHora.toLocalDate().toString(),
+                fechaRequester = fechaRequester,
+                scope = scope
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Nota: este campo de texto libre todavía no está conectado
-            // a la FechaHora real del movimiento (esa se genera sola,
-            // en el ViewModel). Se deja igual para no romper la validación.
-
-            TextField(
-
-                value = fecha,
-
-                onValueChange = {
-                    fecha = it
+            CampoDescripcion(
+                descripcion = movimiento.Descripcion,
+                onDescripcionChange = { text ->
+                    movimiento = movimiento.copy(Descripcion = text)
                 },
-
-                singleLine = true,
-
-                textStyle = TextStyle(
-                    fontSize = 14.sp,
-                    color = NegroTitulo
-                ),
-
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = VerdeApp,
-                    unfocusedIndicatorColor = VerdeApp
-                ),
-
-                shape = RoundedCornerShape(16.dp),
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .bringIntoViewRequester(fechaRequester)
-                    .onFocusChanged { focusState ->
-
-                        if (focusState.isFocused) {
-
-                            scope.launch {
-                                fechaRequester.bringIntoView()
-                            }
-                        }
-                    }
+                descripcionRequester = descripcionRequester,
+                scope = scope
             )
-
-
-            Spacer(
-                modifier = Modifier.height(16.dp)
-            )
-
-
-            // ======================================================
-            // DESCRIPCIÓN
-            // ======================================================
-
-            Text(
-                text = "Descripción (opcional)",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = NegroTitulo
-            )
-
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-
-
-            TextField(
-
-                value = descripcion,
-
-                onValueChange = {
-                    descripcion = it
-                },
-
-                singleLine = true,
-
-                placeholder = {
-                    Text(
-                        text = "¿Qué compraste?",
-                        color = SubTituloGris
-                    )
-                },
-
-                textStyle = TextStyle(
-                    fontSize = 14.sp,
-                    color = NegroTitulo
-                ),
-
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = VerdeApp,
-                    unfocusedIndicatorColor = VerdeApp
-                ),
-
-                shape = RoundedCornerShape(16.dp),
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .bringIntoViewRequester(descripcionRequester)
-                    .onFocusChanged { focusState ->
-
-                        if (focusState.isFocused) {
-
-                            scope.launch {
-                                descripcionRequester.bringIntoView()
-                            }
-                        }
-                    }
-            )
-
-            Spacer(
-                modifier = Modifier.height(20.dp)
-            )
+            Spacer(modifier = Modifier.height(20.dp))
 
             SelectorTipoMovimiento(
-                valorSeleccionado = tipoSeleccionado,
-                onValorSeleccionadoChange = { tipoSeleccionado = it }
+                valorSeleccionado = if (movimiento.TipoDeMovimiento) "Ingreso" else "Egreso",
+                onValorSeleccionadoChange = { seleccion ->
+                    movimiento = movimiento.copy(TipoDeMovimiento = seleccion == "Ingreso")
+                }
             )
-
-
-            // Espacio final para poder hacer scroll
-            // y que el último campo no quede pegado al teclado.
-            Spacer(
-                modifier = Modifier.height(100.dp)
-            )
-
-
+            Spacer(modifier = Modifier.height(100.dp))
         }
 
 
-        // ======================================================
-        // BOTÓN GUARDAR
-        // ======================================================
-
-        Button(
-
+        BotonGuardarMovimiento(
+            esEdicion = esEdicion,
             onClick = {
-
-                val montoValido = monto
-                    .replace(",", ".")
-                    .toDoubleOrNull()
-
+                // Validación local antes de enviar al ViewModel
                 when {
-
-                    monto.isBlank() -> {
-                        Toast.makeText(
-                            context,
-                            "Ingresa un monto para continuar",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    movimiento.Monto <= 0 -> {
+                        Toast.makeText(context, "Ingresa un monto válido", Toast.LENGTH_SHORT).show()
                     }
-
-                    montoValido == null || montoValido <= 0.0 -> {
-                        Toast.makeText(
-                            context,
-                            "Ingresa un monto válido",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    movimiento.Gasto.isBlank() -> {
+                        Toast.makeText(context, "Selecciona una categoría", Toast.LENGTH_SHORT).show()
                     }
-
-                    categoriaSeleccionada.isBlank() -> {
-                        Toast.makeText(
-                            context,
-                            "Selecciona una categoría",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    fecha.isBlank() -> {
-                        Toast.makeText(
-                            context,
-                            "Ingresa una fecha",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
                     else -> {
-
-                        val esIngreso = tipoSeleccionado == "Ingreso"
-
-                        if (esEdicion) {
-
-                            viewModel.editarMovimiento(
-                                id = movimientoId,
-                                gasto = categoriaSeleccionada,
-                                descripcion = descripcion,
-                                monto = monto,
-                                tipoDeMovimiento = esIngreso,
-                                fechaHoraOriginal = fechaHoraOriginal
-                            )
-
-                        } else {
-
-                            viewModel.agregarMovimiento(
-                                gasto = categoriaSeleccionada,
-                                descripcion = descripcion,
-                                monto = monto,
-                                tipoDeMovimiento = esIngreso
-                            )
-                        }
-
+                        if (esEdicion) onEditarMovimiento(movimiento) else onAgregarMovimiento(movimiento)
                         onTerminar()
                     }
                 }
             },
-
-            shape = RoundedCornerShape(12.dp),
-
-            colors = ButtonDefaults.buttonColors(
-                containerColor = VerdeApp
-            ),
-
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-                .constrainAs(bottomButton) {
-
+                .constrainAs(botonGuardar) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-
-                    bottom.linkTo(
-                        parent.bottom,
-                        margin = 30.dp
-                    )
+                    bottom.linkTo(parent.bottom, margin = 30.dp)
                 }
-
-        ) {
-
-            Text(
-                text = if (esEdicion) "Actualizar gasto" else "Guardar gasto",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
-        }
-
-
-        // ======================================================
-        // CANCELAR
-        // ======================================================
+        )
 
         Text(
-
             text = "Cancelar",
-
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = SubTituloGris,
-
             modifier = Modifier
-                .clickable {
-                    onTerminar()
-                }
-                .constrainAs(cancelText) {
-
-                    bottom.linkTo(
-                        parent.bottom
-                    )
-
+                .clickable { onTerminar() }
+                .padding(8.dp) // Añadido un pequeño padding para facilitar el clic
+                .constrainAs(textoCancelar) {
+                    bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
@@ -607,9 +241,179 @@ fun AgregarGastosScreen(
 }
 
 
-// ======================================================
-// TARJETA DE CATEGORÍA
-// ======================================================
+// COMPONENTES VISUALES EXTERNALIZABLES
+// (Te sugiero mover todos estos a un archivo en UI/ComponentesVisuales)
+
+@Composable
+fun EncabezadoMovimiento(esEdicion: Boolean) {
+    Column {
+        Text(
+            text = if (esEdicion) "Editar Movimiento" else "Agregar Movimiento",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = NegroTitulo
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Registra una transacción en pocos segundos.",
+            fontSize = 14.sp,
+            color = SubTituloGris
+        )
+    }
+}
+
+@Composable
+fun CampoMonto(
+    monto: String,
+    onMontoChange: (String) -> Unit,
+    montoRequester: BringIntoViewRequester,
+    scope: kotlinx.coroutines.CoroutineScope
+) {
+    Column {
+        Text(text = "Monto", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = NegroTitulo)
+        Spacer(modifier = Modifier.height(10.dp))
+        TextField(
+            value = monto,
+            onValueChange = onMontoChange,
+            singleLine = true,
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = NegroTitulo),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            placeholder = { Text(text = "C$ 0.00", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = SubTituloGris) },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = VerdeApp,
+                unfocusedIndicatorColor = Color.Transparent // Ocultamos la línea cuando no hay foco para más limpieza
+            ),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .bringIntoViewRequester(montoRequester)
+                .onFocusChanged {
+                    if (it.isFocused) scope.launch { montoRequester.bringIntoView() }
+                }
+        )
+    }
+}
+
+@Composable
+fun SelectorCategoria(
+    categorias: List<String>,
+    categoriaSeleccionada: String,
+    onCategoriaSeleccionada: (String) -> Unit
+) {
+    Column {
+        Text(text = "Categoría", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = NegroTitulo)
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(categorias.chunked(2)) { grupo ->
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    grupo.forEach { categoria ->
+                        val nombreCategoria = categoria.substringAfter("\n")
+                        GridItem(
+                            text = categoria,
+                            isSelected = categoriaSeleccionada == nombreCategoria,
+                            onClick = { onCategoriaSeleccionada(nombreCategoria) },
+                            modifier = Modifier.width(100.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CampoFecha(
+    fecha: String,
+    fechaRequester: BringIntoViewRequester,
+    scope: kotlinx.coroutines.CoroutineScope
+) {
+    Column {
+        Text(text = "Fecha", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = NegroTitulo)
+        Spacer(modifier = Modifier.height(10.dp))
+        TextField(
+            value = fecha,
+            onValueChange = {}, // Automático por ahora
+            readOnly = true, // Evita que el teclado se abra
+            singleLine = true,
+            textStyle = TextStyle(fontSize = 14.sp, color = NegroTitulo),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = VerdeApp,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .bringIntoViewRequester(fechaRequester)
+                .onFocusChanged {
+                    if (it.isFocused) scope.launch { fechaRequester.bringIntoView() }
+                }
+        )
+    }
+}
+
+@Composable
+fun CampoDescripcion(
+    descripcion: String,
+    onDescripcionChange: (String) -> Unit,
+    descripcionRequester: BringIntoViewRequester,
+    scope: kotlinx.coroutines.CoroutineScope
+) {
+    Column {
+        Text(text = "Descripción (opcional)", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = NegroTitulo)
+        Spacer(modifier = Modifier.height(10.dp))
+        TextField(
+            value = descripcion,
+            onValueChange = onDescripcionChange,
+            singleLine = true,
+            placeholder = { Text(text = "¿Qué compraste?", color = SubTituloGris) },
+            textStyle = TextStyle(fontSize = 14.sp, color = NegroTitulo),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = VerdeApp,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .bringIntoViewRequester(descripcionRequester)
+                .onFocusChanged {
+                    if (it.isFocused) scope.launch { descripcionRequester.bringIntoView() }
+                }
+        )
+    }
+}
+
+@Composable
+fun BotonGuardarMovimiento(
+    esEdicion: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = VerdeApp),
+        modifier = modifier
+    ) {
+        Text(
+            text = if (esEdicion) "Actualizar gasto" else "Guardar gasto",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
+    }
+}
 
 @Composable
 fun GridItem(
@@ -618,72 +422,54 @@ fun GridItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    val currentBgColor =
-        if (isSelected) VerdeClaro
-        else Color.White
-
-    val currentBorderColor =
-        if (isSelected) VerdeApp
-        else GrisBorde
-
-    val currentTextColor =
-        if (isSelected) VerdeApp
-        else NegroTitulo
-
+    val currentBgColor = if (isSelected) VerdeClaro else Color.White
+    val currentBorderColor = if (isSelected) VerdeApp else GrisBorde
+    val currentTextColor = if (isSelected) VerdeApp else NegroTitulo
 
     Box(
-
         contentAlignment = Alignment.Center,
-
         modifier = modifier
             .height(80.dp)
-
-            .background(
-                currentBgColor,
-                shape = RoundedCornerShape(12.dp)
-            )
-
-            .border(
-                1.dp,
-                currentBorderColor,
-                shape = RoundedCornerShape(12.dp)
-            )
-
-            .clickable {
-                onClick()
-            }
+            .background(currentBgColor, shape = RoundedCornerShape(12.dp))
+            .border(1.dp, currentBorderColor, shape = RoundedCornerShape(12.dp))
+            .clickable { onClick() }
     ) {
-
         Text(
             text = text,
             color = currentTextColor,
             fontSize = 12.sp,
-
-            fontWeight =
-                if (isSelected)
-                    FontWeight.Bold
-                else
-                    FontWeight.Normal,
-
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             textAlign = TextAlign.Center
         )
     }
 }
 
 
-// ======================================================
-// PREVIEW
-// ======================================================
-@Preview(showBackground = true)
+
+// ==========================================================
+// PREVIEW PARA VERLO EN ANDROID STUDIO
+// ==========================================================
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PreviewAgregarGasto() {
+fun AgregarGastosScreenPreview() {
+    // Creamos un dato falso solo para que el Preview pueda pintar algo
+    val movimientoFalso = RegistroDeMovimientos(
+        Id = 0,
+        Gasto = "Comida",
+        Descripcion = "",
+        Iconos = "",
+        Monto = 0,
+        TipoDeMovimiento = false,
+        FechaHora = LocalDateTime.now() // Si te marca error por el API nivel, puedes usar una fecha estática
+    )
 
-    val navController = rememberNavController()
-
-    AgregarGastosScreen(
-        movimientoId = 0,
-        onTerminar = {}
+    // Llamamos al Content (Stateless), NO a la Screen principal,
+    // porque el Preview no se lleva bien con los ViewModels inyectados.
+    AgregarGastosContent(
+        movimientoId = 0, // 0 simula que estamos "Agregando", si pones 1 simularía "Editando"
+        movimientoOriginal = movimientoFalso,
+        onTerminar = { /* No hace nada en el preview */ },
+        onAgregarMovimiento = { /* No hace nada en el preview */ },
+        onEditarMovimiento = { /* No hace nada en el preview */ }
     )
 }
-

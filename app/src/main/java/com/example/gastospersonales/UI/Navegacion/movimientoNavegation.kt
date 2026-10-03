@@ -79,7 +79,9 @@ fun NavGraphBuilder.movimientoNavigation(
         }
 
 
+        // ---------------------------
         // MOVIMIENTOS
+        // ---------------------------
 
         composable(
             Screen.MovimientosScreen.ruta

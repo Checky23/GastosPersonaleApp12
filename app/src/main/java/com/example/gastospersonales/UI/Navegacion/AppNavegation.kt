@@ -25,7 +25,7 @@ fun AppNavigation() {
 
     val rutaInicial =
         if (usuarioLogeado) {
-            "movimientos_graph"
+            "grupo_movimientos"
         } else {
             Screen.InicioDeSesionScreen.ruta
         }
@@ -56,12 +56,7 @@ fun AppNavigation() {
             // ---------------------------
 
             composable(
-                Screen.InicioDeSesionScreen.ruta
-            ) {
-                InicioDeSesionScreen(
-                    navController
-                )
-            }
+                Screen.InicioDeSesionScreen.ruta) { InicioDeSesionScreen(navController) }
 
             // ---------------------------
             // REGISTRO
@@ -115,7 +110,7 @@ fun AppNavigation() {
                     ) {
 
                         popUpTo(
-                            "movimientos_graph"
+                            "grupo_movimientos"
                         ) {
                             saveState = true
                         }
@@ -132,7 +127,7 @@ fun AppNavigation() {
                     ) {
 
                         popUpTo(
-                            "movimientos_graph"
+                            "grupo_movimientos"
                         ) {
                             saveState = true
                         }

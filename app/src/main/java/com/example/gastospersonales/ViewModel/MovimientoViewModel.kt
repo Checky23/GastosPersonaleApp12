@@ -31,46 +31,29 @@ class MovimientoViewModel : ViewModel() {
 
 
     fun agregarMovimiento(
-        gasto: String,
-        descripcion: String,
-        monto: String,
-        tipoDeMovimiento: Boolean
+        movimiento: RegistroDeMovimientos
     ) {
 
-        val movimiento = RegistroDeMovimientos(
-            Gasto = gasto,
-            Descripcion = descripcion,
-            Iconos = obtenerIcono(gasto),
-            Monto = monto.toIntOrNull() ?: 0,
-            TipoDeMovimiento = tipoDeMovimiento,
+        val nuevoMovimiento = movimiento.copy(
+            Iconos = obtenerIcono(movimiento.Gasto),
             FechaHora = LocalDateTime.now()
         )
 
-        MovimientoRepository.agregarMovimiento(movimiento)
+        MovimientoRepository.agregarMovimiento(
+            nuevoMovimiento
+        )
     }
 
-
     fun editarMovimiento(
-        id: Int,
-        gasto: String,
-        descripcion: String,
-        monto: String,
-        tipoDeMovimiento: Boolean,
-        fechaHoraOriginal: LocalDateTime
+        movimiento: RegistroDeMovimientos
     ) {
 
-        val movimientoEditado = RegistroDeMovimientos(
-            Id = id,
-            Gasto = gasto,
-            Descripcion = descripcion,
-            Iconos = obtenerIcono(gasto),
-            Monto = monto.toIntOrNull() ?: 0,
-            TipoDeMovimiento = tipoDeMovimiento,
-            FechaHora = fechaHoraOriginal
+        val movimientoEditado = movimiento.copy(
+            Iconos = obtenerIcono(movimiento.Gasto)
         )
 
         MovimientoRepository.editarMovimiento(
-            id,
+            movimiento.Id,
             movimientoEditado
         )
     }
@@ -80,6 +63,8 @@ class MovimientoViewModel : ViewModel() {
 
         MovimientoRepository.eliminarMovimiento(id)
     }
+
+
 
 
     private fun obtenerIcono(gasto: String): String {
