@@ -10,13 +10,11 @@ class MovimientoViewModel : ViewModel() {
     // Accedemos al Repository para obtener la lista de movimientos.
     val movimientos = MovimientoRepository.movimientos
 
-
     // Calculamos el total de ingresos a partir de los movimientos.
     val totalIngresos: Int
         get() = movimientos.value
             .filter { it.TipoDeMovimiento }
             .sumOf { it.Monto }
-
 
     // Calculamos el total de gastos a partir de los movimientos.
     val totalGastos: Int
@@ -24,16 +22,20 @@ class MovimientoViewModel : ViewModel() {
             .filter { !it.TipoDeMovimiento }
             .sumOf { it.Monto }
 
-
     // Calculamos el saldo restando los gastos a los ingresos.
     val saldo: Int
         get() = totalIngresos - totalGastos
 
+    // Propiedad calculada para el total de gastos agrupados por categoría (necesaria para Estadísticas)
+    val gastosPorCategoria: Map<String, Int>
+        get() = movimientos.value
+            .filter { !it.TipoDeMovimiento }
+            .groupBy { it.Gasto }
+            .mapValues { entry -> entry.value.sumOf { it.Monto } }
 
     fun agregarMovimiento(
         movimiento: RegistroDeMovimientos
     ) {
-
         val nuevoMovimiento = movimiento.copy(
             Iconos = obtenerIcono(movimiento.Gasto),
             FechaHora = LocalDateTime.now()
@@ -47,7 +49,6 @@ class MovimientoViewModel : ViewModel() {
     fun editarMovimiento(
         movimiento: RegistroDeMovimientos
     ) {
-
         val movimientoEditado = movimiento.copy(
             Iconos = obtenerIcono(movimiento.Gasto)
         )
@@ -58,26 +59,18 @@ class MovimientoViewModel : ViewModel() {
         )
     }
 
-
     fun eliminarMovimiento(id: Int) {
-
         MovimientoRepository.eliminarMovimiento(id)
     }
 
-
-
-
     private fun obtenerIcono(gasto: String): String {
-
         return when (gasto) {
-
             "Comida" -> "🍔"
             "Transporte" -> "🚂"
             "Hogar" -> "🏠"
             "Servicios" -> "💡"
             "Ocio" -> "🎮"
             "Otros" -> "🎛️"
-
             else -> "🎛️"
         }
     }

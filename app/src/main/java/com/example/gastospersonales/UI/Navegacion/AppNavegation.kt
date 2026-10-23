@@ -15,123 +15,66 @@ import com.example.gastospersonales.UI.ComponentesVisuales.BottomNavigationBar
 import com.example.gastospersonales.UI.Screens.InicioDeSesionScreen
 import com.example.gastospersonales.UI.Screens.RegistroScreen
 
-
 @Composable
 fun AppNavigation() {
-
     val navController = rememberNavController()
-
     val usuarioLogeado = VerificacionDeUsuario()
 
-    val rutaInicial =
-        if (usuarioLogeado) {
-            "grupo_movimientos"
-        } else {
-            Screen.InicioDeSesionScreen.ruta
-        }
+    val rutaInicial = if (usuarioLogeado) {
+        "grupo_movimientos"
+    } else {
+        Screen.InicioDeSesionScreen.ruta
+    }
 
-    val navBackStackEntry by
-    navController.currentBackStackEntryAsState()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val rutaActual = navBackStackEntry?.destination?.route
 
-    val rutaActual =
-        navBackStackEntry
-            ?.destination
-            ?.route
+    val mostrarBottomBar = rutaActual == Screen.InicioScreen.ruta ||
+            rutaActual == Screen.MovimientosScreen.ruta
 
-    val mostrarBottomBar =
-        rutaActual == Screen.InicioScreen.ruta ||
-                rutaActual == Screen.MovimientosScreen.ruta
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
+    Box(modifier = Modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
             startDestination = rutaInicial
         ) {
-
-            // ---------------------------
             // LOGIN
-            // ---------------------------
-
-            composable(
-                Screen.InicioDeSesionScreen.ruta) { InicioDeSesionScreen(navController) }
-
-            // ---------------------------
-            // REGISTRO
-            // ---------------------------
-
-            composable(
-                Screen.RegistroScreen.ruta
-            ) {
-                RegistroScreen(
-                    navController
-                )
+            composable(Screen.InicioDeSesionScreen.ruta) {
+                InicioDeSesionScreen(navController)
             }
 
-            // ---------------------------
-            // MOVIMIENTOS
-            // ---------------------------
+            // REGISTRO
+            composable(Screen.RegistroScreen.ruta) {
+                RegistroScreen(navController)
+            }
 
-            movimientoNavigation(
-                navController = navController
-            )
+            // MOVIMIENTOS
+            movimientoNavigation(navController = navController)
         }
 
-
-        // ---------------------------
         // BARRA INFERIOR
-        // ---------------------------
-
         if (mostrarBottomBar) {
-
             BottomNavigationBar(
-
-                modifier = Modifier.align(
-                    Alignment.BottomCenter
-                ),
-
+                modifier = Modifier.align(Alignment.BottomCenter),
                 rutaActual = rutaActual,
-
                 ClickDeBotonAgregar = {
-
-                    navController.navigate(
-                        "${Screen.AgregarGastosScreen.ruta}/0"
-                    ) {
+                    navController.navigate("${Screen.AgregarGastosScreen.ruta}/0") {
                         launchSingleTop = true
                     }
                 },
-
                 ClickDeBotonInicio = {
-
-                    navController.navigate(
-                        Screen.InicioScreen.ruta
-                    ) {
-
-                        popUpTo(
-                            "grupo_movimientos"
-                        ) {
+                    navController.navigate(Screen.InicioScreen.ruta) {
+                        popUpTo("grupo_movimientos") {
                             saveState = true
                         }
-
                         launchSingleTop = true
                         restoreState = true
                     }
                 },
-
                 ClickDeBotonHistorial = {
-
-                    navController.navigate(
-                        Screen.MovimientosScreen.ruta
-                    ) {
-
-                        popUpTo(
-                            "grupo_movimientos"
-                        ) {
+                    navController.navigate(Screen.MovimientosScreen.ruta) {
+                        popUpTo("grupo_movimientos") {
                             saveState = true
                         }
-
                         launchSingleTop = true
                         restoreState = true
                     }

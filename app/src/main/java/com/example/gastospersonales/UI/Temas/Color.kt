@@ -27,3 +27,8 @@ val ColorBlanco = Color(0xFFFFFFFF)
 // DETALLES Y TARJETAS
 val TipBg = Color(0xFFFFF7DB)
 val TipHeader = Color(0xFFE5A93C)
+
+// COLORES ESPECÍFICOS PARA CATEGORÍAS (ESTADÍSTICAS)
+val ColorComida = Color(0xFFD95C5C)     // Rojo suave
+val ColorTransporte = Color(0xFF4A90E2) // Azul
+val ColorServicios = Color(0xFFF5A623)  // Amarillo/Naranja
