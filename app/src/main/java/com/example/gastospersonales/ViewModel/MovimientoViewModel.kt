@@ -1,84 +1,87 @@
+
 package com.example.gastospersonales.ViewModel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.gastospersonales.Data.Model.RegistroDeMovimientos
 import com.example.gastospersonales.Data.Repository.MovimientoRepository
+import com.example.gastospersonales.Data.Room.RoomProvider
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-class MovimientoViewModel : ViewModel() {
+class MovimientoViewModel(
+    application: Application
+) : AndroidViewModel(application) {
 
-    // Accedemos al Repository para obtener la lista de movimientos.
-    val movimientos = MovimientoRepository.movimientos
+    private val dao = RoomProvider
+        .obtenerBaseDeDatos(application)
+        .movimientoDao()
 
+    private val repository = MovimientoRepository(dao)
 
-    // Calculamos el total de ingresos a partir de los movimientos.
+    // Conservamos el nombre y exponemos los datos como StateFlow.
+    val movimientos: StateFlow<List<RegistroDeMovimientos>> =
+        repository.movimientos.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
     val totalIngresos: Int
         get() = movimientos.value
             .filter { it.TipoDeMovimiento }
             .sumOf { it.Monto }
 
-
-    // Calculamos el total de gastos a partir de los movimientos.
     val totalGastos: Int
         get() = movimientos.value
             .filter { !it.TipoDeMovimiento }
             .sumOf { it.Monto }
 
-
-    // Calculamos el saldo restando los gastos a los ingresos.
     val saldo: Int
         get() = totalIngresos - totalGastos
 
-
-    fun agregarMovimiento(
-        movimiento: RegistroDeMovimientos
-    ) {
-
+    fun agregarMovimiento(movimiento: RegistroDeMovimientos) {
         val nuevoMovimiento = movimiento.copy(
+            Id = 0,
             Iconos = obtenerIcono(movimiento.Gasto),
             FechaHora = LocalDateTime.now()
         )
 
-        MovimientoRepository.agregarMovimiento(
-            nuevoMovimiento
-        )
+        viewModelScope.launch {
+            repository.agregarMovimiento(nuevoMovimiento)
+        }
     }
 
-    fun editarMovimiento(
-        movimiento: RegistroDeMovimientos
-    ) {
-
+    fun editarMovimiento(movimiento: RegistroDeMovimientos) {
         val movimientoEditado = movimiento.copy(
             Iconos = obtenerIcono(movimiento.Gasto)
         )
 
-        MovimientoRepository.editarMovimiento(
-            movimiento.Id,
-            movimientoEditado
-        )
+        viewModelScope.launch {
+            repository.editarMovimiento(
+                movimientoEditado.Id,
+                movimientoEditado
+            )
+        }
     }
-
 
     fun eliminarMovimiento(id: Int) {
-
-        MovimientoRepository.eliminarMovimiento(id)
+        viewModelScope.launch {
+            repository.eliminarMovimiento(id)
+        }
     }
 
-
-
-
-    private fun obtenerIcono(gasto: String): String {
-
-        return when (gasto) {
-
-            "Comida" -> "🍔"
-            "Transporte" -> "🚂"
-            "Hogar" -> "🏠"
-            "Servicios" -> "💡"
-            "Ocio" -> "🎮"
-            "Otros" -> "🎛️"
-
-            else -> "🎛️"
-        }
+    private fun obtenerIcono(gasto: String): String = when (gasto) {
+        "Comida" -> "🍔"
+        "Transporte" -> "🚂"
+        "Hogar" -> "🏠"
+        "Servicios" -> "💡"
+        "Ocio" -> "🎮"
+        "Otros" -> "🎛️"
+        else -> "🎛️"
     }
 }
