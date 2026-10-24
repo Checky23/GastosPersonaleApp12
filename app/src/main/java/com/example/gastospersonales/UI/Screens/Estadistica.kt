@@ -36,7 +36,7 @@ import com.example.gastospersonales.UI.Temas.SubTituloGris
 import com.example.gastospersonales.UI.Temas.VerdeApp
 import com.example.gastospersonales.UI.Temas.VerdeClaro
 import com.example.gastospersonales.ViewModel.MovimientoViewModel
-
+//
 @Composable
 fun EstadisticaScreen(
     viewModel: MovimientoViewModel,
